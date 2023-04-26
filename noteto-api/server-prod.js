@@ -1,10 +1,14 @@
 const express = require("express");
 const path = require("path");
 const cors = require("cors");
+const http = require("http");
 const https = require("https");
 const fs = require("fs");
 const app = express();
-
+const securedPort = 443;
+const nonSecuredPort = 80;
+const key = fs.readFileSync(path.join(__dirname, "certs", "key.pem"));
+const cert = fs.readFileSync(path.join(__dirname, "certs", "cert.pem"));
 const database = require("./database.js");
 const automationController = require("./controllers/automation.js");
 const commentController = require("./controllers/comment.js");
@@ -34,25 +38,29 @@ app.use("/api/field/", fieldController.app);
 app.use("/api/choice/", choiceController.app);
 app.use("/api/layout/", layoutController.app);
 app.use("/api/entry", entryController.app);
-const sslServer = https.createServer(
+const httpServer = http.createServer(app);
+const httpsServer = https.createServer(
   {
-    key: fs.readFileSync(path.join(__dirname, "certs", "key.pem")),
-    cert: fs.readFileSync(path.join(__dirname, "certs", "cert.pem")),
+    key: key,
+    cert: cert,
   },
   app
 );
-sslServer.listen(3000, () => {
-  console.log("App is listening on port 3000");
-  database.createDbConn().then((dbConn) => {
-    automationController.setDb(dbConn);
-    commentController.setDb(dbConn);
-    userController.setDb(dbConn);
-    miscellaneousController.setDb(dbConn);
-    databaseController.setDb(dbConn);
-    groupController.setDb(dbConn);
-    fieldController.setDb(dbConn);
-    choiceController.setDb(dbConn);
-    layoutController.setDb(dbConn);
-    entryController.setDb(dbConn);
-  });
+httpServer.listen(nonSecuredPort, () => {
+  console.log("App is listening on port ", nonSecuredPort);
+});
+httpsServer.listen(securedPort, () => {
+  console.log("App is listening on port ", securedPort);
+});
+database.createDbConn().then((dbConn) => {
+  automationController.setDb(dbConn);
+  commentController.setDb(dbConn);
+  userController.setDb(dbConn);
+  miscellaneousController.setDb(dbConn);
+  databaseController.setDb(dbConn);
+  groupController.setDb(dbConn);
+  fieldController.setDb(dbConn);
+  choiceController.setDb(dbConn);
+  layoutController.setDb(dbConn);
+  entryController.setDb(dbConn);
 });
