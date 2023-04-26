@@ -1,0 +1,84 @@
+const express = require("express");
+const helper = require("../helper.js");
+const miscellService = require("../services/miscellaneous.js");
+const app = express();
+const path = require("path");
+
+let dbConn = null;
+
+function setDb(conn) {
+  miscellService.setDb(conn);
+}
+
+app.use(express.json());
+app.use(helper.verifyToken);
+app.get("/", (req, res) => {
+  res.send("miscellaneous");
+});
+app.post("/add/headers", (req, res) => {
+  let headers = req.body;
+  miscellService
+    .addHeaders(headers)
+    .then((response) => {
+      res.status(response.code).send(response.data);
+    })
+    .catch((response) => {
+      res.status(response.code).send(response.message);
+    });
+});
+app.get("/get/navigation/options", (req, res) => {
+  miscellService
+    .getNavigationOptions()
+    .then((response) => {
+      res.status(response.code).send(response.data);
+    })
+    .catch((response) => {
+      res.status(response.code).send(response.message);
+    });
+});
+app.get("/get/dropdowns", (req, res) => {
+  miscellService
+    .getDropdowns()
+    .then((response) => {
+      res.status(response.code).send(response.data);
+    })
+    .catch((response) => {
+      res.status(response.code).send(response.message);
+    });
+});
+app.get("/get/database/to/headers", (req, res) => {
+  miscellService
+    .getDatabaseToHeaders()
+    .then((response) => {
+      res.status(response.code).send(response.data);
+    })
+    .catch((response) => {
+      res.status(response.code).send(response.message);
+    });
+});
+app.get("/get/headers/database/:database", (req, res) => {
+  let database = req.params.database;
+  miscellService
+    .getHeadersByDatabase(database)
+    .then((response) => {
+      res.status(response.code).send(response.data);
+    })
+    .catch((response) => {
+      res.status(response.code).send(response.message);
+    });
+});
+app.get("/remove/headers/database/:database", (req, res) => {
+  let database = req.params.database;
+  miscellService
+    .removeHeadersByDatabase(database)
+    .then((response) => {
+      res.sendStatus(response.code);
+    })
+    .catch((response) => {
+      res.status(response.code).send(response.message);
+    });
+});
+module.exports = {
+  app,
+  setDb,
+};

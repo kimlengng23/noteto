@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+		<script>
+			function generateTable() {
+				let titles = [
+					"One A Day Women's Multivitamin, 300 Tablets",
+					"One A Day Men's Multivitamin, 300 Tablets",
+					"One A Day Women's 50+ Healthy Advantage Multivitamin, 300 Tablets",
+					"One A Day Men's 50+ Healthy Advantage Multivitamin, 300 Tablets",
+					"Centrum Silver Women 50+, 275 Tablets",
+					"Centrum Silver Men 50+, 275 Tablets",
+					"Centrum Silver Adults 50+ Multivitamin, 325 Tablets",
+					"Centrum Adults Multivitamin, 425 Tablets",
+					"Nature Made Prenatal Multi + DHA, 150 Softgels",
+					"Schiff Move Free Advanced Joint Supplement, 200 Tablets",
+					"Schiff Move Free Ultra Triple Action Joint Supplement, 75 Tablets",
+                    "Nature Made Fish Oil 1200 mg., 400 Softgels",
+					"Nature's Bounty Fish Oil 1400 mg., 130 Coated Softgels",
+					"Pure Alaska Omega Wild Salmon Oil 1000 mg., 210 Softgels",
+					"L'il Critters Gummy Vites, 300 Gummy Bears",
+					"L'il Critters Calcium + D₃, 250 Gummy Bears",
+					"L’il Critters Omega-3 DHA, 220 Gummies",
+                    "SmartyPants Women's Formula Multivitamin, 240 Adult Gummies",
+                    "SmartyPants Kids Formula Multivitamin, 180 Gummies",
+					"Vicks Severe DayQuil and NyQuil Cough, Cold & Flu Relief, 72 LiquiCaps",
+					"Tylenol Extra Strength, 325 Caplets",
+					"Tylenol PM Extra Strength, 225 Caplets",
+					"Tylenol Extra Strength, 290 Rapid Release Gelcaps",
+					"Children's Tylenol Dye-Free Cherry Flavor Suspension, 8 Ounces",
+					"Infants' Tylenol Pain & Fever Cherry Flavor, 4 Ounces",
+					"Zarbee's Naturals Children's Cough Syrup + Mucus Day & Night, 12 Ounces",
+					"Advil Ibuprofen 200 mg., Pain Reliever/Fever Reducer, 360 Tablets",
+					"Nature's Bounty Hair, Skin and Nails, 230 Gummies",
+					"Nature's Bounty Hair, Skin and Nails, 250 Softgels",
+					"Kirkland Signature Vitamin C 250 mg., 360 Adult Gummies",
+					"Emergen-C Vitamin C 1,000 mg. Variety Pack Drink Mix, 90 Packets",
+                    "Emergen-C Immune Plus, 70 Packets",
+                    "Airborne Immune Support, 36 Effervescent Tablets",
+                    "Annie's Organic Homegrown Macaroni & Cheese, Variety Pack, 6 oz, 12-pack",
+                    "Kraft Macaroni & Cheese Microwavable Cups, 2.05 oz, 12-count",
+                    "Kraft Macaroni & Cheese Dinner, 7.25 oz, 18-count",
+                    "Crest 3D White Advanced Triple Whitening Toothpaste 5-pack",
+				];
+				let imgs = [
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=853472-847&recipeName=680",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=853467-847&recipeName=680",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=1274752-847&recipeName=680",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=1274751-847&recipeName=680",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=1320304-847&recipeName=680",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=1320303-847&recipeName=680",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=1102928-847&recipeName=680",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=744182-847&recipeName=680",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=580664-847&recipeName=680",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=1116624-847&recipeName=680",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=1003144-847&recipeName=680",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=640093-847&recipeName=680",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=536672-847&recipeName=680",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=1226620-847&recipeName=680",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=1223025-847&recipeName=680",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=1300785-847&recipeName=680",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=1223099-847&recipeName=680",
+                    "https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=1129574-847&recipeName=680",
+                    "https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=677823-847&recipeName=680",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=1259303-847&recipeName=680",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&imageId=504443-847__1&recipeName=350",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=100375370-847&recipeName=680",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=504882-847&recipeName=680",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=100455674-847&recipeName=680",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=100427062-847&recipeName=680",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=1003319-847&recipeName=680",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=573015-847&recipeName=680",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=983287-847&recipeName=680",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=553486-847&recipeName=680",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=1050777-847&recipeName=680",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=554244-847&recipeName=680",
+                    "https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=100364543-847&recipeName=680",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=100667528-847&recipeName=680",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=985695-847&recipeName=680",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=443298-847&recipeName=680",
+					"https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=170779-847&recipeName=680",
+                    "https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=1368233-847&recipeName=680"
+				
+				];
+				let prices = [
+                    "16.89",
+                    "16.89",
+                    "18.69",
+                    "18.69",
+                    "19.29",
+                    "19.29",
+                    "18.39",
+                    "19.29",
+                    "19.99",
+                    "24.99",
+                    "23.99",
+                    "17.99",
+                    "19.99",
+                    "18.99",
+                    "12.99",
+                    "15.49",
+                    "12.99",
+                    "21.99",
+                    "16.99",
+                    "19.99",
+                    "15.99",
+                    "15.99",
+                    "15.99",
+                    "8.99",
+                    "12.49",
+                    "13.49",
+                    "17.39",
+                    "13.49",
+                    "14.79",
+                    "13.49",
+                    "19.99",
+                    "18.99",
+                    "16.49",
+                    "12.99",
+                    "8.99",
+                    "10.99",
+                    "13.99"
+				]
+				let $tableBody = $('table tbody');
+				let $background = $('#background');
+				for(let i=0;i<titles.length;i++) {
+					$tableBody.append(`
+					<tr>
+						<td>
+							${titles[i]}
+						</td>
+						<td>
+							<img style="height:70px;width:70px;image-rendering: crisp-edges;" src="${imgs[i]}"/>
+						</td>
+						<td>
+                            <span class="font-weight-bold">$ ${(prices[i]*1.09*1.07).toFixed(2)}</span>
+						</td>
+						
+					</tr>
+					`);
+				}
+				$background.css({'height':`${$('table').css('height')}`})
+			}
+            $(document).ready(() => {
+                generateTable();
+            })
+		</script>
+		<style> 
+			
+			#background {
+				position: absolute;
+				width: 100%;
+				z-index: 1;
+				background: url("./logo.jpg") repeat;
+				background-size: 100px 100px;
+				opacity: 0.15;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="background"></div>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Item</th>
+					<th>Picture</th>
+					<th>Unit Price</th>
+				</tr>
+			</thead>			
+			<tbody>
+				
+			</tbody>
+		</table>
+	</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>All Available CeraVe Products</title>
+		<meta property="og:url" content="http://kteexpressmail.com/custom/tmp/cerave-list.html" />
+		<meta property="og:title" content="KTee Xpress Mail" />
+		<meta property="og:description" content="All Available CeraVe Products" />
+		<meta property="og:image" content="http://kteexpressmail.com/custom/tmp/thumb1.jpg" />
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+		<script>
+			function generateTable() {
+				let items = [
+					{
+						'title':'CeraVe Foaming Facial Cleanser for Normal to Oily Skin - 355 mL',
+						'unitPrice':10.99,
+						'shippingFee': 6.00,
+						'imgUrl': 'https://target.scene7.com/is/image/Target/GUEST_ccfdc348-399b-452a-bd13-5fe714b65482?fmt=webp&wid=1400&qlt=80'
+					},
+					{
+						'title':'CeraVe Hydrating Facial Cleanser for Normal to Dry Skin - 355 mL',
+						'unitPrice':10.99,
+						'shippingFee': 6.00,
+						'imgUrl': 'https://target.scene7.com/is/image/Target/GUEST_e9864eb6-d8de-405e-8d8b-c7f7f903b212?fmt=webp&wid=1400&qlt=80'
+					},
+					{
+						'title':'CeraVe Renewing Face Cleanser for Normal Cleanser with Salicylic Acid - 237 mL',
+						'unitPrice':9.89,
+						'shippingFee': 6.00,
+						'imgUrl': 'https://target.scene7.com/is/image/Target/GUEST_cb570de3-c465-4631-91d7-49f55a0a2cce?fmt=webp&wid=1400&qlt=80'
+					},
+					{
+						'title':'CeraVe Unscented Daily Moisturizing Lotion for Normal to Dry Skin - 355 mL',
+						'unitPrice':10.64,
+						'shippingFee': 6.00,
+						'imgUrl': 'https://target.scene7.com/is/image/Target/GUEST_3efef9e4-08f7-4915-98e2-8ac42a7aca06?fmt=webp&wid=1400&qlt=80'
+					},
+					{
+						'title':'CeraVe Acne Foaming Cream Cleanser - 150 mL',
+						'unitPrice':11.99,
+						'shippingFee': 3.00,
+						'imgUrl': 'https://target.scene7.com/is/image/Target/GUEST_fd903995-1df1-43a3-a7ac-97d159627fc8?fmt=webp&wid=1400&qlt=80'
+					},
+					{
+						'title':'CeraVe Resurfacing Retinol Serum - 30 mL',
+						'unitPrice':16.99,
+						'shippingFee': 3.00,
+						'imgUrl': 'https://target.scene7.com/is/image/Target/GUEST_3a964fe8-d8c6-420d-bcfa-d7160814b67f?fmt=webp&wid=1400&qlt=80'
+					},
+				]
+				let $tableBody = $('table tbody');
+				let $background = $('#background');
+				for(let i=0;i<items.length;i++) {
+					$tableBody.append(`
+					<tr>
+						<td>
+							<span class="font-weight-bold">${items[i]['title']}</span>
+						</td>
+						<td>
+							<img style="height:90px;width:90px;image-rendering:auto" src="${items[i]['imgUrl']}"/>
+						</td>
+						<td>
+                            <span class="font-weight-bold">$ ${(Math.ceil(items[i]['unitPrice']*1.0885*1.1*2)/2.0 + items[i]['shippingFee']).toFixed(2)}</span>
+						</td>
+						
+					</tr>
+					`);
+				}
+				$background.css({'height':`${$('table').css('height')}`})
+			}
+            $(document).ready(() => {
+                generateTable();
+            })
+		</script>
+		<style> 
+			
+			#background {
+				position: absolute;
+				width: 100%;
+				z-index: 1;
+				background: url("./logo-transparent-3.png") repeat;
+				background-size: 100px 50px;
+				opacity: 0.05;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="background"></div>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Item</th>
+					<th>Picture</th>
+					<th>Unit Price</th>
+				</tr>
+			</thead>			
+			<tbody>
+				
+			</tbody>
+		</table>
+	</body>
+</html>
