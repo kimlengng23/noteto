@@ -4,6 +4,7 @@ let host = window.location.hostname;
 //let storeApi = `https://${host}:3000/store/api`;
 //let entryTrackerApi = `https://${host}:3000/entryTracker/api`;
 //let domain = `https://${host}:3000/entryTracker/api`;
+//
 let domain = `http://localhost:80/api`;
 if (host.toLowerCase().includes("jaekjay")) {
   domain = `https://noteto.jaekjay.com/api`;
