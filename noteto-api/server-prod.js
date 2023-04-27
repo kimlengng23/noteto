@@ -5,8 +5,8 @@ const http = require("http");
 const https = require("https");
 const fs = require("fs");
 const app = express();
-const securedPort = 443;
-const nonSecuredPort = 80;
+const securedPort = 3000;
+const nonSecuredPort = 3030;
 const key = fs.readFileSync(path.join(__dirname, "certs", "server.key"));
 const cert = fs.readFileSync(path.join(__dirname, "certs", "server.crt"));
 const database = require("./database.js");
@@ -46,9 +46,9 @@ const httpsServer = https.createServer(
   },
   app
 );
-httpServer.listen(nonSecuredPort, () => {
-  console.log("App is listening on port ", nonSecuredPort);
-});
+// httpServer.listen(nonSecuredPort, () => {
+//   console.log("App is listening on port ", nonSecuredPort);
+// });
 httpsServer.listen(securedPort, () => {
   console.log("App is listening on port ", securedPort);
 });

@@ -5,9 +5,9 @@ let host = window.location.hostname;
 //let entryTrackerApi = `https://${host}:3000/entryTracker/api`;
 //let domain = `https://${host}:3000/entryTracker/api`;
 //
-let domain = `http://localhost:80/api`;
+let domain = `https://localhost:3000/api`;
 if (host.toLowerCase().includes("jaekjay")) {
-  domain = `https://noteto.jaekjay.com/api`;
+  domain = `https://noteto.jaekjay.com:3000/api`;
 }
 function getHeaders() {
   let headers = {};
