@@ -74,14 +74,6 @@ export default {
     let headers = getHeaders();
     return axios.get(url, { headers: headers });
   },
-  getChoicesByField(field, database) {
-    let url = domain + `/get/systemChoices/by/field/${field}/${database}`;
-    return axios.get(url).catch();
-  },
-  getAllChoicesByDatabase(database) {
-    let url = domain + `/get/all/systemchoices/${database}`;
-    return axios.get(url).catch();
-  },
   getAllCustomButtonsByDatabase(database) {
     let url = domain + `/get/custom/buttons/by/database/${database}`;
     return axios.get(url).catch();
@@ -90,10 +82,6 @@ export default {
     let url = domain + "/user/get/all";
     let headers = getHeaders();
     return axios.get(url, { headers: headers });
-  },
-  getAllFieldsByDatabase(database) {
-    let url = domain + `/get/all/systemfields/${database}`;
-    return axios.get(url).catch();
   },
   getDatabaseToFields() {
     let url = domain + `/field/get/database/to/fields/`;

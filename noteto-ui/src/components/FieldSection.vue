@@ -319,22 +319,12 @@ export default {
         this.users = response.data;
       });
     },
-    getAllFields() {
-      backendService.getSystemFieldInList(this.database).then((response) => {
-        this.systemFieldsInList = response.data;
-      });
-    },
     getValueText(obj) {
       if (obj.username) {
         return `${obj.first} ${obj.last} - ${obj.username}`;
       } else {
         return obj.displayName;
       }
-    },
-    getFieldTypes() {
-      backendService.getSystemDropdown("fieldType").then((response) => {
-        this.types = response.data;
-      });
     },
     getFieldToUpdate(field) {
       this.displayName = field.displayName;

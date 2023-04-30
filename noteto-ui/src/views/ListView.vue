@@ -178,9 +178,17 @@ export default {
       } else if (header.type == "singleUser") {
         return this.getFullName(entry[header.value]);
       } else if (header.type.includes("currency")) {
-        return header.options.prefix + " " + entry[header.value].toFixed(2);
+        return (
+          header.options.prefix +
+          " " +
+          entry[header.value].toFixed(header.options.precision)
+        );
       } else if (header.type.includes("weight")) {
-        return entry[header.value].toFixed(2) + " " + header.options.suffix;
+        return (
+          entry[header.value].toFixed(header.options.precision) +
+          " " +
+          header.options.suffix
+        );
       } else if (header.type == "multipleUsers") {
         return entry[header.value].map((e) => this.getFullName(e)).join(", ");
       } else if (header.type == "date") {

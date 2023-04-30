@@ -63,19 +63,19 @@
               v-else-if="fieldToField[col.field].type === 'currencyInDollar'"
               :label="fieldToField[col.field].displayName"
               v-model.number="entry[col.field]"
-              :options="systemFields[col.field].options"
+              :options="fieldToField[col.field].options"
             ></vuetify-money>
             <vuetify-money
               v-else-if="fieldToField[col.field].type === 'weightInLb'"
               :label="fieldToField[col.field].displayName"
               v-model.number="entry[col.field]"
-              :options="systemFields[col.field].options"
+              :options="fieldToField[col.field].options"
             ></vuetify-money>
             <vuetify-money
               v-else-if="fieldToField[col.field].type === 'weightInKg'"
               :label="fieldToField[col.field].displayName"
               v-model.number="entry[col.field]"
-              :options="systemFields[col.field].options"
+              :options="fieldToField[col.field].options"
             ></vuetify-money>
             <v-text-field
               v-else-if="fieldToField[col.field].type === 'number'"
@@ -326,6 +326,7 @@ export default {
       lRows: {},
       rules: [this.isNumber],
       isSubmitted: false,
+      isLoading: false,
     };
   },
   mounted: function () {
