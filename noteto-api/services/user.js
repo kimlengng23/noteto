@@ -32,7 +32,6 @@ function login(account) {
   if (!account.username) {
     account.username = account.email;
   }
-  console.log(account);
   let promise = new Promise((resolve, reject) => {
     dbConn
       .collection("UserCollection")
@@ -45,7 +44,6 @@ function login(account) {
             account.password,
             result.salt
           );
-          console.log(inputSaltedPassword);
           if (inputSaltedPassword == result.password) {
             let sessionInfo = {
               last: result["last"],

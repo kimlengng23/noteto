@@ -28,18 +28,39 @@ export default {
     };
   },
   computed: {
-    automations() {
-      return this.$store.getters["automations"];
-    },
-    allUsers() {
-      return this.$store.getters["allUsers"];
+    allDatabases() {
+      return this.$store.getters["allDatabases"];
     },
     allGroups() {
       return this.$store.getters["allGroups"];
     },
-
-    allDatabases() {
-      return this.$store.getters["allDatabases"];
+    allUsers() {
+      return this.$store.getters["allUsers"];
+    },
+    autoButtons() {
+      let autoButtons = [];
+      for (let i = 0; i < this.automations.length; i++) {
+        let automation = this.automations[i];
+        if (automation.type == "buttonSet") {
+          autoButtons.push(automation);
+        }
+      }
+      return autoButtons;
+    },
+    automations() {
+      return this.$store.getters["automations"];
+    },
+    conditionSets() {
+      let conditionSets = {};
+      for (let i = 0; i < this.automations.length; i++) {
+        let automation = this.automations[i];
+        if (automation.type == "conditionSet") {
+          if (!conditionSets[automation.conField.value])
+            conditionSets[automation.conField.value] = [];
+          conditionSets[automation.conField.value].push(automation);
+        }
+      }
+      return conditionSets;
     },
     currentUser() {
       return this.$store.getters["currentUser"];
@@ -65,9 +86,6 @@ export default {
         this.database.value
       ];
     },
-    customButtons() {
-      return this.$store.getters["customButtons"];
-    },
 
     emptyEntry() {
       return this.$store.getters["emptyEntry"];
@@ -78,10 +96,8 @@ export default {
   },
   methods: {
     automate(field) {
-      if (!this.automations["conditionSet"][field]) {
-        return;
-      }
-      let actions = this.automations["conditionSet"][field];
+      if (!this.conditionSets[field]) return;
+      let actions = this.conditionSets[field];
       actions.forEach((action) => {
         let conField = action.conField;
         let conValue = action.conValue;
@@ -138,7 +154,8 @@ export default {
     getEntryById(id) {
       this.setTimeoutLoading = true;
       backendService.getEntryById(id).then((response) => {
-        this.entry = response.data;
+        this.original = JSON.stringify(response.data);
+        this.entry = JSON.parse(this.original);
         eventBus.$emit("getComments", this.entry);
         setTimeout(() => {
           this.setTimeoutLoading = false;
@@ -198,6 +215,10 @@ export default {
     },
     removeFromList(idx, field) {
       this.entry[field].splice(idx, 1);
+    },
+    setValue(field, value) {
+      this.entry[field.value] = value;
+      this.automate(field);
     },
   },
 };

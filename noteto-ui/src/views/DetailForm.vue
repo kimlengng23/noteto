@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <v-card>
+  <v-container>
+    <v-card elevation="0">
       <v-card-title class="d-flex justify-space-between">
         <div class="text-left">
           <p class="text-primary">
@@ -23,19 +23,31 @@
         </div>
         <div class="mt-5">
           <v-btn
+            v-if="!isEditing"
             rounded
             class="warning ml-2"
             depressed
             @click="isEditing = !isEditing"
             :disabled="!isLoggedIn"
-            ><i class="fas fa-pencil-alt mr-2"></i>Edit</v-btn
+            ><i class="fas fa-pencil-alt mr-2"></i
+            ><span v-if="!isEditing">Edit</span
+            ><span v-else>Stop Editing</span></v-btn
           >
           <v-btn
+            v-else
             rounded
             class="primary ml-2"
             depressed
+            @click="isEditing = !isEditing"
+            :disabled="!isLoggedIn"
+            ><i class="fas fa-pencil-alt mr-2"></i>Stop Editing</v-btn
+          >
+          <v-btn
+            rounded
+            class="success ml-2"
+            depressed
             @click="updateEntry"
-            :disabled="!isLoggedIn || !isEditing"
+            :disabled="!isLoggedIn || !isDirty"
             ><i class="fa fa-save mr-2"></i>Update</v-btn
           >
         </div>
@@ -66,13 +78,13 @@
                       v-else-if="fieldToField[col.field].type === 'singleLine'"
                       :label="fieldToField[col.field].displayName"
                       v-model="entry[col.field]"
-                      :disabled="!isEditing"
+                      :readonly="!isEditing"
                     ></v-text-field>
                     <v-text-field
                       v-else-if="fieldToField[col.field].type === 'number'"
                       :label="fieldToField[col.field].displayName"
                       v-model.number="entry[col.field]"
-                      :disabled="!isEditing"
+                      :readonly="!isEditing"
                     ></v-text-field>
                     <vuetify-money
                       v-else-if="
@@ -81,21 +93,21 @@
                       :label="fieldToField[col.field].displayName"
                       v-model.number="entry[col.field]"
                       :options="fieldToField[col.field].options"
-                      :disabled="!isEditing"
+                      :readonly="!isEditing"
                     ></vuetify-money>
                     <vuetify-money
                       v-else-if="fieldToField[col.field].type === 'weightInKg'"
                       :label="fieldToField[col.field].displayName"
                       v-model.number="entry[col.field]"
                       :options="fieldToField[col.field].options"
-                      :disabled="!isEditing"
+                      :readonly="!isEditing"
                     ></vuetify-money>
                     <vuetify-money
                       v-else-if="fieldToField[col.field].type === 'weightInLb'"
                       :label="fieldToField[col.field].displayName"
                       v-model.number="entry[col.field]"
                       :options="fieldToField[col.field].options"
-                      :disabled="!isEditing"
+                      :readonly="!isEditing"
                     ></vuetify-money>
                     <v-textarea
                       v-else-if="
@@ -103,7 +115,7 @@
                       "
                       :label="fieldToField[col.field].displayName"
                       v-model="entry[col.field]"
-                      :disabled="!isEditing"
+                      :readonly="!isEditing"
                     ></v-textarea>
                     <v-autocomplete
                       @change="automate(col.field)"
@@ -115,7 +127,7 @@
                       return-object
                       :items="fieldToChoices[col.field]"
                       item-text="displayName"
-                      :disabled="!isEditing"
+                      :readonly="!isEditing"
                     ></v-autocomplete>
                     <v-autocomplete
                       v-else-if="
@@ -129,7 +141,7 @@
                       multiple
                       chips
                       deletable-chips
-                      :disabled="!isEditing"
+                      :readonly="!isEditing"
                     ></v-autocomplete>
                     <v-autocomplete
                       @change="automate(col.field)"
@@ -139,7 +151,7 @@
                       return-object
                       :items="users"
                       :item-text="getFullName"
-                      :disabled="!isEditing"
+                      :readonly="!isEditing"
                     ></v-autocomplete>
                     <v-autocomplete
                       v-else-if="
@@ -154,7 +166,7 @@
                       multiple
                       chips
                       deletable-chips
-                      :disabled="!isEditing"
+                      :readonly="!isEditing"
                     ></v-autocomplete>
                     <v-menu
                       v-else-if="fieldToField[col.field].type === 'date'"
@@ -164,7 +176,7 @@
                       offset-y
                       max-width="290px"
                       min-width="290px"
-                      :disabled="!isEditing"
+                      :readonly="!isEditing"
                     >
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
@@ -203,7 +215,7 @@
                             v-if="field.type === 'singleLine'"
                             :label="field.displayName"
                             v-model="entry[col.field][lIdxI][field.value]"
-                            :disabled="!isEditing"
+                            :readonly="!isEditing"
                           ></v-text-field>
                           <v-text-field
                             v-else-if="field.type === 'number'"
@@ -211,7 +223,7 @@
                             v-model.number="
                               entry[col.field][lIdxI][field.value]
                             "
-                            :disabled="!isEditing"
+                            :readonly="!isEditing"
                           ></v-text-field>
                           <vuetify-money
                             v-else-if="field.type === 'currencyInDollar'"
@@ -220,7 +232,7 @@
                               entry[col.field][lIdxI][field.value]
                             "
                             :options="field.options"
-                            :disabled="!isEditing"
+                            :readonly="!isEditing"
                           ></vuetify-money>
                           <vuetify-money
                             v-else-if="field.type === 'weightInKg'"
@@ -229,7 +241,7 @@
                               entry[col.field][lIdxI][field.value]
                             "
                             :options="field.options"
-                            :disabled="!isEditing"
+                            :readonly="!isEditing"
                           ></vuetify-money>
                           <vuetify-money
                             v-else-if="field.type === 'weightInLb'"
@@ -238,13 +250,13 @@
                               entry[col.field][lIdxI][field.value]
                             "
                             :options="field.options"
-                            :disabled="!isEditing"
+                            :readonly="!isEditing"
                           ></vuetify-money>
                           <v-textarea
                             v-else-if="field.type === 'multipleLines'"
                             :label="field.displayName"
                             v-model="entry[col.field][lIdxI][field.value]"
-                            :disabled="!isEditing"
+                            :readonly="!isEditing"
                           ></v-textarea>
                           <v-autocomplete
                             @change="automate(col.field)"
@@ -253,7 +265,7 @@
                             v-model="entry[col.field][lIdxI][field.value]"
                             return-object
                             :items="fieldToChoices[field.value]"
-                            :disabled="!isEditing"
+                            :readonly="!isEditing"
                           ></v-autocomplete>
                           <v-autocomplete
                             v-else-if="field.type === 'multipleSelect'"
@@ -265,7 +277,7 @@
                             multiple
                             chips
                             deletable-chips
-                            :disabled="!isEditing"
+                            :readonly="!isEditing"
                           ></v-autocomplete>
                           <v-autocomplete
                             @change="automate(col.field)"
@@ -277,7 +289,7 @@
                             return-object
                             :items="users"
                             :item-text="getFullName"
-                            :disabled="!isEditing"
+                            :readonly="!isEditing"
                           ></v-autocomplete>
                           <v-autocomplete
                             v-else-if="
@@ -292,7 +304,7 @@
                             multiple
                             chips
                             deletable-chips
-                            :disabled="!isEditing"
+                            :readonly="!isEditing"
                           ></v-autocomplete>
                           <v-menu
                             v-else-if="field.type === 'date'"
@@ -316,7 +328,7 @@
                                 v-bind="attrs"
                                 v-on="on"
                                 autocomplete="off"
-                                :disabled="!isEditing"
+                                :readonly="!isEditing"
                               ></v-text-field>
                             </template>
                             <v-date-picker
@@ -360,25 +372,36 @@
           <v-col cols="1">
             <div>
               <v-btn
+                class="primary"
+                v-for="(btn, idx) in autoButtons"
+                :key="`auto-btn-${idx}`"
+                depressed
+                rounded
+                @click="setValue(btn.actField, btn.actValue)"
+                >{{ getActValue(btn.actField, btn.actValue) }}</v-btn
+              >
+
+              <!-- <v-btn
                 class="mb-2"
                 depressed
                 rounded
                 :color="btn.color"
-                v-for="(btn, btnIdx) in customButtons"
+                v-for="(btn, btnIdx) in autoButtons"
                 :key="btnIdx"
                 :href="getLinkFromButton(btn)"
                 v-show="btn.detailForm"
                 target="_blank"
                 ><i :class="btn.icon"></i>{{ btn.label }}</v-btn
-              >
+              > -->
             </div>
           </v-col>
         </v-row></v-card-text
       >
     </v-card>
+    <v-divider class="my-2"></v-divider>
     <comment-section :entry="entry"></comment-section>
     <general-snackbar></general-snackbar>
-  </div>
+  </v-container>
 </template>
 <script>
 import eventBus from "../js/event-bus.js";
@@ -395,6 +418,8 @@ export default {
   mixins: [mixin],
   data() {
     return {
+      count: 0,
+      original: {},
       entry: {},
       lRows: {},
       dataPicker: {},
@@ -403,7 +428,11 @@ export default {
       isEditing: false,
     };
   },
-  computed: {},
+  computed: {
+    isDirty() {
+      return this.original != JSON.stringify(this.entry);
+    },
+  },
   mounted: function () {
     //this.getLayout();
     //this.getDatabaseUsers();
@@ -413,8 +442,40 @@ export default {
     }
   },
   methods: {
+    getActField(actField) {
+      return this.getConField(actField);
+    },
+    getActValue(actField, actValue) {
+      return this.getConValue(actField, actValue);
+    },
+    getConValue(conField, conValue) {
+      if (
+        !conField ||
+        !conField.displayName ||
+        !conValue ||
+        (!conValue && !conValue.value && !conValue.username)
+      )
+        return "";
+      if (conField.type == "singleSelect" || conField.type == "multipleSelect")
+        return conValue.displayName;
+      else if (
+        conField.type == "singleUser" ||
+        conField.type == "multipleUsers"
+      )
+        return conValue.username;
+      else return conValue;
+    },
+    getConField(conField) {
+      if (!conField || !conField.displayName) return "";
+      else if (conField && conField.displayName) {
+        return conField.displayName;
+      } else {
+        return "";
+      }
+    },
     updateEntry() {
       backendService.updateEntry(this.entry).then(() => {
+        this.original = JSON.stringify(this.entry);
         this.$store.commit("setEntry", this.entry);
         eventBus.$emit(
           "setSnackbar",

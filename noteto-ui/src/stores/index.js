@@ -28,7 +28,6 @@ export default new Vuex.Store({
     customButtons: [],
     automations: {},
     selectedRow: -1,
-
     allGroups: [],
   },
   getters: {
@@ -106,6 +105,9 @@ export default new Vuex.Store({
     },
   },
   mutations: {
+    addNewAutomation(state, payload) {
+      state.automations.push(payload);
+    },
     addNewGroupToList(state, payload) {
       state.allGroups.push(payload);
     },
@@ -248,7 +250,7 @@ export default new Vuex.Store({
   actions: {
     getAutomations(context) {
       backendService
-        .getAutoTypeToAutomationsByDatabase(context.state.currentDatabase.value)
+        .getAutomationsByDatabase(context.state.currentDatabase.value)
         .then((response) => {
           context.commit("setAutomations", response.data);
         });

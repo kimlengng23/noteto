@@ -17,7 +17,6 @@ app.post("/add", (req, res) => {
   databaseService
     .addDatabase(database)
     .then((response) => {
-      console.log(response);
       res.sendStatus(response.code);
     })
     .catch((response) => {
@@ -63,7 +62,6 @@ app.post("/update/groups", (req, res) => {
       res.sendStatus(response.code);
     })
     .catch((response) => {
-      console.log(response);
       res.status(response.code).send(response.message);
     });
 });

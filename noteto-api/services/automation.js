@@ -36,26 +36,7 @@ function getAutomationsByDatabase(database) {
           console.log("AutomationService - getAutomationsByDatabase", err);
           reject({ code: 500, message: err });
         } else {
-          let automationDict = {};
-          results.forEach((automation) => {
-            let type = automation.type;
-            if (!automationDict[type]) {
-              automationDict[type] = {};
-            }
-            if (type == "conditionSet") {
-              let conField = automation.conField.value;
-              if (!automationDict[type][conField])
-                automationDict[type][conField] = [];
-              automationDict[type][conField].push(automation);
-            } else if (type == "set") {
-              let actField = automation.actField.value;
-              automationDict[type][actField] = automation;
-            } else if (type == "buttonSet") {
-              let actField = automation.actField.value;
-              automationDict[type][actField] = automation;
-            }
-          });
-          resolve({ code: 200, data: automationDict });
+          resolve({ code: 200, data: results });
         }
       });
   });

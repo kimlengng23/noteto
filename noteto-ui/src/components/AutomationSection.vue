@@ -131,7 +131,7 @@ export default {
   name: "AutomationSection",
   data() {
     return {
-      autoTypeToAutomations: [],
+      automations: [],
       actField: {},
       actValue: null,
       conField: {},
@@ -162,26 +162,6 @@ export default {
       } else {
         return [];
       }
-    },
-    automations() {
-      let automations = [];
-      let types = Object.keys(this.autoTypeToAutomations);
-      types.forEach((type) => {
-        let fieldValues = Object.keys(this.autoTypeToAutomations[type]);
-        fieldValues.forEach((fieldValue) => {
-          if (Array.isArray(this.autoTypeToAutomations[type][fieldValue]))
-            this.autoTypeToAutomations[type][fieldValue].forEach(
-              (automation) => {
-                automations.push(automation);
-              }
-            );
-          else {
-            automations.push(this.autoTypeToAutomations[type][fieldValue]);
-          }
-        });
-      });
-
-      return automations;
     },
     automationType() {
       return this.$store.getters["dropdowns"]["autoType"];
@@ -253,7 +233,7 @@ export default {
       this.isLoading = true;
       backendService.addAutomation(automation).then(() => {
         setTimeout(() => {
-          //this.automations.push(response.data);
+          this.automations.push(automation);
           this.autoType = "";
           this.conField = {};
           this.conValue = {};
@@ -281,9 +261,9 @@ export default {
     },
     getAutomations() {
       backendService
-        .getAutoTypeToAutomationsByDatabase(this.databaseValue)
+        .getAutomationsByDatabase(this.databaseValue)
         .then((response) => {
-          this.autoTypeToAutomations = response.data;
+          this.automations = response.data;
         });
     },
     getAutomationToUpdate(automation) {

@@ -59,7 +59,7 @@ export default {
     let url = domain + "/add/database/access";
     return axios.post(url, access);
   },
-  getAutoTypeToAutomationsByDatabase(database) {
+  getAutomationsByDatabase(database) {
     let url = domain + `/automation/get/by/database/${database}`;
     let headers = getHeaders();
     return axios.get(url, { headers: headers });

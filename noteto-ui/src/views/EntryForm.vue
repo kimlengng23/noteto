@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <v-card>
+  <v-container>
+    <v-card elevation="0">
       <v-card-title class="d-flex justify-space-between">
         <div class="text-left">
           <p v-show="isNew" class="text-primary">
@@ -304,7 +304,7 @@
       >
     </v-card>
     <general-snackbar></general-snackbar>
-  </div>
+  </v-container>
 </template>
 <script>
 import eventBus from "../js/event-bus.js";

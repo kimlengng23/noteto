@@ -121,11 +121,9 @@ function getDatabaseToHeaders() {
       .sort({ database: 1, order: 1 })
       .toArray((err, results) => {
         if (err) {
-          console.log(err);
           console.log("MiscellaneousService - getDatabaseToHeaders", err);
           reject({ code: 500, message: err });
         } else {
-          console.log(results);
           let databaseToHeaders = {};
           results.forEach((header) => {
             if (!databaseToHeaders[header.database]) {

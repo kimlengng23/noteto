@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card>
+    <v-card elevation="0">
       <v-card-title>
         <h3>Comment on Entry</h3>
         <v-spacer></v-spacer>

@@ -51,6 +51,13 @@ function getEmptyEntryByDatabase(database) {
             field.type == "currencyInDollar"
           ) {
             emptyEntry[field.value] = 0.0;
+          } else if (
+            field.type == "singleLine" ||
+            field.type == "multipleLines"
+          ) {
+            emptyEntry[field.value] = "";
+          } else {
+            emptyEntry[field.value] = {};
           }
         });
         resolve({ code: 200, data: emptyEntry });
@@ -67,7 +74,17 @@ function getEntryById(id) {
           console.log("EntryService - getEntryById", err);
           reject({ code: 500, message: err });
         } else {
-          resolve({ code: 200, data: result });
+          getEmptyEntryByDatabase(result.database).then((response) => {
+            let emptyEntry = response.data;
+            let fields = Object.keys(emptyEntry);
+            for (let i = 0; i < fields.length; i++) {
+              let field = fields[i];
+              if (result[field]) {
+                emptyEntry[field] = result[field];
+              }
+            }
+            resolve({ code: 200, data: emptyEntry });
+          });
         }
       });
   });

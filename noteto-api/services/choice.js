@@ -97,7 +97,6 @@ function updateChoices(choices) {
       .then(() => {
         getChoicesByFieldAndDatabase(fieldValue, databaseValue).then(
           (response) => {
-            console.log("check", response);
             resolve({ code: 200, data: response.data });
           }
         );
