@@ -132,6 +132,7 @@ export default {
     },
     cloneEmptyEntry() {
       if (this.emptyEntry && this.emptyEntry.database) {
+        this.original = JSON.stringify(this.emptyEntry);
         this.entry = JSON.parse(JSON.stringify(this.emptyEntry));
         this.isSubmitted = false;
         this.setTimeoutLoading = false;

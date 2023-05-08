@@ -56,8 +56,13 @@ function getEmptyEntryByDatabase(database) {
             field.type == "multipleLines"
           ) {
             emptyEntry[field.value] = "";
+          } else if (field.type == "number") {
+            emptyEntry[field.value] = null;
+          } else if (field.type == "date") {
+            //1/1/2000
+            emptyEntry[field.value] = null;
           } else {
-            emptyEntry[field.value] = {};
+            emptyEntry[field.value] = null;
           }
         });
         resolve({ code: 200, data: emptyEntry });
@@ -77,6 +82,7 @@ function getEntryById(id) {
           getEmptyEntryByDatabase(result.database).then((response) => {
             let emptyEntry = response.data;
             let fields = Object.keys(emptyEntry);
+            emptyEntry["_id"] = result["_id"];
             for (let i = 0; i < fields.length; i++) {
               let field = fields[i];
               if (result[field]) {

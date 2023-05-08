@@ -47,6 +47,7 @@
             class="success ml-2"
             depressed
             @click="updateEntry"
+            :loading="isLoading"
             :disabled="!isLoggedIn || !isDirty"
             ><i class="fa fa-save mr-2"></i>Update</v-btn
           >
@@ -426,6 +427,7 @@ export default {
       datePicker: false,
       isNew: true,
       isEditing: false,
+      isLoading: false,
     };
   },
   computed: {
@@ -474,16 +476,20 @@ export default {
       }
     },
     updateEntry() {
+      this.isLoading = true;
       backendService.updateEntry(this.entry).then(() => {
-        this.original = JSON.stringify(this.entry);
-        this.$store.commit("setEntry", this.entry);
-        eventBus.$emit(
-          "setSnackbar",
-          "Successfully Update the Entry",
-          "success",
-          true
-        );
-        this.isEditing = false;
+        setTimeout(() => {
+          this.isLoading = false;
+          this.original = JSON.stringify(this.entry);
+          this.$store.commit("setEntry", this.entry);
+          eventBus.$emit(
+            "setSnackbar",
+            "Successfully Update the Entry",
+            "success",
+            true
+          );
+          this.isEditing = false;
+        }, 1000);
       });
     },
   },

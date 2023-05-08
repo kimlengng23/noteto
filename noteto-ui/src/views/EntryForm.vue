@@ -34,7 +34,7 @@
             depressed
             @click="addEntry"
             :loading="isLoading"
-            :disabled="!isLoggedIn || isSubmitted"
+            :disabled="!isLoggedIn || !isDirty"
             ><i class="fas fa-save mr-2"></i>Submit</v-btn
           >
         </div>
@@ -319,6 +319,7 @@ export default {
   mixins: [mixin],
   data() {
     return {
+      original: {},
       entry: {},
       datePicker: {},
       isNew: true,
@@ -336,14 +337,18 @@ export default {
       this.getEntryById(this.$route.params.id);
     }
   },
-  computed: {},
+  computed: {
+    isDirty() {
+      return this.original != JSON.stringify(this.entry);
+    },
+  },
   methods: {
     addEntry() {
       this.isLoading = true;
       this.entry.database = this.database.value;
       backendService.addEntry(this.entry).then((response) => {
-        this.entry = response.data;
-        this.$store.commit("addEntry", this.entry);
+        this.original = JSON.stringify(this.entry);
+        this.$store.commit("addEntry", response.data);
         setTimeout(() => {
           this.isLoading = false;
           this.isSubmitted = true;
