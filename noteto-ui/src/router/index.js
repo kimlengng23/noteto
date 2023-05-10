@@ -1,5 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import CustomView from "../views/CustomView.vue";
 import ListView from "../views/ListView.vue";
 import EntryForm from "../views/EntryForm.vue";
 import DetailForm from "../views/DetailForm.vue";
@@ -13,6 +14,8 @@ import DatabaseAccess from "../views/DatabaseAccess.vue";
 import UserList from "../components/UserList.vue";
 import UserRegister from "../views/UserRegister.vue";
 import GroupRegister from "../views/GroupRegister.vue";
+
+import JaekJayCargoReceipt from "../custom-views/JaekJayCargoReceipt.vue";
 //import BillTrackerReceipt from "../components/BillTrackerReceipt.vue";
 import store from "../stores/index.js";
 Vue.use(VueRouter);
@@ -84,6 +87,18 @@ const routes = [
     name: "GroupRegister",
     component: GroupRegister,
   },
+  {
+    path: "/custom/view",
+    name: "CustomView",
+    component: CustomView,
+    children: [
+      {
+        path: "jaekjaycargoreceipt/:id",
+        name: "JaekJayCargoReceipt",
+        component: JaekJayCargoReceipt,
+      },
+    ],
+  },
 ];
 
 const router = new VueRouter({
@@ -97,7 +112,10 @@ const router = new VueRouter({
 //   }
 // });
 router.beforeEach((to, from, next) => {
-  if (store.getters.isLoggedIn || localStorage.getItem("sessionId")) {
+  console.log(to);
+  if (to.name == "CustomView" || to.name == "JaekJayCargoReceipt") {
+    next();
+  } else if (store.getters.isLoggedIn || localStorage.getItem("sessionId")) {
     if (
       to.name == "Layout" ||
       to.name == "FormSetting" ||
@@ -116,7 +134,11 @@ router.beforeEach((to, from, next) => {
       next({ name: "Home" });
     }
   } else {
-    if (to.name == "Login" || to.name == "UserRegister") {
+    if (
+      to.name == "Login" ||
+      to.name == "UserRegister" ||
+      to.name == "CustomView"
+    ) {
       next();
     } else {
       next({ name: "Login" });
