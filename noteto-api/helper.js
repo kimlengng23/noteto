@@ -2,6 +2,7 @@ const { ObjectId } = require("mongodb");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
+const _ = require("lodash");
 const secret = fs.readFileSync("key.private");
 let dbConn = null;
 let excludedUrls = {
@@ -127,9 +128,13 @@ function getEntryText(field, fldVal) {
   } else if (field.type == "singleUser") {
     return getFullName(fldVal);
   } else if (field.type.includes("currency")) {
-    return field.options.prefix + " " + fldVal.toFixed(field.options.precision);
+    return (
+      field.options.prefix + " " + _.round(fldVal, field.options.precision)
+    );
   } else if (field.type.includes("weight")) {
-    return fldVal.toFixed(field.options.precision) + " " + field.options.suffix;
+    return (
+      _.round(fldVal, field.options.precision) + " " + field.options.suffix
+    );
   } else if (field.type == "multipleUsers") {
     return fldVal.map((e) => getFullName(e)).join(", ");
   } else if (field.type == "date") {
