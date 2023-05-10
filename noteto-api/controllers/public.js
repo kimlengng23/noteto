@@ -14,7 +14,9 @@ app.use(cors());
 app.use(express.json());
 
 //app.use(helper.verifyToken);
-
+app.get("/", (req, res) => {
+  res.status(200).send("Hello");
+});
 app.get("/receipt", (req, res) => {
   res.sendFile(
     path.join(
