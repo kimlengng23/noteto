@@ -68,7 +68,6 @@ export default {
     database() {
       return this.$store.getters["currentDatabase"];
     },
-
     fields() {
       return this.$store.getters["databaseToFields"][this.database.value];
     },
@@ -86,12 +85,21 @@ export default {
         this.database.value
       ];
     },
-
     emptyEntry() {
       return this.$store.getters["emptyEntry"];
     },
     users() {
       return this.$store.getters["databaseUsers"];
+    },
+    linkButtons() {
+      let linkButtons = [];
+      for (let i = 0; i < this.automations.length; i++) {
+        let automation = this.automations[i];
+        if (automation.type == "link") {
+          linkButtons.push(automation);
+        }
+      }
+      return linkButtons;
     },
   },
   methods: {

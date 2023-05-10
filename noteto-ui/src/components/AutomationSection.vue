@@ -44,6 +44,7 @@
           ></v-autocomplete>
           <h2 class="mb-1">Action</h2>
           <v-autocomplete
+            v-if="autoType != 'link'"
             outlined
             :items="actFields"
             item-text="displayName"
@@ -67,6 +68,16 @@
             "
             v-model="actValue"
             label="Action Value"
+          ></v-textarea>
+          <v-text-field
+            v-if="autoType == 'link'"
+            label="Button Name"
+            v-model="btnName"
+          ></v-text-field>
+          <v-textarea
+            v-if="autoType == 'link'"
+            label="Link"
+            v-model="link"
           ></v-textarea>
         </div>
         <div class="d-flex justify-space-between mt-2">
@@ -134,8 +145,10 @@ export default {
       automations: [],
       actField: {},
       actValue: null,
+      btnName: "",
       conField: {},
       conValue: {},
+      link: "",
       users: [],
     };
   },
@@ -211,6 +224,7 @@ export default {
   methods: {
     addAutomation() {
       if (
+        this.autoType != "link" &&
         this.conField &&
         this.actField &&
         this.conField._id == this.actField._id
@@ -230,6 +244,8 @@ export default {
       automation.conValue = this.conValue;
       automation.actField = this.actField;
       automation.actValue = this.actValue;
+      automation.btnName = this.btnName;
+      automation.link = this.link;
       this.isLoading = true;
       backendService.addAutomation(automation).then(() => {
         setTimeout(() => {

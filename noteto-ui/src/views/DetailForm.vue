@@ -373,7 +373,7 @@
           <v-col cols="1">
             <div>
               <v-btn
-                class="primary"
+                class="primary mb-2"
                 v-for="(btn, idx) in autoButtons"
                 :key="`auto-btn-${idx}`"
                 depressed
@@ -381,7 +381,16 @@
                 @click="setValue(btn.actField, btn.actValue)"
                 >{{ getActValue(btn.actField, btn.actValue) }}</v-btn
               >
-
+              <v-btn
+                class="primary"
+                v-for="(btn, idx) in linkButtons"
+                :key="`link-btn-${idx}`"
+                depressed
+                rounded
+                target="_blank"
+                :href="processLink(btn.link)"
+                >{{ btn.btnName }}</v-btn
+              >
               <!-- <v-btn
                 class="mb-2"
                 depressed
@@ -491,6 +500,15 @@ export default {
           this.isEditing = false;
         }, 1000);
       });
+    },
+    processLink(link) {
+      let newLink = link;
+      let regex = /(?<=\/:)[_a-zA-Z\d#]+/;
+      let matches = newLink.match(regex);
+      for (let i = 0; i < matches.length; i++) {
+        newLink = newLink.replace(`:${matches[i]}`, this.entry[matches[i]]);
+      }
+      return newLink;
     },
   },
 };
