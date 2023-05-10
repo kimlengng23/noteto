@@ -16,26 +16,17 @@ function getReceiptById(id) {
           console.log("EntryService - getEntryById", err);
           reject({ code: 500, message: err });
         } else {
+          console.log(result);
           fieldService.getFieldsByDatabase(result.database).then((response) => {
             let fields = response.data;
             let entry = {};
             for (let i = 0; i < fields.length; i++) {
-              entry[fields[i].value] = helper.getEntryText(fields[i], result);
+              let field = fields[i];
+              let fldVal = result[field.value];
+              entry[field.value] = helper.getEntryText(field, fldVal);
             }
             resolve({ code: 200, data: entry });
           });
-          //   getEmptyEntryByDatabase(result.database).then((response) => {
-          //     let emptyEntry = response.data;
-          //     let fields = Object.keys(emptyEntry);
-          //     emptyEntry["_id"] = result["_id"];
-          //     for (let i = 0; i < fields.length; i++) {
-          //       let field = fields[i];
-          //       if (result[field]) {
-          //         emptyEntry[field] = result[field];
-          //       }
-          //     }
-          //     resolve({ code: 200, data: emptyEntry });
-          //   });
         }
       });
   });
