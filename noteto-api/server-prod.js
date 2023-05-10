@@ -20,6 +20,7 @@ const fieldController = require("./controllers/field.js");
 const choiceController = require("./controllers/choice.js");
 const layoutController = require("./controllers/layout.js");
 const entryController = require("./controllers/entry.js");
+const publicController = require("./controllers/public.js");
 const { fstat } = require("fs");
 
 app.use(cors());
@@ -28,6 +29,7 @@ app.use("/", express.static(path.join(__dirname, "..", "dist")));
 app.get("/get/version", (req, res) => {
   res.status(200).send("version 0.1");
 });
+app.use("/public", publicController.app);
 app.use("/api/automation", automationController.app);
 app.use("/api/comment", commentController.app);
 app.use("/api/user/", userController.app);
@@ -55,6 +57,7 @@ httpsServer.listen(securedPort, () => {
 database.createDbConn().then((dbConn) => {
   automationController.setDb(dbConn);
   commentController.setDb(dbConn);
+  publicController.setDb(dbConn);
   userController.setDb(dbConn);
   miscellaneousController.setDb(dbConn);
   databaseController.setDb(dbConn);

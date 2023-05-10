@@ -115,7 +115,47 @@ function verifyToken(req, res, next) {
     return res.sendStatus(401);
   }
 }
-
+//=======================================================================================
+function getEntryText(field, fldVal) {
+  if (!fldVal) {
+    return "";
+  }
+  if (field.type == "multipleSelect") {
+    return fldVal.map((e) => e.displayName).join(", ");
+  } else if (field.type == "singleSelect") {
+    return fldVal.displayName;
+  } else if (field.type == "singleUser") {
+    return getFullName(fldVal);
+  } else if (field.type.includes("currency")) {
+    return field.options.prefix + " " + fldVal.toFixed(field.options.precision);
+  } else if (field.type.includes("weight")) {
+    return fldVal.toFixed(field.options.precision) + " " + field.options.suffix;
+  } else if (field.type == "multipleUsers") {
+    return fldVal.map((e) => getFullName(e)).join(", ");
+  } else if (field.type == "date") {
+    let date = new Date(fldVal);
+    return `${date.getMonth()}/${date.getDate()}/${date.getFullYear()}`;
+  } else if (field.type == "number") {
+    return fldVal;
+  } else if (field.type == "list") {
+    let lst = [];
+    for (let i = 0; i < fldVal.length; i++) {
+      let fldValI = fldVal[i];
+      let e = {};
+      for (let j = 0; j < field.listFields.length; j++) {
+        let fieldJ = field.listFields[j];
+        e[fieldJ.value] = getEntryText(fieldJ, fldValI);
+      }
+      lst.push(e);
+    }
+    return lst;
+  } else {
+    return fldVal;
+  }
+}
+function getFullName(user) {
+  return user.first + " " + user.last;
+}
 //=====================================File Upload=======================================
 const multer = require("multer");
 let storage = multer.diskStorage({
@@ -133,6 +173,7 @@ function setDb(conn) {
 module.exports = {
   getSalt,
   getHash,
+  getEntryText,
   createSession,
   getTokenFromBySessionId,
   removeTokenBySessionId,

@@ -5,23 +5,23 @@ function setDb(conn) {
   helper.setDb(conn);
 }
 
-// function getAllFieldsInListByDatabase(database) {
-//   let promise = new Promise((resolve, reject) => {
-//     dbConn
-//       .collection("FieldCollection")
-//       .find({ database: database })
-//       .sort({ text: 1, value: 1 })
-//       .toArray((err, fields) => {
-//         if (err) {
-//           console.log("FieldService - getAllFieldsInListByDatabase", err);
-//           reject({ code: 500, message: err });
-//         } else {
-//           resolve({ code: 200, data: fields });
-//         }
-//       });
-//   });
-//   return promise;
-// }
+function getFieldsByDatabase(database) {
+  let promise = new Promise((resolve, reject) => {
+    dbConn
+      .collection("FieldCollection")
+      .find({ database: database })
+      .sort({ displayName: 1, value: 1 })
+      .toArray((err, results) => {
+        if (err) {
+          console.log("FieldService - getAllFieldsInListByDatabase", err);
+          reject({ code: 500, message: err });
+        } else {
+          resolve({ code: 200, data: results });
+        }
+      });
+  });
+  return promise;
+}
 function getDatabaseToFields() {
   let promise = new Promise((resolve, reject) => {
     dbConn
@@ -110,6 +110,6 @@ module.exports = {
   addField,
   getDatabaseToFields,
   updateField,
-  //getAllFieldsByDatabase,
+  getFieldsByDatabase,
   //getAllFieldsInListByDatabase,
 };
