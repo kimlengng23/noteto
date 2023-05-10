@@ -149,7 +149,7 @@ function getEntryText(field, fldVal) {
       let e = {};
       for (let j = 0; j < field.listFields.length; j++) {
         let fieldJ = field.listFields[j];
-        e[fieldJ.value] = getEntryText(fieldJ, fldValI);
+        e[fieldJ.value] = getEntryText(fieldJ, fldValI[fieldJ.value]);
       }
       lst.push(e);
     }
