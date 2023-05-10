@@ -128,13 +128,9 @@ function getEntryText(field, fldVal) {
   } else if (field.type == "singleUser") {
     return getFullName(fldVal);
   } else if (field.type.includes("currency")) {
-    return (
-      field.options.prefix + " " + _.round(fldVal, field.options.precision)
-    );
+    return _.round(fldVal, field.options.precision);
   } else if (field.type.includes("weight")) {
-    return (
-      _.round(fldVal, field.options.precision) + " " + field.options.suffix
-    );
+    return _.round(fldVal, field.options.precision);
   } else if (field.type == "multipleUsers") {
     return fldVal.map((e) => getFullName(e)).join(", ");
   } else if (field.type == "date") {
