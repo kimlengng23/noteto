@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const helper = require("../helper.js");
 const app = express();
 const path = require("path");
@@ -9,8 +10,9 @@ let dbConn = null;
 function setDb(conn) {
   publicService.setDb(conn);
 }
-
+app.use(cors());
 app.use(express.json());
+
 //app.use(helper.verifyToken);
 
 app.get("/receipt", (req, res) => {
