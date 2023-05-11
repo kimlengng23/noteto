@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-app-bar color="blue darken-1" dark>
+    <v-app-bar color="blue darken-1" elevation="0" dark>
       <v-app-bar-nav-icon
         @click="drawer = !drawer"
         v-if="isLoggedIn"
@@ -11,6 +11,7 @@
       >
       <v-spacer></v-spacer>
       <v-autocomplete
+        v-if="!isMobile()"
         filled
         rounded
         outlined
@@ -22,14 +23,14 @@
         return-object
         @change="changeDatabase"
       ></v-autocomplete>
-      <v-spacer></v-spacer>
+      <v-spacer v-if="!isMobile()"></v-spacer>
       <v-btn
         v-if="!isLoggedIn"
         color="blue darken-1"
         dark
         elevation="0"
         @click="$router.push({ name: 'UserRegister' }).catch(() => {})"
-        ><i class="fas fa-user-plus mr-2"></i>Account Request</v-btn
+        ><i class="fas fa-user-plus mr-2"></i>Sign Up</v-btn
       >
       <v-btn
         v-if="!isLoggedIn"
@@ -145,7 +146,17 @@ export default {
     clearSearch() {
       eventBus.$emit("clearSearch");
     },
-
+    isMobile() {
+      if (
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent
+        )
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     searchForEntries() {
       eventBus.$emit("searchForEntries");
     },

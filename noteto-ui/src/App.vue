@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <main-navbar></main-navbar>
+    <second-navbar v-if="isMobile"></second-navbar>
     <v-main>
       <router-view></router-view>
     </v-main>
@@ -9,6 +10,7 @@
 
 <script>
 import MainNavbar from "./components/Navbar.vue";
+import SecondNavbar from "./components/SecondNavbar.vue";
 import backendService from "./services/backend-service.js";
 export default {
   name: "App",
@@ -57,8 +59,21 @@ export default {
   },
   components: {
     MainNavbar,
+    SecondNavbar,
   },
-
+  computed: {
+    isMobile() {
+      if (
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent
+        )
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+  },
   data: () => ({
     //
   }),

@@ -5,12 +5,12 @@
         <v-row>
           <v-col
             ><v-row
-              ><v-col><div class="text-h4">Shipping Invoice</div></v-col></v-row
+              ><v-col><div class="text-h4">Order Invoice</div></v-col></v-row
             >
             <v-row
               ><v-col
                 ><div class="text-h5">
-                  {{ entry["customerPaymentStatus"] }}
+                  {{ entry["paymentStatus"] }}
                 </div></v-col
               ></v-row
             >
@@ -25,18 +25,10 @@
               ></v-row
             >
             <v-row
-              ><v-col><div class="text-h6">Tracking Number</div></v-col
+              ><v-col><div class="text-h6">Date Created</div></v-col
               ><v-col
                 ><div class="text-subtitle-1 float-right">
-                  {{ entry["mtlTracking#"] }}
-                </div></v-col
-              ></v-row
-            >
-            <v-row
-              ><v-col><div class="text-h6">Date Shipped</div></v-col
-              ><v-col
-                ><div class="text-subtitle-1 float-right">
-                  {{ entry["dateShipped"] }}
+                  {{ entry["dateCreated"] }}
                 </div></v-col
               ></v-row
             >
@@ -44,36 +36,13 @@
         </v-row>
         <v-row>
           <v-col>
-            <div class="text-h6">Sender</div>
+            <div class="text-h6">Customer</div>
             <div class="text-subtitle-1">
-              <span
-                >{{ entry["customer"] }} - {{ entry["customerNumber"] }}</span
-              >
-            </div>
-            <div class="text-subtitle-1">{{ entry["customerAddress"] }}</div>
-          </v-col>
-          <v-col>
-            <div class="text-h6">Receiver</div>
-            <div class="text-subtitle-1">
-              <span
-                >{{ entry["receiver"] }} - {{ entry["receiverNumber"] }}</span
-              >
-            </div>
-            <div class="text-subtitle-1">{{ entry["receiverAddress"] }}</div>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <div class="text-h6">Number of Box</div>
-            <div class="text-subtitle-1">{{ entry["numBoxes"] }}</div>
-          </v-col>
-          <v-col>
-            <div class="text-h6">Total Weight</div>
-            <div class="text-subtitle-1">
-              {{ entry["totalWeight"] }} {{ "lbs" }}
+              <span>{{ entry["customer"] }}</span>
             </div>
           </v-col>
         </v-row>
+
         <v-row>
           <v-col>
             <div class="text-h6">Notes</div>
@@ -81,7 +50,7 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col> <div class="text-h6">Charge List</div></v-col>
+          <v-col> <div class="text-h6">Item List</div></v-col>
         </v-row>
         <v-row>
           <v-col cols="12">
@@ -91,23 +60,34 @@
                   <th class="text-left">Item</th>
                   <th class="text-left">Qty</th>
                   <th class="text-left">Unit Price</th>
+                  <th class="text-left">Tax</th>
                   <th class="text-left">Line Total</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(item, idx) in chargeList" :key="idx">
-                  <td class="text-subtitle-1">{{ item.itemDescription }}</td>
-                  <td class="text-subtitle-1">{{ item.quantity }}</td>
+                <tr v-for="(item, idx) in itemList" :key="idx">
+                  <td class="text-subtitle-1">{{ item.itemTitle }}</td>
+                  <td class="text-subtitle-1">{{ item.itemQty }}</td>
+                  <td class="text-subtitle-1">{{ item.itemUnitPrice }}</td>
                   <td class="text-subtitle-1">
-                    {{ "$" }} {{ item.unitPrice }}
+                    $
+                    {{
+                      (
+                        (item.itemUnitPrice * item.itemTax) / 100 +
+                        0.00001
+                      ).toFixed(2)
+                    }}
                   </td>
                   <td class="text-subtitle-1">
-                    {{ "$" }}
-                    {{ (item.quantity * item.unitPrice + 0.00001).toFixed(2) }}
+                    $
+                    {{
+                      (item.itemQty * item.itemUnitPrice + 0.00001).toFixed(2)
+                    }}
                   </td>
                 </tr>
                 <tr>
                   <td class="text-subtitle-1">Total</td>
+                  <td></td>
                   <td></td>
                   <td></td>
                   <td class="text-subtitle-1">$ {{ totalDue.toFixed(2) }}</td>
@@ -124,7 +104,7 @@
 import publicService from "@/services/public-backend-service";
 
 export default {
-  name: "JaekJayCargoReceipt",
+  name: "JaekJayCustomOrderReceipt",
   data() {
     return {
       entry: {},
@@ -132,21 +112,21 @@ export default {
   },
   mounted: function () {
     publicService.getReceiptById(this.$route.params.id).then((response) => {
-      document.title = `${entry["id"] - entry["mtlTracking#"]}`;
+      //document.title = `${this.entry["id"] - this.entry["mtlTracking#"]}`;
       this.entry = response.data;
     });
   },
   computed: {
-    chargeList() {
-      if (!this.entry.chargeList) return [];
-      return this.entry.chargeList;
+    itemList() {
+      if (!this.entry.itemList) return [];
+      return this.entry.itemList;
     },
     totalDue() {
       let total = 0;
-      if (!this.entry.chargeList) return total;
-      for (let i = 0; i < this.entry.chargeList.length; i++) {
-        let item = this.entry.chargeList[i];
-        total += item.unitPrice * item.quantity;
+      if (!this.entry.itemList) return total;
+      for (let i = 0; i < this.entry.itemList.length; i++) {
+        let item = this.entry.itemList[i];
+        total += item.itemUnitPrice * item.itemQty * (1 + item.itemTax / 100);
       }
       return total;
     },

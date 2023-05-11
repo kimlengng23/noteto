@@ -173,7 +173,7 @@
                   <v-text-field
                     v-if="field.type === 'singleLine'"
                     :label="field.displayName"
-                    v-model="entry[col.field][lIdxI][col.field]"
+                    v-model="entry[col.field][lIdxI][field.value]"
                   ></v-text-field>
                   <vuetify-money
                     v-else-if="field.type === 'currencyInDollar'"

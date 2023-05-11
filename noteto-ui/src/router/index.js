@@ -1,3 +1,4 @@
+import { nextTick } from "vue";
 import Vue from "vue";
 import VueRouter from "vue-router";
 import CustomView from "../views/CustomView.vue";
@@ -16,10 +17,11 @@ import UserRegister from "../views/UserRegister.vue";
 import GroupRegister from "../views/GroupRegister.vue";
 
 import JaekJayCargoReceipt from "../custom-views/JaekJayCargoReceipt.vue";
+import JaekJayCustomOrderReceipt from "../custom-views/JaekJayCustomOrderReceipt.vue";
 //import BillTrackerReceipt from "../components/BillTrackerReceipt.vue";
 import store from "../stores/index.js";
 Vue.use(VueRouter);
-
+//const scrollSection = document.getElementById("SCROLL_SECTION_ID");
 const routes = [
   {
     path: "/List",
@@ -97,6 +99,11 @@ const routes = [
         name: "JaekJayCargoReceipt",
         component: JaekJayCargoReceipt,
       },
+      {
+        path: "jaekjaycustomorderreceipt/:id",
+        name: "JaekJayCustomOrderReceipt",
+        component: JaekJayCustomOrderReceipt,
+      },
     ],
   },
 ];
@@ -112,8 +119,12 @@ const router = new VueRouter({
 //   }
 // });
 router.beforeEach((to, from, next) => {
-  console.log(to);
-  if (to.name == "CustomView" || to.name == "JaekJayCargoReceipt") {
+  //scrollSection.style.overflow = "hidden";
+  if (
+    to.name == "CustomView" ||
+    to.name == "JaekJayCargoReceipt" ||
+    to.name == "JaekJayCustomOrderReceipt"
+  ) {
     next();
   } else if (store.getters.isLoggedIn || localStorage.getItem("sessionId")) {
     if (
@@ -144,5 +155,11 @@ router.beforeEach((to, from, next) => {
       next({ name: "Login" });
     }
   }
+});
+router.afterEach(() => {
+  nextTick(() => {
+    window.scrollTo(0, 1);
+    window.scrollTo(0, 0);
+  });
 });
 export default router;
