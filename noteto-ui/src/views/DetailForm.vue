@@ -505,10 +505,11 @@ export default {
     },
     processLink(link) {
       let newLink = link;
-      let regex = /(?<=\/:)[_a-zA-Z\d#]+/;
+      let regex = /\/:[\s\S]+/;
       let matches = newLink.match(regex);
       for (let i = 0; i < matches.length; i++) {
-        newLink = newLink.replace(`:${matches[i]}`, this.entry[matches[i]]);
+        let field = matches[i].substring(2);
+        newLink = newLink.replace(`:${field}`, this.entry[field]);
       }
       return newLink;
     },
