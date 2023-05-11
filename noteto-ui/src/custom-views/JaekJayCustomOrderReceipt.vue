@@ -10,7 +10,7 @@
             <v-row
               ><v-col
                 ><div class="text-h5">
-                  {{ entry["paymentStatus"] }}
+                  {{ entry.paymentStatus }}
                 </div></v-col
               ></v-row
             >
@@ -20,7 +20,7 @@
               ><v-col><div class="text-h6">Invoice Number</div></v-col
               ><v-col>
                 <div class="text-subtitle-1 float-right">
-                  {{ entry["id"] }}
+                  {{ entry.id }}
                 </div></v-col
               ></v-row
             >
@@ -28,7 +28,7 @@
               ><v-col><div class="text-h6">Date Created</div></v-col
               ><v-col
                 ><div class="text-subtitle-1 float-right">
-                  {{ entry["dateCreated"] }}
+                  {{ entry.dateCreated }}
                 </div></v-col
               ></v-row
             >
@@ -38,11 +38,18 @@
           <v-col>
             <div class="text-h6">Customer</div>
             <div class="text-subtitle-1">
-              <span>{{ entry["customer"] }}</span>
+              <span>{{ entry.customer }}</span>
             </div>
           </v-col>
         </v-row>
-
+        <v-row>
+          <v-col>
+            <div class="text-h6">Collecting Fee</div>
+            <div class="text-subtitle-1">
+              <span>{{ entry.collectingFee }} %</span>
+            </div>
+          </v-col>
+        </v-row>
         <v-row>
           <v-col>
             <div class="text-h6">Notes</div>
@@ -86,6 +93,17 @@
                   </td>
                 </tr>
                 <tr>
+                  <td class="text-subtitle-1">
+                    Fee {{ entry.collectingFee }} %
+                  </td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td class="text-subtitle-1">
+                    $ {{ collectingFee.toFixed(2) }}
+                  </td>
+                </tr>
+                <tr>
                   <td class="text-subtitle-1">Total</td>
                   <td></td>
                   <td></td>
@@ -125,7 +143,11 @@ export default {
       if (!this.entry.itemList) return [];
       return this.entry.itemList;
     },
-    totalDue() {
+    collectingFee() {
+      if (!this.entry.collectingFee) return 0;
+      return (this.entry.collectingFee / 100) * this.subtotal;
+    },
+    subtotal() {
       let total = 0;
       if (!this.entry.itemList) return total;
       for (let i = 0; i < this.entry.itemList.length; i++) {
@@ -133,6 +155,9 @@ export default {
         total += item.itemUnitPrice * item.itemQty * (1 + item.itemTax / 100);
       }
       return total;
+    },
+    totalDue() {
+      return this.subtotal + this.collectingFee;
     },
   },
 };
