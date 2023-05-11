@@ -265,6 +265,7 @@
                             :label="field.displayName"
                             v-model="entry[col.field][lIdxI][field.value]"
                             return-object
+                            item-text="displayName"
                             :items="fieldToChoices[field.value]"
                             :readonly="!isEditing"
                           ></v-autocomplete>
@@ -273,6 +274,7 @@
                             :label="field.displayName"
                             v-model="entry[col.field][lIdxI][field.value]"
                             return-object
+                            item-text="displayName"
                             :items="fieldToChoices[field.value]"
                             deletable-chipsoutlined
                             multiple
