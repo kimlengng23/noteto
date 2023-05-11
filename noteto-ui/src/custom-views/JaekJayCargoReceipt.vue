@@ -132,8 +132,11 @@ export default {
   },
   mounted: function () {
     publicService.getReceiptById(this.$route.params.id).then((response) => {
-      console.log(response.data);
       this.entry = response.data;
+      this.$nextTick(() => {
+        window.scrollTo(0, 1);
+        window.scrollTo(0, 0);
+      });
     });
   },
   computed: {

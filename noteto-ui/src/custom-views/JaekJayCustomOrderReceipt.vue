@@ -114,6 +114,10 @@ export default {
     publicService.getReceiptById(this.$route.params.id).then((response) => {
       //document.title = `${this.entry["id"] - this.entry["mtlTracking#"]}`;
       this.entry = response.data;
+      this.$nextTick(() => {
+        window.scrollTo(0, 1);
+        window.scrollTo(0, 0);
+      });
     });
   },
   computed: {

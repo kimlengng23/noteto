@@ -1,4 +1,3 @@
-import { nextTick } from "vue";
 import Vue from "vue";
 import VueRouter from "vue-router";
 import CustomView from "../views/CustomView.vue";
@@ -155,11 +154,5 @@ router.beforeEach((to, from, next) => {
       next({ name: "Login" });
     }
   }
-});
-router.afterEach(() => {
-  nextTick(() => {
-    window.scrollTo(0, 1);
-    window.scrollTo(0, 0);
-  });
 });
 export default router;
