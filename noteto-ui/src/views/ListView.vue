@@ -1,5 +1,9 @@
 <template>
-  <v-data-table :headers="headers" :items="filteredEntries">
+  <v-data-table
+    :headers="headers"
+    :items="filteredEntries"
+    :options="{ itemsPerPage: 15 }"
+  >
     <template v-slot:header>
       <tr>
         <th v-for="header in headers" :key="header._id">

@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-card elevation="0">
+    <v-card elevation="0" min-width="350" width="100%">
       <v-card-title class="d-flex justify-space-between">
         <div class="text-left">
           <p class="text-primary">

@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex justify-center mt-2">
-    <v-card elevation="1" max-width="800">
+    <v-card elevation="0" outlined min-width="350" width="60%">
       <v-card-title class="text-center">Welcome to Noteto</v-card-title>
       <v-card-text>
         <p>

@@ -1,6 +1,6 @@
 <template>
   <v-container fluid class="d-flex justify-center mt-2">
-    <v-card elevation="0" width="100%">
+    <v-card elevation="0" outlined min-width="350" width="60%">
       <v-card-title class="d-flex justify-space-between">
         <h3>New Database</h3>
         <v-btn

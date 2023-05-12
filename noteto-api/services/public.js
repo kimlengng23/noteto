@@ -16,7 +16,6 @@ function getReceiptById(id) {
           console.log("EntryService - getEntryById", err);
           reject({ code: 500, message: err });
         } else {
-          console.log(result);
           fieldService.getFieldsByDatabase(result.database).then((response) => {
             let fields = response.data;
             let entry = {};

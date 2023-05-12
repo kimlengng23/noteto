@@ -1,6 +1,6 @@
 <template>
   <v-container fluid class="d-flex justify-space-between">
-    <v-card class="mt-2" elevation="0" width="50%">
+    <v-card class="mt-2" elevation="0" outlined min-width="350" width="50%">
       <v-card-text>
         <div>
           <v-autocomplete
@@ -99,7 +99,7 @@
         </div>
       </v-card-text>
     </v-card>
-    <v-card elevation="0" width="50%">
+    <v-card elevation="0" min-width="350" width="50%">
       <v-card-text>
         <v-simple-table>
           <template v-slot:default>

@@ -1,12 +1,12 @@
 <template>
   <div>
-    <v-tabs v-model="tab" @change="reset">
+    <v-tabs v-model="tab" @change="reset" grow>
       <v-tab>Add Group</v-tab>
       <v-tab>Update Group Members</v-tab>
       <v-tab>Update Database Access</v-tab>
       <v-tabs-items v-model="tab" class="d-flex justify-center mt-2">
         <v-tab-item>
-          <v-card elevation="1" width="700">
+          <v-card outlined elevation="0">
             <v-card-title class="d-flex justify-space-between"
               ><h3>New Group</h3>
               <v-btn
@@ -32,13 +32,14 @@
                 :items="allUsers"
                 show-select
                 item-key="_id"
+                :options="{ itemsPerPage: 15 }"
               >
               </v-data-table>
             </v-card-text>
           </v-card>
         </v-tab-item>
         <v-tab-item>
-          <v-card>
+          <v-card elevation="0" outlined>
             <v-card-title class="d-flex justify-space-between"
               ><h3>Update Group</h3>
               <v-btn
@@ -66,13 +67,14 @@
                 :items="allUsers"
                 show-select
                 item-key="_id"
+                :options="{ itemsPerPage: 15 }"
               >
               </v-data-table>
             </v-card-text>
           </v-card>
         </v-tab-item>
         <v-tab-item>
-          <v-card>
+          <v-card elevation="0" outlined>
             <v-card-title class="d-flex justify-space-between"
               ><h3>Database Access</h3>
               <v-btn
@@ -100,6 +102,7 @@
                 :items="allGroups"
                 show-select
                 item-key="_id"
+                :options="{ itemsPerPage: 15 }"
               >
               </v-data-table>
             </v-card-text>

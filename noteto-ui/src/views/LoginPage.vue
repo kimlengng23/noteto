@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex justify-center">
-    <v-card class="mt-5" elevation="1" min-width="600">
+    <v-card class="mt-5" outlined elevation="0" min-width="350" width="60%">
       <v-card-title>Login</v-card-title>
       <v-card-text>
         <v-form v-model="isFormValid" ref="form">

@@ -1,43 +1,49 @@
 <template>
   <div>
-    <v-card elevation="0">
+    <v-card elevation="0" min-width="350" width="100%">
       <v-card-title>
         <h3>Comment on Entry</h3>
-        <v-spacer></v-spacer>
-        <v-btn
-          depressed
-          rounded
-          color="success"
-          @click="addComment"
-          :loading="isLoading"
-          ><i class="far fa-paper-plane mr-2"></i>Send</v-btn
-        >
       </v-card-title>
-      <v-card-text>
-        <v-textarea label="Comment" v-model="value"></v-textarea>
-        <h3 v-if="comments.length == 0">There are no comments yet</h3>
-        <v-list three-line>
-          <v-list-item v-for="comment in comments" :key="comment._id">
-            <v-list-item-avatar>
-              <v-btn icon><i class="fas fa-user fa-lg"></i></v-btn>
-            </v-list-item-avatar>
-            <v-list-item-content>
-              <v-list-item-title
-                ><span>{{
-                  `${comment.createdBy.first} ${comment.createdBy.last}`
-                }}</span>
-                -
-                <span class="font-italic">{{
-                  convertSecondsToDate(comment.dateCreated)
-                }}</span></v-list-item-title
-              >
+      <v-card-text class="d-flex flex-column">
+        <div class="mb-2">
+          <v-textarea label="Comment" v-model="value"></v-textarea>
+          <v-btn
+            class="float-right"
+            depressed
+            rounded
+            color="success"
+            @click="addComment"
+            :loading="isLoading"
+            ><i class="far fa-paper-plane mr-2"></i>Send</v-btn
+          >
+        </div>
+        <div>
+          <h3 class="text-center" v-if="comments.length == 0">
+            <i class="fas fa-comment-slash mr-2"></i>There are no comments yet
+          </h3>
+          <v-list three-line>
+            <v-list-item v-for="comment in comments" :key="comment._id">
+              <v-list-item-avatar>
+                <v-btn icon><i class="fas fa-user fa-lg"></i></v-btn>
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title
+                  ><span>{{
+                    `${comment.createdBy.first} ${comment.createdBy.last}`
+                  }}</span>
+                  -
+                  <span class="font-italic">{{
+                    convertSecondsToDate(comment.dateCreated)
+                  }}</span></v-list-item-title
+                >
 
-              <v-list-item-subtitle
-                v-text="comment.value"
-              ></v-list-item-subtitle>
-              <v-divider></v-divider>
-            </v-list-item-content> </v-list-item
-        ></v-list>
+                <v-list-item-subtitle
+                  v-text="comment.value"
+                ></v-list-item-subtitle>
+                <v-divider></v-divider>
+              </v-list-item-content> </v-list-item
+          ></v-list>
+        </div>
       </v-card-text>
     </v-card>
 
