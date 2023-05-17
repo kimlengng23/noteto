@@ -324,8 +324,6 @@ export default {
       datePicker: {},
       isNew: true,
       isEditing: false,
-      lRows: {},
-      rules: [this.isNumber],
       isSubmitted: false,
       isLoading: false,
     };

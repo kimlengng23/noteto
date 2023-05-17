@@ -12,7 +12,7 @@ function setDb(conn) {
 
 app.use(express.json());
 app.use(helper.verifyToken);
-app.post("/add", (req, res) => {
+app.post("/add", helper.verifyAdminToken, (req, res) => {
   let field = req.body;
   fieldService
     .addField(field)
@@ -24,10 +24,17 @@ app.post("/add", (req, res) => {
       res.status(response.code).send(response.message);
     });
 });
-app.get("/get/database/:database", (req, res) => {
-  fieldService.getFieldsByDatabase();
+app.get("/get/by/database/:database", (req, res) => {
+  fieldService
+    .getFieldsByDatabase(req.params.database)
+    .then((response) => {
+      res.status(response.code).send(response.data);
+    })
+    .catch((response) => {
+      res.status(response.code).send(response.message);
+    });
 });
-app.get("/get/database/to/fields", (req, res) => {
+app.get("/get/database/to/fields", helper.verifyAdminToken, (req, res) => {
   fieldService
     .getDatabaseToFields()
     .then((response) => {
@@ -37,7 +44,7 @@ app.get("/get/database/to/fields", (req, res) => {
       res.status(response.code).send(response.message);
     });
 });
-app.post("/update", (req, res) => {
+app.post("/update", helper.verifyAdminToken, (req, res) => {
   let field = req.body;
   fieldService
     .updateField(field)

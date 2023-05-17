@@ -101,8 +101,7 @@ export default {
       headersInDict: {},
     };
   },
-  created: function () {
-    //this.getTableRows();
+  mounted: function () {
     eventBus.$on("searchForEntries", this.searchForEntries);
     eventBus.$on("clearSearch", this.clearSearch);
   },

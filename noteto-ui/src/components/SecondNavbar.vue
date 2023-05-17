@@ -21,7 +21,7 @@
 import mixin from "@/js/mixin";
 export default {
   name: "SecondNavbar",
-  created: function () {},
+  mounted: function () {},
   data() {
     return {
       drawer: false,
@@ -46,14 +46,15 @@ export default {
     changeDatabase(database) {
       localStorage.setItem("currentDatabase", JSON.stringify(database));
       this.$store.commit("setCurrentDatabase", database);
-      this.$store.dispatch("getAutomations");
-      this.$store.dispatch("getDatabaseUsers");
+      this.$store.dispatch("getFieldsByDatabase");
+      this.$store.dispatch("getChoicesByDatabase");
+      this.$store.dispatch("getAutomationsByDatabase");
+      this.$store.dispatch("getUsersByDatabase");
       this.$store.dispatch("getEntriesByDatabase");
-      this.$store.dispatch("getHeaders");
-      //this.$store.dispatch("getAllCustomButtons");
-      //this.$store.dispatch("getAutomations");
-      // if (this.$router.history.current.name != "ListView")
-      //   this.$router.push({ name: "ListView" });
+      this.$store.dispatch("getHeadersByDatabase");
+      this.$store.dispatch("getEmptyEntryByDatabase");
+      this.$store.dispatch("getLayoutByDatabase");
+      this.$router.push({ name: "ListView" }).catch(() => {});
     },
   },
 };

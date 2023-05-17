@@ -6,7 +6,13 @@
         v-if="isLoggedIn"
       ></v-app-bar-nav-icon>
       <v-toolbar-title
+        v-if="isLoggedIn"
         @click="$router.push({ name: 'ListView' }).catch(() => {})"
+        >Noteto</v-toolbar-title
+      >
+      <v-toolbar-title
+        v-else
+        @click="$router.push({ name: 'Home' }).catch(() => {})"
         >Noteto</v-toolbar-title
       >
       <v-spacer></v-spacer>
@@ -76,10 +82,13 @@
           :key="option.title"
           link
         >
-          <v-list-item-icon>
+          <v-list-item-icon
+            v-if="!option.adminOnly || isAdmin == option.adminOnly"
+          >
             <i :class="option.icon"></i>
           </v-list-item-icon>
           <v-list-item-content
+            v-if="!option.adminOnly || isAdmin == option.adminOnly"
             @click="$router.push(option.path).catch(() => {})"
           >
             <v-list-item-title>{{ option.title }}</v-list-item-title>
@@ -95,10 +104,7 @@ import mixin from "@/js/mixin";
 import eventBus from "../js/event-bus.js";
 export default {
   name: "MainNavbar",
-  created: function () {
-    //this.checkIfLoggedIn();
-    //this.$store.dispatch("getAllUsers");
-  },
+  mounted: function () {},
   data() {
     return {
       drawer: false,
@@ -106,20 +112,6 @@ export default {
   },
   mixins: [mixin],
   computed: {
-    currentUser() {
-      return this.$store.getters["currentUser"];
-    },
-    databases() {
-      return this.$store.getters["availableDatabases"];
-    },
-    userFullName() {
-      let user = this.$store.getters["currentUser"];
-      if (user && user.first && user.last) return user.first + " " + user.last;
-      return "";
-    },
-    navigationOptions() {
-      return this.$store.getters["navigationOptions"];
-    },
     currentDatabase: {
       get() {
         return this.$store.getters["currentDatabase"];
@@ -128,21 +120,38 @@ export default {
         this.$store.commit("setCurrentDatabase", database);
       },
     },
+    currentUser() {
+      return this.$store.getters["currentUser"];
+    },
+    databases() {
+      return this.$store.getters["availableDatabases"];
+    },
+    isAdmin() {
+      return this.$store.getters["isAdmin"];
+    },
+    navigationOptions() {
+      return this.$store.getters["navigationOptions"];
+    },
+    userFullName() {
+      let user = this.$store.getters["currentUser"];
+      if (user && user.first && user.last) return user.first + " " + user.last;
+      return "";
+    },
   },
   methods: {
     changeDatabase(database) {
       localStorage.setItem("currentDatabase", JSON.stringify(database));
       this.$store.commit("setCurrentDatabase", database);
-      this.$store.dispatch("getAutomations");
-      this.$store.dispatch("getDatabaseUsers");
+      this.$store.dispatch("getFieldsByDatabase");
+      this.$store.dispatch("getChoicesByDatabase");
+      this.$store.dispatch("getAutomationsByDatabase");
+      this.$store.dispatch("getUsersByDatabase");
       this.$store.dispatch("getEntriesByDatabase");
-      this.$store.dispatch("getHeaders");
-      //this.$store.dispatch("getAllCustomButtons");
-      //this.$store.dispatch("getAutomations");
-      // if (this.$router.history.current.name != "ListView")
-      //   this.$router.push({ name: "ListView" });
+      this.$store.dispatch("getHeadersByDatabase");
+      this.$store.dispatch("getEmptyEntryByDatabase");
+      this.$store.dispatch("getLayoutByDatabase");
+      this.$router.push({ name: "ListView" }).catch(() => {});
     },
-
     clearSearch() {
       eventBus.$emit("clearSearch");
     },

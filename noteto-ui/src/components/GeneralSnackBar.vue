@@ -22,7 +22,7 @@ export default {
   props: {
     message: String,
   },
-  created: function () {
+  mounted: function () {
     eventBus.$on("setSnackbar", this.setSnackbar);
   },
   methods: {

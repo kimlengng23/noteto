@@ -69,10 +69,10 @@ export default {
       return this.$store.getters["currentDatabase"];
     },
     fields() {
-      return this.$store.getters["databaseToFields"][this.database.value];
+      return this.$store.getters["fields"];
     },
     fieldToChoices() {
-      return this.$store.getters["databaseToChoices"][this.database.value];
+      return this.$store.getters["fieldToChoices"];
     },
     fieldToField() {
       return this.$store.getters["fieldToField"];
@@ -81,15 +81,13 @@ export default {
       return this.$store.getters["isLoggedIn"];
     },
     rows() {
-      return this.$store.getters["databaseToLayoutMappings"][
-        this.database.value
-      ];
+      return this.$store.getters["layout"];
     },
     emptyEntry() {
       return this.$store.getters["emptyEntry"];
     },
     users() {
-      return this.$store.getters["databaseUsers"];
+      return this.$store.getters["users"];
     },
     linkButtons() {
       let linkButtons = [];
@@ -154,7 +152,6 @@ export default {
       let castedDate = new Date(seconds);
       return castedDate.toLocaleDateString();
     },
-
     formatDate(date) {
       if (!date) return null;
       const [year, month, day] = date.split("-");
@@ -202,9 +199,6 @@ export default {
       let today = new Date();
       return today.toLocaleDateString();
     },
-    // isNumber(val) {
-    // 	return !_.isNaN(_.toNumber(val));
-    // },
     isSelectType(field) {
       return (
         field &&
@@ -216,7 +210,6 @@ export default {
         field && (field.type == "singleUser" || field.type == "multipleUsers")
       );
     },
-
     parseDate(date) {
       if (!date) return null;
       const [month, day, year] = date.split("/");

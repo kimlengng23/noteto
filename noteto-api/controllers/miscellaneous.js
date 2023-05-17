@@ -12,10 +12,7 @@ function setDb(conn) {
 
 app.use(express.json());
 app.use(helper.verifyToken);
-app.get("/", (req, res) => {
-  res.send("miscellaneous");
-});
-app.post("/add/headers", (req, res) => {
+app.post("/add/headers", helper.verifyAdminToken, (req, res) => {
   let headers = req.body;
   miscellService
     .addHeaders(headers)
@@ -67,17 +64,21 @@ app.get("/get/headers/database/:database", (req, res) => {
       res.status(response.code).send(response.message);
     });
 });
-app.get("/remove/headers/database/:database", (req, res) => {
-  let database = req.params.database;
-  miscellService
-    .removeHeadersByDatabase(database)
-    .then((response) => {
-      res.sendStatus(response.code);
-    })
-    .catch((response) => {
-      res.status(response.code).send(response.message);
-    });
-});
+app.get(
+  "/remove/headers/database/:database",
+  helper.verifyAdminToken,
+  (req, res) => {
+    let database = req.params.database;
+    miscellService
+      .removeHeadersByDatabase(database)
+      .then((response) => {
+        res.sendStatus(response.code);
+      })
+      .catch((response) => {
+        res.status(response.code).send(response.message);
+      });
+  }
+);
 module.exports = {
   app,
   setDb,

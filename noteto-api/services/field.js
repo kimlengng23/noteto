@@ -13,7 +13,7 @@ function getFieldsByDatabase(database) {
       .sort({ displayName: 1, value: 1 })
       .toArray((err, results) => {
         if (err) {
-          console.log("FieldService - getAllFieldsInListByDatabase", err);
+          console.log("FieldService - getFieldsbyDatabase", err);
           reject({ code: 500, message: err });
         } else {
           resolve({ code: 200, data: results });
@@ -46,27 +46,6 @@ function getDatabaseToFields() {
   });
   return promise;
 }
-// function getAllFieldsByDatabase(database) {
-//   let promise = new Promise((resolve, reject) => {
-//     dbConn
-//       .collection("FieldCollection")
-//       .find({ database: database })
-//       .sort({ text: 1, value: 1 })
-//       .toArray((err, fields) => {
-//         if (err) {
-//           console.log("FieldService - getAllFieldsByDatabase", err);
-//           reject({ code: 500, message: err });
-//         } else {
-//           let fieldDict = {};
-//           fields.forEach((field) => {
-//             fieldDict[field.value] = field;
-//           });
-//           resolve({ code: 200, data: fieldDict });
-//         }
-//       });
-//   });
-//   return promise;
-// }
 function addField(field) {
   field.isActive = true;
   field.dateCreated = new Date().getTime();
@@ -111,5 +90,4 @@ module.exports = {
   getDatabaseToFields,
   updateField,
   getFieldsByDatabase,
-  //getAllFieldsInListByDatabase,
 };

@@ -80,7 +80,7 @@ export default {
       return this.$store.getters["currentUser"];
     },
   },
-  created: () => {},
+  mounted: () => {},
   methods: {
     clear() {
       this.clearVariables();

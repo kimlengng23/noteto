@@ -433,9 +433,7 @@ export default {
       count: 0,
       original: {},
       entry: {},
-      lRows: {},
       dataPicker: {},
-      datePicker: false,
       isNew: true,
       isEditing: false,
       isLoading: false,
@@ -447,8 +445,6 @@ export default {
     },
   },
   mounted: function () {
-    //this.getLayout();
-    //this.getDatabaseUsers();
     if (this.$route.params.id) {
       this.isNew = false;
       this.getEntryById(this.$route.params.id);

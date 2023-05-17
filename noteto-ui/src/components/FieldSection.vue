@@ -226,7 +226,7 @@ export default {
   },
   mixins: [formMixin],
   components: {},
-  created: function () {
+  mounted: function () {
     //this.getAllFields();
     //this.getFieldTypes();
     //this.getAllHeaders();

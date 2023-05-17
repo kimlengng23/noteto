@@ -12,10 +12,7 @@ function setDb(conn) {
 
 app.use(express.json());
 app.use(helper.verifyToken);
-app.get("/", (req, res) => {
-  res.send("layout");
-});
-app.post("/add", (req, res) => {
+app.post("/add", helper.verifyAdminToken, (req, res) => {
   let layout = req.body;
   layoutService
     .addLayout(layout)
@@ -48,7 +45,7 @@ app.get("/get/:database", (req, res) => {
     });
 });
 
-app.get("/remove/:database", (req, res) => {
+app.get("/remove/:database", helper.verifyAdminToken, (req, res) => {
   let database = req.params.database;
   layoutService
     .removeLayoutByDatabase(database)

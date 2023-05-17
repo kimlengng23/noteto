@@ -19,18 +19,35 @@ function addChoices(choices) {
   });
   return promise;
 }
+function getChoicesByDatabase(databaseValue) {
+  let promise = new Promise((resolve, reject) => {
+    dbConn
+      .collection("ChoiceCollection")
+      .find({ database: databaseValue })
+      .sort({ value: 1 })
+      .toArray((err, results) => {
+        if (err) {
+          console.log("ChoiceService - getChoicesByDatabase", err);
+          reject({ code: 500, message: err });
+        } else {
+          resolve({ code: 200, data: results });
+        }
+      });
+  });
+  return promise;
+}
 function getChoicesByFieldAndDatabase(fieldValue, databaseValue) {
   let promise = new Promise((resolve, reject) => {
     dbConn
       .collection("ChoiceCollection")
       .find({ field: fieldValue, database: databaseValue })
       .sort({ value: 1 })
-      .toArray((err, choices) => {
+      .toArray((err, results) => {
         if (err) {
           console.log("ChoiceService - getChoicesByFieldAndDatabase", err);
           reject({ code: 500, message: err });
         } else {
-          resolve({ code: 200, data: choices });
+          resolve({ code: 200, data: results });
         }
       });
   });
@@ -111,7 +128,7 @@ function updateChoices(choices) {
 module.exports = {
   setDb,
   addChoices,
+  getChoicesByDatabase,
   getDatabaseToChoices,
-  getChoicesByFieldAndDatabase,
   updateChoices,
 };

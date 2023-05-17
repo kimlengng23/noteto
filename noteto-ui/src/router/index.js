@@ -10,8 +10,6 @@ import LoginPage from "../views/LoginPage.vue";
 import LogoutPage from "../views/LogoutPage.vue";
 import HomePage from "../views/HomePage.vue";
 import NewDatabase from "../views/NewDatabase.vue";
-import DatabaseAccess from "../views/DatabaseAccess.vue";
-import UserList from "../components/UserList.vue";
 import UserRegister from "../views/UserRegister.vue";
 import GroupRegister from "../views/GroupRegister.vue";
 
@@ -23,17 +21,12 @@ Vue.use(VueRouter);
 //const scrollSection = document.getElementById("SCROLL_SECTION_ID");
 const routes = [
   {
-    path: "/List",
+    path: "/list",
     name: "ListView",
     component: ListView,
   },
   {
-    path: "/userlist",
-    name: "UserList",
-    component: UserList,
-  },
-  {
-    path: "/newentry",
+    path: "/new/entry",
     name: "NewEntry",
     component: EntryForm,
   },
@@ -48,17 +41,17 @@ const routes = [
     component: FormSetting,
   },
   {
-    path: "/layout/",
+    path: "/layout",
     name: "Layout",
     component: LayoutMapping,
   },
   {
-    path: "/login/",
+    path: "/login",
     name: "Login",
     component: LoginPage,
   },
   {
-    path: "/logout/",
+    path: "/logout",
     name: "Logout",
     component: LogoutPage,
   },
@@ -69,14 +62,9 @@ const routes = [
     component: HomePage,
   },
   {
-    path: "/add/database",
+    path: "/new/database",
     name: "NewDatabase",
     component: NewDatabase,
-  },
-  {
-    path: "/add/database/access",
-    name: "DatabaseAccess",
-    component: DatabaseAccess,
   },
   {
     path: "/register/user",
@@ -110,19 +98,15 @@ const routes = [
 const router = new VueRouter({
   routes,
 });
-// router.beforeRouteEnter((to, from, next) => {
-//   if (to.name == from.name) {
-//     return;
-//   } else {
-//     next();
-//   }
-// });
 router.beforeEach((to, from, next) => {
   //scrollSection.style.overflow = "hidden";
   if (
     to.name == "CustomView" ||
     to.name == "JaekJayCargoReceipt" ||
-    to.name == "JaekJayCustomOrderReceipt"
+    to.name == "JaekJayCustomOrderReceipt" ||
+    to.name == "Login" ||
+    to.name == "UserRegister" ||
+    to.name == "Home"
   ) {
     next();
   } else if (store.getters.isLoggedIn || localStorage.getItem("sessionId")) {
@@ -131,8 +115,7 @@ router.beforeEach((to, from, next) => {
       to.name == "FormSetting" ||
       to.name == "NewDatabase" ||
       to.name == "GroupRegister" ||
-      to.name == "Logout" ||
-      to.name == "Home"
+      to.name == "Logout"
     ) {
       next();
     } else if (
@@ -144,15 +127,7 @@ router.beforeEach((to, from, next) => {
       next({ name: "Home" });
     }
   } else {
-    if (
-      to.name == "Login" ||
-      to.name == "UserRegister" ||
-      to.name == "CustomView"
-    ) {
-      next();
-    } else {
-      next({ name: "Login" });
-    }
+    next({ name: "Login" });
   }
 });
 export default router;

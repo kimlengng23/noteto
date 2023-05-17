@@ -30,7 +30,7 @@ function getNavigationOptions() {
   let promise = new Promise((resolve, reject) => {
     dbConn
       .collection("NavigationOptionCollection")
-      .find({ accessRole: "admin" })
+      .find({})
       .toArray((err, options) => {
         if (err) {
           console.log("MiscellaneousService - getNavigationOptions", err);

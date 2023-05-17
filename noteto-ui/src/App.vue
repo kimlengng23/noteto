@@ -27,30 +27,35 @@ export default {
             "fullname",
             response.data.first + " " + response.data.last
           );
+          localStorage.setItem(
+            "options",
+            JSON.stringify(response.data.options)
+          );
           this.$store.commit("setCurrentUser", response.data);
-
-          this.$store.dispatch("getAllUsers");
-          this.$store.dispatch("getAllGroups");
-          this.$store.dispatch("getAllDatabases");
-          this.$store.dispatch("getNavigationOptions");
           this.$store.dispatch("getDatabasesByUserId");
-          this.$store.dispatch("getDatabaseToFields");
-          this.$store.dispatch("getDatabaseToHeaders");
-          this.$store.dispatch("getDatabaseToLayoutMappings");
-          this.$store.dispatch("getDatabaseToChoices");
+          this.$store.dispatch("getNavigationOptions");
           this.$store.dispatch("getDropdowns");
-          setTimeout(() => {
-            if (localStorage.getItem("currentDatabase")) {
-              let database = JSON.parse(
-                localStorage.getItem("currentDatabase")
-              );
-              this.$store.commit("setCurrentDatabase", database);
-              this.$store.dispatch("getAutomations");
-              this.$store.dispatch("getEntriesByDatabase");
-              this.$store.dispatch("getHeaders");
-              this.$store.dispatch("getDatabaseUsers");
-            }
-          }, 1000);
+          if (this.isAdmin) {
+            this.$store.dispatch("getAllDatabases");
+            this.$store.dispatch("getAllGroups");
+            this.$store.dispatch("getAllUsers");
+            this.$store.dispatch("getDatabaseToFields");
+            this.$store.dispatch("getDatabaseToHeaders");
+            this.$store.dispatch("getDatabaseToLayoutMappings");
+            this.$store.dispatch("getDatabaseToChoices");
+          }
+          if (localStorage.getItem("currentDatabase")) {
+            let database = JSON.parse(localStorage.getItem("currentDatabase"));
+            this.$store.commit("setCurrentDatabase", database);
+            this.$store.dispatch("getAutomationsByDatabase");
+            this.$store.dispatch("getChoicesByDatabase");
+            this.$store.dispatch("getEmptyEntryByDatabase");
+            this.$store.dispatch("getEntriesByDatabase");
+            this.$store.dispatch("getFieldsByDatabase");
+            this.$store.dispatch("getHeadersByDatabase");
+            this.$store.dispatch("getUsersByDatabase");
+            this.$store.dispatch("getLayoutByDatabase");
+          }
         })
         .catch(() => {
           this.$router.push({ name: "Logout" }).catch(() => {});
@@ -62,6 +67,9 @@ export default {
     SecondNavbar,
   },
   computed: {
+    isAdmin() {
+      return this.$store.getters["isAdmin"];
+    },
     isMobile() {
       if (
         /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(

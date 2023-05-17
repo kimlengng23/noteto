@@ -90,10 +90,35 @@ function getTokenFromBySessionId(id) {
   });
   return promise;
 }
+function verifyAdminToken(req, res, next) {
+  let authorization = req.headers["authorization"];
+  if (authorization) {
+    let sessionId = authorization;
+    getTokenFromBySessionId(sessionId).then((response) => {
+      let session = response.data;
+      jwt.verify(session.token, secret, (err, decoded) => {
+        if (err) {
+          console.log("helper - verifyToken", err);
+          res.sendStatus(401);
+        } else {
+          if (decoded.options && decoded.options.isAdmin) {
+            req.decoded = decoded;
+            req.decoded.sessionId = sessionId;
+            next();
+          } else {
+            res.sendStatus(401);
+          }
+        }
+      });
+    });
+  } else {
+    return res.sendStatus(401);
+  }
+}
 function verifyToken(req, res, next) {
   let authorization = req.headers["authorization"];
   let url = req.originalUrl.split("?")[0];
-  console.log(authorization, url);
+  console.log(url, authorization);
   if (excludedUrls[url] || url.indexOf("/id/") >= 0) {
     return next();
   }
@@ -155,7 +180,7 @@ function getEntryText(field, fldVal) {
   }
 }
 function getFullName(user) {
-  return user.first + " " + user.last;
+  return user.first.trim() + " " + user.last.trim();
 }
 //=====================================File Upload=======================================
 const multer = require("multer");
@@ -178,6 +203,7 @@ module.exports = {
   createSession,
   getTokenFromBySessionId,
   removeTokenBySessionId,
+  verifyAdminToken,
   verifyToken,
   upload,
   setDb,

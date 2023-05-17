@@ -11,9 +11,6 @@ function setDb(conn) {
 
 app.use(express.json());
 app.use(helper.verifyToken);
-app.get("/", (req, res) => {
-  res.send("entry");
-});
 app.post("/add", (req, res) => {
   let entry = req.body;
   entry.owner = {

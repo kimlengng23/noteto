@@ -54,8 +54,10 @@ export default {
     currentUser() {
       return this.$store.getters["currentUser"];
     },
+    isAdmin() {
+      return this.$store.getters["isAdmin"];
+    },
   },
-  created: () => {},
   methods: {
     login() {
       if (!this.$refs.form.validate()) {
@@ -76,17 +78,23 @@ export default {
             "fullname",
             response.data.first + " " + response.data.last
           );
+          localStorage.setItem(
+            "options",
+            JSON.stringify(response.data.options)
+          );
           this.$store.commit("setCurrentUser", response.data);
-          this.$store.dispatch("getAllDatabases");
-          this.$store.dispatch("getAllUsers");
-          this.$store.dispatch("getAllGroups");
-          this.$store.dispatch("getNavigationOptions");
           this.$store.dispatch("getDatabasesByUserId");
-          this.$store.dispatch("getDatabaseToFields");
-          this.$store.dispatch("getDatabaseToHeaders");
-          this.$store.dispatch("getDatabaseToLayoutMappings");
-          this.$store.dispatch("getDatabaseToChoices");
           this.$store.dispatch("getDropdowns");
+          this.$store.dispatch("getNavigationOptions");
+          if (this.isAdmin) {
+            this.$store.dispatch("getAllDatabases");
+            this.$store.dispatch("getAllGroups");
+            this.$store.dispatch("getAllUsers");
+            this.$store.dispatch("getDatabaseToFields");
+            this.$store.dispatch("getDatabaseToHeaders");
+            this.$store.dispatch("getDatabaseToLayoutMappings");
+            this.$store.dispatch("getDatabaseToChoices");
+          }
           setTimeout(() => {
             this.$router.push({ name: "Home" });
             this.isLoading = false;

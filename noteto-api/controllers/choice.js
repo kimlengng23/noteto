@@ -12,7 +12,7 @@ function setDb(conn) {
 
 app.use(express.json());
 app.use(helper.verifyToken);
-app.post("/add", (req, res) => {
+app.post("/add", helper.verifyAdminToken, (req, res) => {
   let choices = req.body;
   choiceService
     .addChoices(choices)
@@ -23,7 +23,17 @@ app.post("/add", (req, res) => {
       res.status(response.code).send(response.message);
     });
 });
-app.get("/get/database/to/choices", (req, res) => {
+app.get("/get/by/database/:database", (req, res) => {
+  choiceService
+    .getChoicesByDatabase(req.params.database)
+    .then((response) => {
+      res.status(response.code).send(response.data);
+    })
+    .catch((response) => {
+      res.status(response.code).send(response.message);
+    });
+});
+app.get("/get/database/to/choices", helper.verifyAdminToken, (req, res) => {
   choiceService
     .getDatabaseToChoices()
     .then((response) => {
@@ -33,7 +43,7 @@ app.get("/get/database/to/choices", (req, res) => {
       res.status(response.code).send(response.message);
     });
 });
-app.post("/update", (req, res) => {
+app.post("/update", helper.verifyAdminToken, (req, res) => {
   let choices = req.body;
   choiceService
     .updateChoices(choices)

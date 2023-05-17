@@ -12,7 +12,7 @@ function setDb(conn) {
 app.use(express.json());
 app.use(helper.verifyToken);
 
-app.post("/add/", (req, res) => {
+app.post("/add/", helper.verifyAdminToken, (req, res) => {
   let automation = req.body;
   automationService
     .addAutomation(automation)
@@ -33,7 +33,7 @@ app.get("/get/by/database/:database", (req, res) => {
       res.status(response.code).send(response.message);
     });
 });
-app.post("/update", (req, res) => {
+app.post("/update", helper.verifyAdminToken, (req, res) => {
   let automation = req.body;
   automationService
     .updateAutomation(automation)

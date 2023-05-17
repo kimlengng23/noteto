@@ -12,7 +12,7 @@ function setDb(conn) {
 
 app.use(express.json());
 app.use(helper.verifyToken);
-app.post("/add", (req, res) => {
+app.post("/add", helper.verifyAdminToken, (req, res) => {
   let database = req.body;
   databaseService
     .addDatabase(database)
@@ -23,7 +23,7 @@ app.post("/add", (req, res) => {
       res.status(response.code).send(response.message);
     });
 });
-app.get("/get/all/", (req, res) => {
+app.get("/get/all/", helper.verifyAdminToken, (req, res) => {
   databaseService
     .getAllDatabases()
     .then((response) => {
@@ -33,7 +33,7 @@ app.get("/get/all/", (req, res) => {
       res.status(response.code).send(response.message);
     });
 });
-app.get("/get/userId/:userId", (req, res) => {
+app.get("/get/by/userId/:userId", (req, res) => {
   databaseService
     .getDatabasesByUserId(req.params.userId)
     .then((response) => {
@@ -43,18 +43,7 @@ app.get("/get/userId/:userId", (req, res) => {
       res.status(response.code).send(response.message);
     });
 });
-app.get("/get/users/database/:database", (req, res) => {
-  databaseService
-    .getUsersByDatabase(req.params.database)
-    .then((response) => {
-      console.log("users", response);
-      res.status(response.code).send(response.data);
-    })
-    .catch((response) => {
-      res.status(response.code).send(response.message);
-    });
-});
-app.post("/update/groups", (req, res) => {
+app.post("/update/groups", helper.verifyAdminToken, (req, res) => {
   let database = req.body;
   databaseService
     .updateGroupsInDatabase(database)

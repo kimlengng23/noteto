@@ -108,11 +108,6 @@ export default {
     databaseToLayoutMappings() {
       return this.$store.getters["databaseToLayoutMappings"];
     },
-    // layout() {
-    //   return this.$store.getters["databaseToLayoutMappings"][
-    //     this.database.value
-    //   ];
-    // },
   },
   data() {
     return {
@@ -124,10 +119,7 @@ export default {
       selectedRowTypes: [],
     };
   },
-  created: function () {
-    //this.getAllFields();
-    //this.generateRowsCols();
-  },
+  mounted: function () {},
   methods: {
     addRow() {
       this.rows.push([]);

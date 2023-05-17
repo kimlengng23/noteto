@@ -22,13 +22,13 @@ export default {
       isLoading: false,
     };
   },
-  created: function () {
+  mounted: function () {
     this.logout();
   },
   methods: {
     logout() {
       if (!localStorage.getItem("sessionId")) {
-        this.$router.push({ name: "HomePage" }).catch(() => {});
+        this.$router.push({ name: "Home" }).catch(() => {});
         return;
       }
       backendService.logout().then(() => {
@@ -38,6 +38,7 @@ export default {
         localStorage.removeItem("userId");
         localStorage.removeItem("session");
         localStorage.removeItem("currentDatabase");
+        localStorage.removeItem("options");
         this.$store.commit("setCurrentDatabase", {});
         this.$store.commit("setAutomations", []);
         this.$store.commit("setCurrentUser", {});
@@ -46,7 +47,7 @@ export default {
         this.$store.commit("setAllDatabases", []);
         this.$store.commit("setAvailableDatabases", []);
         setTimeout(() => {
-          this.$router.push({ name: "HomePage" }).catch(() => {});
+          this.$router.push({ name: "Home" }).catch(() => {});
         }, 1000);
       });
     },

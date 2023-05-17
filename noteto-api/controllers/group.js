@@ -18,7 +18,7 @@ function setDb(conn) {
 app.use(express.json());
 app.use(helper.verifyToken);
 
-app.post("/add", (req, res) => {
+app.post("/add", helper.verifyAdminToken, (req, res) => {
   let group = req.body;
   groupService
     .addGroup(group)
@@ -29,7 +29,7 @@ app.post("/add", (req, res) => {
       res.status(response.code).send(response.message);
     });
 });
-app.get("/get/all", (req, res) => {
+app.get("/get/all", helper.verifyAdminToken, (req, res) => {
   groupService
     .getAllGroups()
     .then((response) => {
@@ -39,7 +39,7 @@ app.get("/get/all", (req, res) => {
       res.status(response.code).send(response.message);
     });
 });
-app.get("/get/by/id/:id", (req, res) => {
+app.get("/get/by/id/:id", helper.verifyAdminToken, (req, res) => {
   groupService
     .getGroupById(req.params.id)
     .then((response) => {
@@ -49,7 +49,7 @@ app.get("/get/by/id/:id", (req, res) => {
       res.status(response.code).send(response.message);
     });
 });
-app.post("/add/user", (req, res) => {
+app.post("/add/user", helper.verifyAdminToken, (req, res) => {
   let userGroupInfo = req.body;
   groupService
     .addUserToGroup(userGroupInfo)
@@ -60,7 +60,7 @@ app.post("/add/user", (req, res) => {
       res.status(response.code).send(response.message);
     });
 });
-app.post("/update/members", (req, res) => {
+app.post("/update/members", helper.verifyAdminToken, (req, res) => {
   let group = req.body;
   let promises = [];
   promises.push(groupService.updateUsersInGroup(group));

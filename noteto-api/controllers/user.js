@@ -49,11 +49,9 @@ app.use(helper.verifyToken);
 
 app.post("/register", (req, res) => {
   let account = req.body;
-  console.log(account);
   userService
     .getAccountByUsername(account.username.toLowerCase())
     .then((response) => {
-      console.log("check", response);
       if (response.code == 200) {
         res.sendStatus(409);
       } else {
@@ -106,10 +104,11 @@ app.get("/verify/token", (req, res) => {
     userId: decoded["userId"],
     username: decoded["username"],
     sessionId: decoded["sessionId"],
+    options: decoded["options"],
   };
   res.send(sessionInfo);
 });
-app.get("/get/database/:database", (req, res) => {
+app.get("/get/by/database/:database", (req, res) => {
   userService
     .getUsersByDatabase(req.params.database)
     .then((response) => {
@@ -128,9 +127,6 @@ app.get("/get/avatars", (req, res) => {
     .catch((response) => {
       res.sendStatus(response.code);
     });
-});
-app.get("/check/session", (req, res) => {
-  res.sendStatus(200);
 });
 app.get("/verify/account/:id", (req, res) => {
   let sql = "UPDATE User t SET t.verified = true";
@@ -159,7 +155,7 @@ app.get("/get/avatar", (req, res) => {
     }
   });
 });
-app.get("/get/all", (req, res) => {
+app.get("/get/all", helper.verifyAdminToken, (req, res) => {
   userService
     .getAllUsers()
     .then((response) => {

@@ -64,6 +64,11 @@ export default {
     let headers = getHeaders();
     return axios.get(url, { headers: headers });
   },
+  getChoicesByDatabase(database) {
+    let url = domain + `/choice/get/by/database/${database}`;
+    let headers = getHeaders();
+    return axios.get(url, { headers: headers });
+  },
   getCommentsByEntry(entry) {
     let url = domain + "/comment/get/by/entry";
     let headers = getHeaders();
@@ -113,6 +118,7 @@ export default {
     let headers = getHeaders();
     return axios.get(url, { headers: headers });
   },
+
   removeHeadersByDatabase(database) {
     let url = domain + `/miscellaneous/remove/headers/database/${database}`;
     let headers = getHeaders();
@@ -134,13 +140,14 @@ export default {
     return axios.get(url, { headers: headers });
   },
   getUsersByDatabase(database) {
-    let url = domain + `/database/get/users/database/${database}`;
+    let url = domain + `/user/get/by/database/${database}`;
     let headers = getHeaders();
     return axios.get(url, { headers: headers });
   },
   getFieldsByDatabase(database) {
-    let url = domain + `/field/get/database/${database}`;
-    return axios.get(url);
+    let url = domain + `/field/get/by/database/${database}`;
+    let headers = getHeaders();
+    return axios.get(url, { headers: headers });
   },
   getAllDatabases() {
     let url = domain + `/database/get/all`;
@@ -225,7 +232,7 @@ export default {
     return axios.post(url, database, { headers: headers });
   },
   getDatabasesByUserId(userId) {
-    let url = domain + `/database/get/userId/${userId}`;
+    let url = domain + `/database/get/by/userId/${userId}`;
     let headers = getHeaders();
     return axios.get(url, { headers: headers });
   },

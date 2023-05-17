@@ -183,31 +183,12 @@ function updateUsersInDatabasesGroups(group) {
   });
   return promise;
 }
-function getUsersByDatabase(database) {
-  let promise = new Promise((resolve, reject) => {
-    dbConn
-      .collection("DatabaseCollection")
-      .findOne({ value: database }, (err, result) => {
-        if (err) {
-          console.log("DatabaseService - getUsersByDatabase", err);
-          reject({ code: 500, message: err });
-        } else {
-          let users = [];
-          result.groups.forEach((group) => {
-            users = users.concat(group.users);
-          });
-          resolve({ code: 200, data: users });
-        }
-      });
-  });
-  return promise;
-}
+
 module.exports = {
   setDb,
   addDatabase,
   getAllDatabases,
   getDatabasesByUserId,
-  getUsersByDatabase,
   updateGroupsInDatabase,
   updateUsersInDatabasesGroups,
 };

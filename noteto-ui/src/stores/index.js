@@ -6,36 +6,69 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    allDatabases: [],
+    allGroups: [],
+    allUsers: [],
+    automations: {},
+    availableDatabases: [],
+    choices: [],
     currentUser: {},
     currentDatabase: {},
-    isLoggedIn: false,
-    navigationOptions: [],
-    availableDatabases: [],
-    allDatabases: [],
+    customButtons: [],
     databaseToFields: {},
     databaseToChoices: {},
     databaseToLayoutMappings: {},
     databaseToHeaders: {},
-    fieldToField: {},
-    allUsers: [],
-    databaseUsers: [],
     dropdowns: {},
-    layout: [],
     emptyEntry: {},
     entries: [],
+    fieldToChoices: {},
+    fieldToField: {},
     headers: [],
+    isAdmin: false,
+    isLoggedIn: false,
+    layout: [],
+    navigationOptions: [],
     search: {},
-    customButtons: [],
-    automations: {},
     selectedRow: -1,
-    allGroups: [],
+    users: [],
   },
   getters: {
+    allDatabases: (state) => {
+      return state.allDatabases;
+    },
+    allUsers: (state) => {
+      return state.allUsers;
+    },
+    automations: (state) => {
+      return state.automations;
+    },
+    availableDatabases: (state) => {
+      return state.availableDatabases;
+    },
     currentUser: (state) => {
       return state.currentUser;
     },
     currentDatabase: (state) => {
       return state.currentDatabase;
+    },
+    customButtons: (state) => {
+      return state.customButtons;
+    },
+    emptyEntry: (state) => {
+      return state.emptyEntry;
+    },
+    entries: (state) => {
+      return state.entries;
+    },
+    fieldToChoices: (state) => {
+      return state.fieldToChoices;
+    },
+    headers: (state) => {
+      return state.headers;
+    },
+    isAdmin: (state) => {
+      return state.isAdmin;
     },
     isLoggedIn: (state) => {
       return state.isLoggedIn;
@@ -43,24 +76,10 @@ export default new Vuex.Store({
     navigationOptions: (state) => {
       return state.navigationOptions;
     },
-    availableDatabases: (state) => {
-      return state.availableDatabases;
-    },
-    allDatabases: (state) => {
-      return state.allDatabases;
-    },
-    allUsers: (state) => {
-      return state.allUsers;
-    },
     search: (state) => {
       return state.search;
     },
-    customButtons: (state) => {
-      return state.customButtons;
-    },
-    automations: (state) => {
-      return state.automations;
-    },
+
     selectedRow: (state) => {
       return state.selectedRow;
     },
@@ -85,23 +104,16 @@ export default new Vuex.Store({
     fieldToField: (state) => {
       return state.fieldToField;
     },
-    selectedHeaders: (state) => {
-      return state.selectedHeaders;
-    },
+
     layout: (state) => {
       return state.layout;
     },
-    emptyEntry: (state) => {
-      return state.emptyEntry;
+
+    selectedHeaders: (state) => {
+      return state.selectedHeaders;
     },
-    entries: (state) => {
-      return state.entries;
-    },
-    headers: (state) => {
-      return state.headers;
-    },
-    databaseUsers: (state) => {
-      return state.databaseUsers;
+    users: (state) => {
+      return state.users;
     },
   },
   mutations: {
@@ -130,6 +142,30 @@ export default new Vuex.Store({
     addEntry(state, payload) {
       state.entries.unshift(payload);
     },
+    setAllDatabases(state, payload) {
+      state.allDatabases = payload;
+    },
+    setAllGroups(state, payload) {
+      state.allGroups = payload;
+    },
+    setAllUsers(state, payload) {
+      state.allUsers = payload;
+    },
+    setAutomations(state, payload) {
+      state.automations = payload;
+    },
+    setChoices(state, payload) {
+      let fieldToChoices = {};
+      state.choices = payload;
+      for (let i = 0; i < payload.length; i++) {
+        let choice = payload[i];
+        if (!fieldToChoices[choice.field]) {
+          fieldToChoices[choice.field] = [];
+        }
+        fieldToChoices[choice.field].push(choice);
+      }
+      state.fieldToChoices = fieldToChoices;
+    },
     setCurrentUser(state, payload) {
       state.currentUser = payload;
       if (Object.keys(payload).length !== 0) {
@@ -137,21 +173,12 @@ export default new Vuex.Store({
       } else {
         state.isLoggedIn = false;
       }
+      if (payload.options && payload.options.isAdmin) {
+        state.isAdmin = true;
+      }
     },
     setCurrentDatabase(state, payload) {
       state.currentDatabase = payload;
-      if (payload && !payload.value) return;
-      let fields = state.databaseToFields[state.currentDatabase.value];
-      if (fields) {
-        fields.forEach((field) => {
-          state.fieldToField[field.value] = field;
-        });
-      }
-      backendService
-        .getEmptyEntryByDatabase(state.currentDatabase.value)
-        .then((response) => {
-          state.emptyEntry = response.data;
-        });
     },
     setNavigationOptions(state, payload) {
       state.navigationOptions = payload;
@@ -159,50 +186,14 @@ export default new Vuex.Store({
     setAvailableDatabases(state, payload) {
       state.availableDatabases = payload;
     },
-    setAllUsers(state, payload) {
-      state.allUsers = payload;
-    },
-
     setSearch(state, payload) {
       state.search = payload;
     },
     setCustomButtons(state, payload) {
       state.customButtons = payload;
     },
-    setAutomations(state, payload) {
-      state.automations = payload;
-    },
     setSelectedRow(state, payload) {
       state.selectedRow = payload;
-    },
-    setAllGroups(state, payload) {
-      state.allGroups = payload;
-    },
-    setGroup(state, payload) {
-      state.allGroups.forEach((group, idx) => {
-        if (group._id == payload._id) {
-          state.allGroups[idx] = payload;
-        }
-      });
-    },
-    setDatabase(state, payload) {
-      state.allDatabases.forEach((database, idx) => {
-        if (database._id == payload._id) {
-          state.allDatabases[idx] = payload;
-        }
-      });
-    },
-    setGroupsInDatabases(state, payload) {
-      state.allDatabases.forEach((database) => {
-        database.groups.forEach((group, idx) => {
-          if (group._id == payload._id) {
-            database.groups[idx] = payload;
-          }
-        });
-      });
-    },
-    setAllDatabases(state, payload) {
-      state.allDatabases = payload;
     },
     setDatabaseToFields(state, payload) {
       state.databaseToFields = payload;
@@ -218,6 +209,39 @@ export default new Vuex.Store({
     },
     setDropdowns(state, payload) {
       state.dropdowns = payload;
+    },
+
+    setDatabase(state, payload) {
+      state.allDatabases.forEach((database, idx) => {
+        if (database._id == payload._id) {
+          state.allDatabases[idx] = payload;
+        }
+      });
+    },
+    setFields(state, payload) {
+      let fieldToField = {};
+      state.fields = payload;
+      for (let i = 0; i < payload.length; i++) {
+        let field = payload[i];
+        fieldToField[field.value] = field;
+      }
+      state.fieldToField = fieldToField;
+    },
+    setGroup(state, payload) {
+      state.allGroups.forEach((group, idx) => {
+        if (group._id == payload._id) {
+          state.allGroups[idx] = payload;
+        }
+      });
+    },
+    setGroupsInDatabases(state, payload) {
+      state.allDatabases.forEach((database) => {
+        database.groups.forEach((group, idx) => {
+          if (group._id == payload._id) {
+            database.groups[idx] = payload;
+          }
+        });
+      });
     },
     setChoicesInDatabaseToChoices(state, payload) {
       let fieldValue = payload[0].field;
@@ -236,8 +260,8 @@ export default new Vuex.Store({
     setHeaders(state, payload) {
       state.headers = payload;
     },
-    setDatabaseUsers(state, payload) {
-      state.databaseUsers = payload;
+    setUsers(state, payload) {
+      state.users = payload;
     },
     setEntry(state, payload) {
       state.entries.forEach((entry, idx) => {
@@ -248,7 +272,7 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    getAutomations(context) {
+    getAutomationsByDatabase(context) {
       backendService
         .getAutomationsByDatabase(context.state.currentDatabase.value)
         .then((response) => {
@@ -260,25 +284,60 @@ export default new Vuex.Store({
         context.commit("setAvailableDatabases", response.data);
       });
     },
-    getNavigationOptions(context) {
-      backendService.getNavigationOptions().then((response) => {
-        context.commit("setNavigationOptions", response.data);
-      });
-    },
     getAllUsers(context) {
-      backendService.getAllUsers().then((response) => {
-        context.commit("setAllUsers", response.data);
-      });
+      backendService
+        .getAllUsers()
+        .then((response) => {
+          context.commit("setAllUsers", response.data);
+        })
+        .catch(() => {});
+    },
+
+    getAllCustomButtons(context) {
+      backendService
+        .getAllCustomButtonsByDatabase(context.getters.currentDatabase)
+        .then((response) => {
+          context.commit("setCustomButtons", response.data);
+        });
+    },
+    getAllGroups(context) {
+      backendService
+        .getAllGroups()
+        .then((response) => {
+          context.commit("setAllGroups", response.data);
+        })
+        .catch(() => {});
+    },
+    getAllDatabases(context) {
+      backendService
+        .getAllDatabases()
+        .then((response) => {
+          context.commit("setAllDatabases", response.data);
+        })
+        .catch(() => {});
+    },
+    getChoicesByDatabase(context) {
+      backendService
+        .getChoicesByDatabase(context.state.currentDatabase.value)
+        .then((response) => {
+          context.commit("setChoices", response.data);
+        });
     },
     getDatabaseToFields(context) {
-      backendService.getDatabaseToFields().then((response) => {
-        context.commit("setDatabaseToFields", response.data);
-      });
+      backendService
+        .getDatabaseToFields()
+        .then((response) => {
+          context.commit("setDatabaseToFields", response.data);
+        })
+        .catch(() => {});
     },
     getDatabaseToChoices(context) {
-      backendService.getDatabaseToChoices().then((response) => {
-        context.commit("setDatabaseToChoices", response.data);
-      });
+      backendService
+        .getDatabaseToChoices()
+        .then((response) => {
+          context.commit("setDatabaseToChoices", response.data);
+        })
+        .catch(() => {});
     },
     getDatabaseToHeaders(context) {
       backendService.getDatabaseToHeaders().then((response) => {
@@ -290,19 +349,6 @@ export default new Vuex.Store({
         context.commit("setDatabaseToLayoutMappings", response.data);
       });
     },
-    getAllCustomButtons(context) {
-      backendService
-        .getAllCustomButtonsByDatabase(context.getters.currentDatabase)
-        .then((response) => {
-          context.commit("setCustomButtons", response.data);
-        });
-    },
-
-    getAllGroups(context) {
-      backendService.getAllGroups().then((response) => {
-        context.commit("setAllGroups", response.data);
-      });
-    },
     getDatabasesByUserId(context) {
       backendService
         .getDatabasesByUserId(context.state.currentUser.userId)
@@ -310,10 +356,17 @@ export default new Vuex.Store({
           context.commit("setAvailableDatabases", response.data);
         });
     },
-    getAllDatabases(context) {
-      backendService.getAllDatabases().then((response) => {
-        context.commit("setAllDatabases", response.data);
+    getDropdowns(context) {
+      backendService.getDropdowns().then((response) => {
+        context.commit("setDropdowns", response.data);
       });
+    },
+    getEmptyEntryByDatabase(context) {
+      backendService
+        .getEmptyEntryByDatabase(context.state.currentDatabase.value)
+        .then((response) => {
+          context.commit("setEmptyEntry", response.data);
+        });
     },
     getEntriesByDatabase(context) {
       backendService
@@ -322,30 +375,38 @@ export default new Vuex.Store({
           context.commit("setEntries", response.data);
         });
     },
-    getDropdowns(context) {
-      backendService.getDropdowns().then((response) => {
-        context.commit("setDropdowns", response.data);
-      });
-    },
-    getLayout(context) {
+    getFieldsByDatabase(context) {
       backendService
-        .getLayoutByDatabase(context.state.currentDatabase.value)
+        .getFieldsByDatabase(context.state.currentDatabase.value)
         .then((response) => {
-          context.commit("setLayout", response.data);
+          context.commit("setFields", response.data);
         });
     },
-    getHeaders(context) {
+    getHeadersByDatabase(context) {
       backendService
         .getHeadersByDatabase(context.state.currentDatabase.value)
         .then((response) => {
           context.commit("setHeaders", response.data);
         });
     },
-    getDatabaseUsers(context) {
+
+    getNavigationOptions(context) {
+      backendService.getNavigationOptions().then((response) => {
+        context.commit("setNavigationOptions", response.data);
+      });
+    },
+    getUsersByDatabase(context) {
       backendService
         .getUsersByDatabase(context.state.currentDatabase.value)
         .then((response) => {
-          context.commit("setDatabaseUsers", response.data);
+          context.commit("setUsers", response.data);
+        });
+    },
+    getLayoutByDatabase(context) {
+      backendService
+        .getLayoutByDatabase(context.state.currentDatabase.value)
+        .then((response) => {
+          context.commit("setLayout", response.data);
         });
     },
   },
