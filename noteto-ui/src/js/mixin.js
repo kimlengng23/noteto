@@ -210,11 +210,6 @@ export default {
         field && (field.type == "singleUser" || field.type == "multipleUsers")
       );
     },
-    parseDate(date) {
-      if (!date) return null;
-      const [month, day, year] = date.split("/");
-      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
-    },
     removeFromList(idx, field) {
       this.entry[field].splice(idx, 1);
     },

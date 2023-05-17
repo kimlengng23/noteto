@@ -433,7 +433,7 @@ export default {
       count: 0,
       original: {},
       entry: {},
-      dataPicker: {},
+      datePicker: {},
       isNew: true,
       isEditing: false,
       isLoading: false,
