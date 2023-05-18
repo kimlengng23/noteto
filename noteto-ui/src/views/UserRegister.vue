@@ -2,7 +2,7 @@
   <div class="d-flex justify-center">
     <v-card class="mt-5" outlined elevation="0" min-width="350" width="60%">
       <v-card-title>Register User</v-card-title>
-      <v-card-text>
+      <v-card-text v-if="!isSuccessful">
         <v-form ref="form" v-model="isFormValid">
           <v-text-field
             :rules="nameRules"
@@ -38,6 +38,14 @@
             required
           ></v-text-field>
         </v-form>
+      </v-card-text>
+      <v-card-text class="text-center" v-else>
+        <h1 class="mb-5 blue--text">You are almost done</h1>
+
+        <p>
+          We have sent you an email with a verify link. Check the email to
+          verify your email address.
+        </p>
       </v-card-text>
       <v-card-actions class="d-flex justify-end">
         <v-btn depressed rounded color="warning" @click="clear">
@@ -109,6 +117,7 @@ export default {
             );
             this.clear();
             this.isLoading = false;
+            this.isSuccessful = true;
           }, 1000);
         })
         .catch(() => {

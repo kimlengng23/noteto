@@ -1,4 +1,4 @@
-const helper = require("../helper.js");
+const helper = require("../js/helper.js");
 let dbConn = null;
 function setDb(conn) {
   dbConn = conn;

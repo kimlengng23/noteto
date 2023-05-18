@@ -1,4 +1,5 @@
-const helper = require("../helper.js");
+const helper = require("../js/helper.js");
+const mailService = require("./mail.js");
 let dbConn = null;
 function setDb(conn) {
   dbConn = conn;
@@ -22,6 +23,15 @@ function addAccount(userAccount) {
           console.log("UserService - addAccount", err);
           reject({ code: 500, message: err });
         } else {
+          let sessionInfo = {
+            email: userAccount["email"].toLowerCase().trim(),
+            first: userAccount["first"],
+            last: userAccount["last"],
+          };
+          helper.createVerifySession(sessionInfo).then((response) => {
+            sessionInfo["sessionId"] = response.data._id;
+            mailService.sendAccountVerifyEmail(sessionInfo);
+          });
           resolve({ code: 200 });
         }
       });
@@ -147,6 +157,23 @@ function logout(sessionId) {
   });
   return promise;
 }
+function markVerifiedByEmail(email) {
+  let promise = new Promise((resolve, reject) => {
+    dbConn
+      .collection("UserCollection")
+      .updateOne(
+        { email: email.toLowerCase().trim() },
+        { $set: { "options.isVerified": true } }
+      )
+      .then(() => {
+        resolve({ code: 200 });
+      })
+      .catch((err) => {
+        reject({ code: 500, message: err });
+      });
+  });
+  return promise;
+}
 module.exports = {
   addAccount,
   getAllUsers,
@@ -154,5 +181,6 @@ module.exports = {
   getUsersByDatabase,
   login,
   logout,
+  markVerifiedByEmail,
   setDb,
 };

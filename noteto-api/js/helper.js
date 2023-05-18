@@ -1,9 +1,10 @@
 const { ObjectId } = require("mongodb");
+const path = require("path");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
 const _ = require("lodash");
-const secret = fs.readFileSync("key.private");
+const secret = fs.readFileSync(path.join(__dirname, "/../keys/key.private"));
 let dbConn = null;
 let excludedUrls = {
   "/api/user/register": true,
@@ -44,18 +45,56 @@ function createSession(sessionInfo) {
   });
   return promise;
 }
+function createVerifySession(sessionInfo) {
+  let promise = new Promise((resolve, reject) => {
+    let session = {};
+    let token = jwt.sign(sessionInfo, secret, { expiresIn: "1 days" });
+    let date = new Date().getTime();
+    session["email"] = sessionInfo["email"].toLowerCase().trim();
+    session["token"] = token;
+    session["dateCreated"] = date;
+    session["isActive"] = true;
+    dbConn
+      .collection("VerifySessionCollection")
+      .insertOne(session, (err, result) => {
+        if (err) {
+          console.log("Helper - createSession", err);
+          reject({ code: 500, message: err });
+        } else {
+          resolve({ code: 200, data: result.ops[0] });
+        }
+      });
+  });
+  return promise;
+}
+
 function getTokenBySessionId(id) {
   let promise = new Promise((resolve, reject) => {
     dbConn
       .collection("SessionCollection")
-      .findOne({ _id: id }, (err, session) => {
+      .findOne({ _id: ObjectId(id) }, (err, session) => {
         if (err) {
-          console.log("Helper - getTokenBySessionId", err);
+          console.log("helper - getTokenBySessionId", err);
           reject({ code: 500, message: err });
-        } else if (session) {
-          resolve({ code: 200, data: result.token });
         } else {
-          reject({ code: 404, message: "Session not found." });
+          resolve({ code: 200, data: session });
+        }
+      });
+  });
+  return promise;
+}
+function getVerifyTokenBySessionId(id) {
+  let promise = new Promise((resolve, reject) => {
+    dbConn
+      .collection("VerifySessionCollection")
+      .findOne({ _id: ObjectId(id), isActive: true }, (err, session) => {
+        if (err) {
+          console.log("helper - getTokenBySessionId", err);
+          reject({ code: 500, message: err });
+        } else if (session == null) {
+          reject({ code: 404 });
+        } else {
+          resolve({ code: 200, data: session });
         }
       });
   });
@@ -75,18 +114,17 @@ function removeTokenBySessionId(sessionId) {
   });
   return promise;
 }
-function getTokenFromBySessionId(id) {
+function removeVerifyTokenBySessionId(sessionId) {
   let promise = new Promise((resolve, reject) => {
-    dbConn
-      .collection("SessionCollection")
-      .findOne({ _id: ObjectId(id) }, (err, session) => {
-        if (err) {
-          console.log("helper - getTokenFromBySessionId", err);
-          reject({ code: 500, message: err });
-        } else {
-          resolve({ code: 200, data: session });
-        }
-      });
+    let change = { isActive: false };
+    try {
+      dbConn
+        .collection("VerifySessionCollection")
+        .findOneAndUpdate({ _id: ObjectId(sessionId) }, { $set: change });
+      resolve({ code: 200 });
+    } catch (err) {
+      reject({ code: 500, message: err });
+    }
   });
   return promise;
 }
@@ -94,7 +132,7 @@ function verifyAdminToken(req, res, next) {
   let authorization = req.headers["authorization"];
   if (authorization) {
     let sessionId = authorization;
-    getTokenFromBySessionId(sessionId).then((response) => {
+    getTokenBySessionId(sessionId).then((response) => {
       let session = response.data;
       jwt.verify(session.token, secret, (err, decoded) => {
         if (err) {
@@ -115,6 +153,25 @@ function verifyAdminToken(req, res, next) {
     return res.sendStatus(401);
   }
 }
+function verifyEmailToken(req, res, next) {
+  getVerifyTokenBySessionId(req.params.sessionId)
+    .then((response) => {
+      let session = response.data;
+      jwt.verify(session.token, secret, (err, decoded) => {
+        if (err) {
+          console.log("helper - emailVerifyToken", err);
+          res.sendStatus(500);
+        } else {
+          req.decoded = decoded;
+          removeVerifyTokenBySessionId(req.params.sessionId);
+          next();
+        }
+      });
+    })
+    .catch((response) => {
+      res.sendStatus(response.code);
+    });
+}
 function verifyToken(req, res, next) {
   let authorization = req.headers["authorization"];
   let url = req.originalUrl.split("?")[0];
@@ -124,7 +181,7 @@ function verifyToken(req, res, next) {
   }
   if (authorization) {
     let sessionId = authorization;
-    getTokenFromBySessionId(sessionId).then((response) => {
+    getTokenBySessionId(sessionId).then((response) => {
       let session = response.data;
       jwt.verify(session.token, secret, (err, decoded) => {
         if (err) {
@@ -201,9 +258,11 @@ module.exports = {
   getHash,
   getEntryText,
   createSession,
-  getTokenFromBySessionId,
+  createVerifySession,
+  getTokenBySessionId,
   removeTokenBySessionId,
   verifyAdminToken,
+  verifyEmailToken,
   verifyToken,
   upload,
   setDb,

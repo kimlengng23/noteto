@@ -12,7 +12,7 @@ import HomePage from "../views/HomePage.vue";
 import NewDatabase from "../views/NewDatabase.vue";
 import UserRegister from "../views/UserRegister.vue";
 import GroupRegister from "../views/GroupRegister.vue";
-
+import EmailVerify from "../views/EmailVerify.vue";
 import JaekJayCargoReceipt from "../custom-views/JaekJayCargoReceipt.vue";
 import JaekJayCustomOrderReceipt from "../custom-views/JaekJayCustomOrderReceipt.vue";
 //import BillTrackerReceipt from "../components/BillTrackerReceipt.vue";
@@ -77,6 +77,11 @@ const routes = [
     component: GroupRegister,
   },
   {
+    path: "/verify/email/:sessionId",
+    name: "EmailVerify",
+    component: EmailVerify,
+  },
+  {
     path: "/custom/view",
     name: "CustomView",
     component: CustomView,
@@ -106,7 +111,8 @@ router.beforeEach((to, from, next) => {
     to.name == "JaekJayCustomOrderReceipt" ||
     to.name == "Login" ||
     to.name == "UserRegister" ||
-    to.name == "Home"
+    to.name == "Home" ||
+    to.name == "EmailVerify"
   ) {
     next();
   } else if (store.getters.isLoggedIn || localStorage.getItem("sessionId")) {

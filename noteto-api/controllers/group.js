@@ -1,5 +1,5 @@
 const express = require("express");
-const helper = require("../helper.js");
+const helper = require("../js/helper.js");
 const groupService = require("../services/group.js");
 const databaseService = require("../services/database.js");
 const app = express();

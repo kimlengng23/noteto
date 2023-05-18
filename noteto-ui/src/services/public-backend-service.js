@@ -10,4 +10,8 @@ export default {
     let url = domain + `/api/get/entry/${id}`;
     return axios.get(url);
   },
+  verifyEmailBySessionId(sessionId) {
+    let url = domain + `/api/verify/by/session/${sessionId}`;
+    return axios.get(url);
+  },
 };

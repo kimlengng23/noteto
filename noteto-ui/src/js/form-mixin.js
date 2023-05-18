@@ -9,6 +9,7 @@ export default {
       email: "",
       isFormValid: false,
       isLoading: false,
+      isSuccessful: false,
       isUpdatingLoading: false,
       displayName: "",
       value: "",
@@ -53,6 +54,7 @@ export default {
       this.password = "";
       this.confPassword = "";
       this.email = "";
+      this.isSuccessful = false;
     },
     validate() {
       return this.$refs.form.validate();

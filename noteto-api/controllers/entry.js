@@ -1,5 +1,5 @@
 const express = require("express");
-const helper = require("../helper.js");
+const helper = require("../js/helper.js");
 const entryService = require("../services/entry.js");
 const app = express();
 

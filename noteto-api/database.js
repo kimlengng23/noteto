@@ -1,6 +1,6 @@
 const { MongoClient, ObjectID } = require("mongodb");
-const connUrl = "mongodb://127.0.0.1:27017";
-const dbName = "Noteto";
+const connUrl = process.env.CONN_STR;
+const dbName = process.env.DB_NAME;
 const connOption = {
   useUnifiedTopology: true,
 };
