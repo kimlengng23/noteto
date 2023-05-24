@@ -200,7 +200,7 @@ function verifyToken(req, res, next) {
 }
 //=======================================================================================
 function getEntryText(field, fldVal) {
-  if (!_.isNumeric(fldVal) && f_.isEmpty(fldVal)) {
+  if (!_.isNumber(fldVal) && f_.isEmpty(fldVal)) {
     return "";
   }
   if (field.type == "multipleSelect") {
