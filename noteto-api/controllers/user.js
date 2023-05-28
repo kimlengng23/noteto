@@ -128,16 +128,6 @@ app.get("/get/avatars", (req, res) => {
       res.sendStatus(response.code);
     });
 });
-app.get("/verify/account/:id", (req, res) => {
-  let sql = "UPDATE User t SET t.verified = true";
-  dbConn.query(sql, [], (err, result) => {
-    if (err) {
-      res.sendStatus(500);
-    } else {
-      res.sendStatus(200);
-    }
-  });
-});
 app.get("/get/avatar", (req, res) => {
   let options = {
     root: path.join(__dirname, "../assets"),

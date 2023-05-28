@@ -41,52 +41,6 @@
       </tr>
     </template>
   </v-data-table>
-  <!-- <table class="table">
-    <thead>
-      <tr>
-        <th v-for="header in headers" :key="header.value">
-          {{ header.text }}
-        </th>
-      </tr>
-      <tr>
-        <th
-          style="background: white"
-          v-for="header in headers"
-          :key="header.value"
-        >
-          <v-text-field
-            class="filter"
-            v-model="search[header.value]"
-            placeholder="filter"
-            solo-inverted
-            hide-details
-            flat
-          ></v-text-field>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr
-        v-for="(entry, idx) in filteredEntries"
-        :class="[
-          idx % 2 == 0 ? 'bg-grey entry' : 'entry',
-          selected == entry.id ? 'selected-row' : '',
-        ]"
-        :key="entry._id"
-        @click="highlightRow(entry.id)"
-        @dblclick="goToDetailForm(item._id)"
-      >
-        <td v-for="header in headers" :key="`${idx}-${header.value}`">
-          <span v-if="header.value != 'id'">{{
-            getEntryText(header, entry)
-          }}</span>
-          <a v-else @click="goToDetailForm(entry._id)">{{
-            getEntryText(header, entry)
-          }}</a>
-        </td>
-      </tr>
-    </tbody>
-  </table> -->
 </template>
 <script>
 //import backendService from "../services/backend-service.js";
@@ -131,8 +85,7 @@ export default {
       return entries;
     },
     headers() {
-      let rawHeaders =
-        this.$store.getters["databaseToHeaders"][this.database.value];
+      let rawHeaders = this.$store.getters["headers"];
       let processedHeaders = [];
       if (!rawHeaders) return processedHeaders;
       for (let i = 0; i < rawHeaders.length; i++) {
