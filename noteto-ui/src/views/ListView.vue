@@ -149,7 +149,7 @@ export default {
         return entry[header.value].map((e) => this.getFullName(e)).join(", ");
       } else if (header.type == "date") {
         let date = new Date(entry[header.value]);
-        return `${date.getMonth()}/${date.getDate()}/${date.getFullYear()}`;
+        return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
       } else if (header.type == "number") {
         return entry[header.value];
       } else {

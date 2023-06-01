@@ -217,7 +217,7 @@ function getEntryText(field, fldVal) {
     return fldVal.map((e) => getFullName(e)).join(", ");
   } else if (field.type == "date") {
     let date = new Date(fldVal);
-    return `${date.getMonth()}/${date.getDate()}/${date.getFullYear()}`;
+    return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
   } else if (field.type == "number") {
     return fldVal;
   } else if (field.type == "list") {
