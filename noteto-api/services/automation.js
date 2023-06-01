@@ -7,7 +7,7 @@ function setDb(conn) {
   helper.setDb(conn);
 }
 function addAutomation(automation) {
-  let todayDate = new Date().getTime();
+  let todayDate = new Date();
   automation["dateCreated"] = todayDate;
   automation["dateModified"] = todayDate;
   automation["isActive"] = true;
@@ -43,7 +43,7 @@ function getAutomationsByDatabase(database) {
   return promise;
 }
 function updateAutomation(automation) {
-  let todayDate = new Date().getTime();
+  let todayDate = new Date();
   let automationId = automation._id;
   automation["dateModified"] = todayDate;
   delete automation["_id"];

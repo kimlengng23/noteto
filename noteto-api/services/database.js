@@ -8,7 +8,7 @@ function setDb(conn) {
   helper.setDb(conn);
 }
 function addDatabase(database) {
-  let todayDate = new Date().getTime();
+  let todayDate = new Date();
   let systemFields = [
     {
       value: "owner",
@@ -51,7 +51,7 @@ function addDatabase(database) {
       isActive: true,
     },
   ];
-  database.dateCreated = new Date().getTime();
+  database.dateCreated = new Date();
   database.isActive = true;
   database.groups = [];
   let promise = new Promise((resolve, reject) => {

@@ -48,7 +48,7 @@ function getDatabaseToFields() {
 }
 function addField(field) {
   field.isActive = true;
-  field.dateCreated = new Date().getTime();
+  field.dateCreated = new Date();
   let promise = new Promise((resolve, reject) => {
     dbConn.collection("FieldCollection").insertOne(field, (err, result) => {
       if (err) {

@@ -29,7 +29,7 @@ function createSession(sessionInfo) {
   let promise = new Promise((resolve, reject) => {
     let session = {};
     let token = jwt.sign(sessionInfo, secret, { expiresIn: "7 days" });
-    let date = new Date().getTime();
+    let date = new Date();
     session["userId"] = sessionInfo.userId;
     session["token"] = token;
     session["dateCreated"] = date;
@@ -49,7 +49,7 @@ function createVerifySession(sessionInfo) {
   let promise = new Promise((resolve, reject) => {
     let session = {};
     let token = jwt.sign(sessionInfo, secret, { expiresIn: "1 days" });
-    let date = new Date().getTime();
+    let date = new Date();
     session["email"] = sessionInfo["email"].toLowerCase().trim();
     session["token"] = token;
     session["dateCreated"] = date;

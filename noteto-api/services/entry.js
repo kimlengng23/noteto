@@ -11,7 +11,7 @@ function getNextId(database) {
     .findOneAndUpdate({ database: database }, { $inc: { seqValue: 1 } });
 }
 function addEntry(entry) {
-  let todayDate = new Date().getTime();
+  let todayDate = new Date();
   let promise = new Promise((resolve, reject) => {
     getNextId(entry.database).then((document) => {
       entry.id = document.value.seqValue;
@@ -116,7 +116,7 @@ function getEntriesByDatabase(database) {
 function updateEntry(entry) {
   let promise = new Promise((resolve, reject) => {
     let id = entry["_id"];
-    let todayDate = new Date().getTime();
+    let todayDate = new Date();
     entry.dateLastModified = todayDate;
     delete entry["_id"];
     dbConn

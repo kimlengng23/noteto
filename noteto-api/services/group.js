@@ -7,7 +7,7 @@ function setDb(conn) {
   helper.setDb(conn);
 }
 function addGroup(group) {
-  group["dateCreated"] = new Date().getTime();
+  group["dateCreated"] = new Date();
   group["isActive"] = true;
   let promise = new Promise((resolve, reject) => {
     dbConn.collection("GroupCollection").insertOne(group, (err, result) => {

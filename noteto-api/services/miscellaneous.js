@@ -5,7 +5,7 @@ function setDb(conn) {
   helper.setDb(conn);
 }
 function addHeaders(headers) {
-  let todayDate = new Date().getTime();
+  let todayDate = new Date();
   let promise = new Promise((resolve, reject) => {
     headers.forEach((header) => {
       if (header._id) {

@@ -7,7 +7,7 @@ function setDb(conn) {
   helper.setDb(conn);
 }
 function addComment(comment) {
-  let todayDate = new Date().getTime();
+  let todayDate = new Date();
   comment["dateCreated"] = todayDate;
   comment["dateModified"] = todayDate;
   comment["isActive"] = true;
@@ -43,7 +43,7 @@ function getCommentsByEntry(entry) {
   return promise;
 }
 function updateComment(comment) {
-  let todayDate = new Date().getTime();
+  let todayDate = new Date();
   let commentId = comment._id;
   comment["dateModified"] = todayDate;
   delete comment["_id"];

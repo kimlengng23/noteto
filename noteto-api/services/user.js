@@ -9,7 +9,7 @@ function setDb(conn) {
 function addAccount(userAccount) {
   let salt = helper.getSalt();
   let saltedPassword = helper.getHash(userAccount.password, salt);
-  userAccount["dateCreated"] = new Date().getTime();
+  userAccount["dateCreated"] = new Date();
   userAccount["email"] = userAccount["email"].toLowerCase().trim();
   userAccount["username"] = userAccount["email"].toLowerCase().trim();
   userAccount["password"] = saltedPassword;
