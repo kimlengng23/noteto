@@ -15,125 +15,133 @@ import GroupRegister from "../views/GroupRegister.vue";
 import EmailVerify from "../views/EmailVerify.vue";
 import JaekJayCargoReceipt from "../custom-views/JaekJayCargoReceipt.vue";
 import JaekJayCustomOrderReceipt from "../custom-views/JaekJayCustomOrderReceipt.vue";
+import JaekJayWholesale from "../custom-views/JaekJayWholesale.vue";
 //import BillTrackerReceipt from "../components/BillTrackerReceipt.vue";
 import store from "../stores/index.js";
 Vue.use(VueRouter);
 //const scrollSection = document.getElementById("SCROLL_SECTION_ID");
 const routes = [
-  {
-    path: "/list",
-    name: "ListView",
-    component: ListView,
-  },
-  {
-    path: "/new/entry",
-    name: "NewEntry",
-    component: EntryForm,
-  },
-  {
-    path: "/detail/:id",
-    name: "DetailForm",
-    component: DetailForm,
-  },
-  {
-    path: "/form/setting",
-    name: "FormSetting",
-    component: FormSetting,
-  },
-  {
-    path: "/layout",
-    name: "Layout",
-    component: LayoutMapping,
-  },
-  {
-    path: "/login",
-    name: "Login",
-    component: LoginPage,
-  },
-  {
-    path: "/logout",
-    name: "Logout",
-    component: LogoutPage,
-  },
+	{
+		path: "/list",
+		name: "ListView",
+		component: ListView,
+	},
+	{
+		path: "/new/entry",
+		name: "NewEntry",
+		component: EntryForm,
+	},
+	{
+		path: "/detail/:id",
+		name: "DetailForm",
+		component: DetailForm,
+	},
+	{
+		path: "/form/setting",
+		name: "FormSetting",
+		component: FormSetting,
+	},
+	{
+		path: "/layout",
+		name: "Layout",
+		component: LayoutMapping,
+	},
+	{
+		path: "/login",
+		name: "Login",
+		component: LoginPage,
+	},
+	{
+		path: "/logout",
+		name: "Logout",
+		component: LogoutPage,
+	},
 
-  {
-    path: "/",
-    name: "Home",
-    component: HomePage,
-  },
-  {
-    path: "/new/database",
-    name: "NewDatabase",
-    component: NewDatabase,
-  },
-  {
-    path: "/register/user",
-    name: "UserRegister",
-    component: UserRegister,
-  },
-  {
-    path: "/register/group",
-    name: "GroupRegister",
-    component: GroupRegister,
-  },
-  {
-    path: "/verify/email/:sessionId",
-    name: "EmailVerify",
-    component: EmailVerify,
-  },
-  {
-    path: "/custom/view",
-    name: "CustomView",
-    component: CustomView,
-    children: [
-      {
-        path: "jaekjaycargoreceipt/:id",
-        name: "JaekJayCargoReceipt",
-        component: JaekJayCargoReceipt,
-      },
-      {
-        path: "jaekjaycustomorderreceipt/:id",
-        name: "JaekJayCustomOrderReceipt",
-        component: JaekJayCustomOrderReceipt,
-      },
-    ],
-  },
+	{
+		path: "/",
+		name: "Home",
+		component: HomePage,
+	},
+	{
+		path: "/new/database",
+		name: "NewDatabase",
+		component: NewDatabase,
+	},
+	{
+		path: "/register/user",
+		name: "UserRegister",
+		component: UserRegister,
+	},
+	{
+		path: "/register/group",
+		name: "GroupRegister",
+		component: GroupRegister,
+	},
+	{
+		path: "/verify/email/:sessionId",
+		name: "EmailVerify",
+		component: EmailVerify,
+	},
+	{
+		path: "/custom/view",
+		name: "CustomView",
+		component: CustomView,
+		children: [
+			{
+				path: "jaekjaycargoreceipt/:id",
+				name: "JaekJayCargoReceipt",
+				component: JaekJayCargoReceipt,
+			},
+			{
+				path: "jaekjaycustomorderreceipt/:id",
+				name: "JaekJayCustomOrderReceipt",
+				component: JaekJayCustomOrderReceipt,
+			},
+			{
+				path: "jaekjaywholesale",
+				name: "JaekJayWholesale",
+				component: JaekJayWholesale,
+			},
+		],
+	},
 ];
 
 const router = new VueRouter({
-  routes,
+	routes,
 });
 router.beforeEach((to, from, next) => {
-  //scrollSection.style.overflow = "hidden";
-  if (
-    to.name == "CustomView" ||
-    to.name == "JaekJayCargoReceipt" ||
-    to.name == "JaekJayCustomOrderReceipt" ||
-    to.name == "Login" ||
-    to.name == "UserRegister" ||
-    to.name == "Home" ||
-    to.name == "EmailVerify"
-  ) {
-    next();
-  } else if (store.getters.isLoggedIn || localStorage.getItem("sessionId")) {
-    if (
-      to.name == "Layout" ||
-      to.name == "FormSetting" ||
-      to.name == "NewDatabase" ||
-      to.name == "GroupRegister" ||
-      to.name == "Logout"
-    ) {
-      next();
-    } else if (
-      (store.getters.currentDatabase && store.getters.currentDatabase.value) ||
-      localStorage.getItem("currentDatabase")
-    ) {
-      next();
-    } else {
-      next({ name: "Home" });
-    }
-  } else {
-    next({ name: "Login" });
-  }
+	//scrollSection.style.overflow = "hidden";
+	if (
+		to.name == "CustomView" ||
+		to.name == "JaekJayCargoReceipt" ||
+		to.name == "JaekJayCustomOrderReceipt" ||
+		to.name == "JaekJayWholesale" ||
+		to.name == "Login" ||
+		to.name == "UserRegister" ||
+		to.name == "Home" ||
+		to.name == "EmailVerify"
+	) {
+		next();
+	} else if (store.getters.isLoggedIn || localStorage.getItem("sessionId")) {
+		if (
+			to.name == "Layout" ||
+			to.name == "FormSetting" ||
+			to.name == "NewDatabase" ||
+			to.name == "GroupRegister" ||
+			to.name == "Logout"
+		) {
+			next();
+		} else if (
+			(store.getters.currentDatabase &&
+				store.getters.currentDatabase.value) ||
+			localStorage.getItem("currentDatabase")
+		) {
+			next();
+		} else {
+			next({ name: "Home" });
+		}
+	} else {
+		next({ name: "Login" });
+	}
 });
 export default router;
