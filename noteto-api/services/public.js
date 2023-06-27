@@ -56,6 +56,7 @@ function getEntriesByDatabase(database) {
 								let entry = {};
 								for (let i = 0; i < fields.length; i++) {
 									let field = fields[i];
+									console.log(results[i]);
 									let fldVal = results[i][field.value];
 									entry[field.value] = helper.getEntryText(
 										field,
