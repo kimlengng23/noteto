@@ -16,7 +16,7 @@ import EmailVerify from "../views/EmailVerify.vue";
 import JaekJayCargoReceipt from "../custom-views/JaekJayCargoReceipt.vue";
 import JaekJayCustomOrderReceipt from "../custom-views/JaekJayCustomOrderReceipt.vue";
 import JaekJayWholesale from "../custom-views/JaekJayWholesale.vue";
-import jaekJayMainWholesale from "../custom-views/jaekJayMainWholesale.vue";
+import JaekJayMainWholesale from "../custom-views/JaekJayMainWholesale.vue";
 //import BillTrackerReceipt from "../components/BillTrackerReceipt.vue";
 import store from "../stores/index.js";
 Vue.use(VueRouter);
@@ -106,7 +106,7 @@ const routes = [
 			{
 				path: "jaekJayMainWholesale",
 				name: "jaekJayMainWholesale",
-				component: jaekJayMainWholesale,
+				component: JaekJayMainWholesale,
 			},
 		],
 	},
