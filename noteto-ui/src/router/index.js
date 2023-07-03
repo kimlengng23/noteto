@@ -16,6 +16,7 @@ import EmailVerify from "../views/EmailVerify.vue";
 import JaekJayCargoReceipt from "../custom-views/JaekJayCargoReceipt.vue";
 import JaekJayCustomOrderReceipt from "../custom-views/JaekJayCustomOrderReceipt.vue";
 import JaekJayWholesale from "../custom-views/JaekJayWholesale.vue";
+import jaekJayMainWholesale from "../custom-views/jaekJayMainWholesale.vue";
 //import BillTrackerReceipt from "../components/BillTrackerReceipt.vue";
 import store from "../stores/index.js";
 Vue.use(VueRouter);
@@ -102,6 +103,11 @@ const routes = [
 				name: "JaekJayWholesale",
 				component: JaekJayWholesale,
 			},
+			{
+				path: "jaekJayMainWholesale",
+				name: "jaekJayMainWholesale",
+				component: jaekJayMainWholesale,
+			},
 		],
 	},
 ];
@@ -116,6 +122,7 @@ router.beforeEach((to, from, next) => {
 		to.name == "JaekJayCargoReceipt" ||
 		to.name == "JaekJayCustomOrderReceipt" ||
 		to.name == "JaekJayWholesale" ||
+		to.name == "jaekJayMainWholesale" ||
 		to.name == "Login" ||
 		to.name == "UserRegister" ||
 		to.name == "Home" ||

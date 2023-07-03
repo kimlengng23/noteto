@@ -36,7 +36,7 @@
 import publicService from "@/services/public-backend-service";
 
 export default {
-	name: "JaekJayWholesale",
+	name: "jaekJayMainWholesale",
 	data() {
 		return {
 			entries: [],
@@ -44,7 +44,7 @@ export default {
 	},
 	mounted: function () {
 		publicService
-			.getEntriesByDatabase("jaekJayWholesale")
+			.getEntriesByDatabase("jaekJayMainWholesale")
 			.then((response) => {
 				this.entries = response.data;
 				this.entries.sort(function (a, b) {
