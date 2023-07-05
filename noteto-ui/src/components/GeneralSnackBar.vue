@@ -16,7 +16,7 @@
 <script>
 import eventBus from "../js/event-bus.js";
 export default {
-	name: "GeneralSnackBar",
+	name: "GeneralSnackbar",
 	data() {
 		return {
 			snackbar: false,

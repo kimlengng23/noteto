@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import CustomView from "../views/CustomView.vue";
 import ListView from "../views/ListView.vue";
 import EntryForm from "../views/EntryForm.vue";
+import DatabaseAccess from "../views/DatabaseAccess.vue";
 import DetailForm from "../views/DetailForm.vue";
 import FormSetting from "../views/FormSetting.vue";
 import LayoutMapping from "@/views/LayoutMapping.vue";
@@ -67,6 +68,11 @@ const routes = [
 		path: "/new/database",
 		name: "NewDatabase",
 		component: NewDatabase,
+	},
+	{
+		path: "/database/access",
+		name: "DatabaseAccess",
+		component: DatabaseAccess,
 	},
 	{
 		path: "/register/user",
@@ -135,7 +141,8 @@ router.beforeEach((to, from, next) => {
 			to.name == "FormSetting" ||
 			to.name == "NewDatabase" ||
 			to.name == "GroupRegister" ||
-			to.name == "Logout"
+			to.name == "Logout" ||
+			to.name == "DatabaseAccess"
 		) {
 			next();
 		} else if (

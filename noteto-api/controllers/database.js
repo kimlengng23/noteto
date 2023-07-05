@@ -7,54 +7,102 @@ const path = require("path");
 let dbConn = null;
 
 function setDb(conn) {
-  databaseService.setDb(conn);
+	databaseService.setDb(conn);
 }
 
 app.use(express.json());
 app.use(helper.verifyToken);
 app.post("/add", helper.verifyAdminToken, (req, res) => {
-  let database = req.body;
-  databaseService
-    .addDatabase(database)
-    .then((response) => {
-      res.sendStatus(response.code);
-    })
-    .catch((response) => {
-      res.status(response.code).send(response.message);
-    });
+	let database = req.body;
+	database.createdBy = {
+		_id: req.decoded.userId,
+		first: req.decoded.first,
+		last: req.decoded.last,
+		username: req.decoded.username,
+	};
+	databaseService
+		.addDatabase(database)
+		.then((response) => {
+			res.sendStatus(response.code);
+		})
+		.catch((response) => {
+			res.status(response.code).send(response.message);
+		});
+});
+
+app.get("/get/database/to/accesses", helper.verifyAdminToken, (req, res) => {
+	databaseService
+		.getDatabaseToAccesses()
+		.then((response) => {
+			res.status(response.code).send(response.data);
+		})
+		.catch((response) => {
+			res.status(response.code).send(response.message);
+		});
 });
 app.get("/get/all/", helper.verifyAdminToken, (req, res) => {
-  databaseService
-    .getAllDatabases()
-    .then((response) => {
-      res.status(response.code).send(response.data);
-    })
-    .catch((response) => {
-      res.status(response.code).send(response.message);
-    });
+	databaseService
+		.getAllDatabases()
+		.then((response) => {
+			res.status(response.code).send(response.data);
+		})
+		.catch((response) => {
+			res.status(response.code).send(response.message);
+		});
 });
+app.get(
+	"/get/accesses/by/database/:database",
+	helper.verifyAdminToken,
+	(req, res) => {
+		databaseService
+			.getAccessesByDatabase(req.params.database)
+			.then((response) => {
+				res.status(response.code).send(response.data);
+			})
+			.catch((response) => {
+				res.status(response.code).send(response.message);
+			});
+	}
+);
 app.get("/get/by/userId/:userId", (req, res) => {
-  databaseService
-    .getDatabasesByUserId(req.params.userId)
-    .then((response) => {
-      res.status(response.code).send(response.data);
-    })
-    .catch((response) => {
-      res.status(response.code).send(response.message);
-    });
+	databaseService
+		.getDatabasesByUserId(req.params.userId)
+		.then((response) => {
+			res.status(response.code).send(response.data);
+		})
+		.catch((response) => {
+			res.status(response.code).send(response.message);
+		});
+});
+app.post("/update/access", helper.verifyAdminToken, (req, res) => {
+	let wrappedAccess = req.body;
+	let createdBy = {
+		_id: req.decoded.userId,
+		first: req.decoded.first,
+		last: req.decoded.last,
+		username: req.decoded.username,
+	};
+	databaseService
+		.updateDatabaseAccess(wrappedAccess, createdBy)
+		.then((response) => {
+			res.sendStatus(response.code);
+		})
+		.catch((response) => {
+			res.status(response.code).send(response.message);
+		});
 });
 app.post("/update/groups", helper.verifyAdminToken, (req, res) => {
-  let database = req.body;
-  databaseService
-    .updateGroupsInDatabase(database)
-    .then((response) => {
-      res.sendStatus(response.code);
-    })
-    .catch((response) => {
-      res.status(response.code).send(response.message);
-    });
+	let database = req.body;
+	databaseService
+		.updateGroupsInDatabase(database)
+		.then((response) => {
+			res.sendStatus(response.code);
+		})
+		.catch((response) => {
+			res.status(response.code).send(response.message);
+		});
 });
 module.exports = {
-  app,
-  setDb,
+	app,
+	setDb,
 };
