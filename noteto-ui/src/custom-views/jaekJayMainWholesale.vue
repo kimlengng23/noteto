@@ -18,7 +18,10 @@
 							</v-card-text>
 							<v-card-text
 								class="padless d-flex justify-space-between red--text">
-								<h2>${{ entry.wholesalePrice.toFixed(2) }}</h2>
+								<h2>
+									{{ "$"
+									}}{{ entry.wholesalePrice.toFixed(2) }}
+								</h2>
 								<h2>
 									{{
 										`Min: ${entry.minQty} ${entry.unitType}`
