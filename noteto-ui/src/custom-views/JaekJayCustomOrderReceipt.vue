@@ -73,7 +73,6 @@
 									<th class="text-left">Item</th>
 									<th class="text-left">Qty</th>
 									<th class="text-left">Unit Price</th>
-									<th class="text-left">Tax</th>
 									<th class="text-left">Line Total</th>
 								</tr>
 							</thead>
@@ -87,25 +86,22 @@
 									</td>
 									<td class="text-subtitle-1">
 										{{ "$" }}
-										{{ item.itemUnitPrice.toFixed(2) }}
-									</td>
-									<td class="text-subtitle-1">
-										$
 										{{
 											(
-												(item.itemUnitPrice *
-													item.itemTax) /
-													100 +
+												item.itemUnitPrice *
+													(1 + item.itemTax / 100.0) +
 												0.00001
 											).toFixed(2)
 										}}
 									</td>
+
 									<td class="text-subtitle-1">
 										$
 										{{
 											(
 												item.itemQty *
-													item.itemUnitPrice +
+													item.itemUnitPrice *
+													(1 + item.itemTax / 100) +
 												0.00001
 											).toFixed(2)
 										}}
@@ -117,14 +113,13 @@
 									</td>
 									<td></td>
 									<td></td>
-									<td></td>
+
 									<td class="text-subtitle-1">
 										$ {{ collectingFee.toFixed(2) }}
 									</td>
 								</tr>
 								<tr>
 									<td class="text-subtitle-1">Total</td>
-									<td></td>
 									<td></td>
 									<td></td>
 									<td class="text-subtitle-1">
