@@ -247,6 +247,49 @@ function getEntryText(field, fldVal) {
 		return fldVal;
 	}
 }
+function isDiff(fld, oVal, nVal) {
+	if (fld.type.includes("currency")) {
+		return oVal != nVal;
+	} else if (fld.type.includes("weight")) {
+		return oVal != nVal;
+	} else if (fld.type == "number") {
+		return oVal != nVal;
+	}
+	if (_.isEmpty(oVal) != _.isEmpty(nVal)) {
+		return true;
+	} else if (_.isEmpty(oVal) && _.isEmpty(nVal)) {
+		return false;
+	}
+	if (fld.type == "multipleSelect" || fld.type == "multipleUsers") {
+		if (oVal.length != nVal.length) return true;
+		let set = new Set();
+		for (let i = 0; i < oVal.length; i++) {
+			let ch = oVal[i];
+			set.add(ch._id);
+		}
+		for (let i = 0; i < nVal.length; i++) {
+			let ch = nVal[i];
+			if (!set.has(ch._id)) {
+				return true;
+			}
+		}
+	} else if (fld.type == "singleSelect") {
+		return oVal._id !== nVal._id;
+	} else if (fld.type == "singleUser") {
+		return oVal._id !== nVal._id;
+	} else if (fld.type == "date") {
+		let oTime = new Date(oVal).getTime();
+		let nTime = new Date(nVal).getTime();
+		return oTime != nTime;
+	} else if (fld.type == "list") {
+		if (oVal.length != nVal.length) {
+			return true;
+		}
+	} else {
+		return false;
+	}
+	return false;
+}
 function getFullName(user) {
 	return user.first.trim() + " " + user.last.trim();
 }
@@ -271,6 +314,7 @@ module.exports = {
 	createSession,
 	createVerifySession,
 	getTokenBySessionId,
+	isDiff,
 	removeTokenBySessionId,
 	verifyAdminToken,
 	verifyEmailToken,

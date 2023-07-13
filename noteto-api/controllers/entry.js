@@ -12,15 +12,15 @@ function setDb(conn) {
 app.use(express.json());
 app.use(helper.verifyToken);
 app.post("/add", (req, res) => {
-	let entry = req.body;
-	entry.owner = {
+	let wrappedEntry = req.body;
+	owner = {
 		_id: req.decoded.userId,
 		first: req.decoded.first,
 		last: req.decoded.last,
 		username: req.decoded.username,
 	};
 	entryService
-		.addEntry(entry)
+		.addEntry2(wrappedEntry.oldEntry, wrappedEntry.newEntry, owner)
 		.then((response) => {
 			res.status(response.code).send(response.data);
 		})
@@ -60,9 +60,16 @@ app.get("/get/empty/:database", (req, res) => {
 		});
 });
 app.post("/update/", (req, res) => {
-	let entry = req.body;
+	let wrappedEntry = req.body;
+	let createdBy = {};
+	createdBy = {
+		_id: req.decoded.userId,
+		first: req.decoded.first,
+		last: req.decoded.last,
+		username: req.decoded.username,
+	};
 	entryService
-		.updateEntry(entry)
+		.updateEntry2(wrappedEntry.oldEntry, wrappedEntry.newEntry, createdBy)
 		.then((response) => {
 			res.status(response.code).send(response.data);
 		})

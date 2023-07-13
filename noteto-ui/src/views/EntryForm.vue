@@ -411,9 +411,12 @@ export default {
 	},
 	methods: {
 		addEntry() {
+			let wrappedEntry = {};
 			this.isLoading = true;
 			this.entry.database = this.database.value;
-			backendService.addEntry(this.entry).then((response) => {
+			wrappedEntry.newEntry = this.entry;
+			wrappedEntry.oldEntry = this.emptyEntry;
+			backendService.addEntry(wrappedEntry).then((response) => {
 				this.original = JSON.stringify(this.entry);
 				this.$store.commit("addEntry", response.data);
 				setTimeout(() => {
