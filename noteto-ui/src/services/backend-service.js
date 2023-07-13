@@ -164,7 +164,11 @@ export default {
 		let headers = getHeaders();
 		return axios.get(url, { headers: headers });
 	},
-
+	getHistoryByEntryId(entryId) {
+		let url = domain + `/history/get/by/entry/id/${entryId}`;
+		let headers = getHeaders();
+		return axios.get(url, { headers: headers });
+	},
 	registerUser(account) {
 		let url = domain + `/user/register`;
 		return axios.post(url, account);
@@ -182,10 +186,10 @@ export default {
 		let url = domain + `/search/entries`;
 		return axios.post(url, filter).catch();
 	},
-	updateEntry(entry) {
+	updateEntry(wrappedEntry) {
 		let url = domain + `/entry/update`;
 		let headers = getHeaders();
-		return axios.post(url, entry, { headers: headers });
+		return axios.post(url, wrappedEntry, { headers: headers });
 	},
 	updateField(field) {
 		let url = domain + `/field/update`;

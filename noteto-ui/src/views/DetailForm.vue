@@ -191,6 +191,7 @@
 											v-model="entry[col.field]"
 											return-object
 											:items="fieldToChoices[col.field]"
+											item-text="displayName"
 											deletable-chipsoutlined
 											multiple
 											chips
@@ -236,6 +237,7 @@
 												!isEditing
 											"></v-autocomplete>
 										<v-menu
+											class="pb-5"
 											v-else-if="
 												fieldToField[col.field].type ===
 												'date'
@@ -252,21 +254,44 @@
 													on,
 													attrs,
 												}">
-												<v-text-field
-													:value="
-														formatDate(
-															entry[col.field]
-														)
-													"
-													:label="
-														fieldToField[col.field]
-															.displayName
-													"
-													persistent-hint
-													prepend-icon="mdi-calendar"
-													v-bind="attrs"
-													v-on="on"></v-text-field>
+												<div
+													class="d-flex justify-space-between">
+													<v-text-field
+														:value="
+															formatDate(
+																entry[col.field]
+															)
+														"
+														:label="
+															fieldToField[
+																col.field
+															].displayName
+														"
+														persistent-hint
+														prepend-icon="mdi-calendar"
+														v-bind="attrs"
+														v-on="
+															on
+														"></v-text-field>
+													<v-btn
+														class="mt-3"
+														color="primary"
+														rounded
+														depressed
+														:disabled="!isEditing"
+														@click="
+															entry[col.field] =
+																null;
+															datePicker[
+																col.field
+															] = false;
+														">
+														<i
+															class="fas fa-times"></i>
+													</v-btn>
+												</div>
 											</template>
+
 											<v-date-picker
 												v-model="entry[col.field]"
 												no-title
@@ -510,6 +535,7 @@
 															!isEditing
 														"></v-autocomplete>
 													<v-menu
+														class="pb-5"
 														v-else-if="
 															field.type ===
 															'date'
@@ -531,31 +557,59 @@
 																on,
 																attrs,
 															}">
-															<v-text-field
-																:value="
-																	formatDate(
+															<div
+																class="d-flex justify-space-between">
+																<v-text-field
+																	:value="
+																		formatDate(
+																			entry[
+																				col
+																					.field
+																			][
+																				lIdxI
+																			][
+																				field
+																					.value
+																			]
+																		)
+																	"
+																	:label="
+																		field.displayName
+																	"
+																	persistent-hint
+																	prepend-icon="mdi-calendar"
+																	v-bind="
+																		attrs
+																	"
+																	v-on="on"
+																	autocomplete="off"
+																	:readonly="
+																		!isEditing
+																	"></v-text-field>
+																<v-btn
+																	class="float-right"
+																	color="primary"
+																	rounded
+																	depressed
+																	:disabled="
+																		!isEditing
+																	"
+																	@click="
 																		entry[
-																			col
-																				.field
+																			col.field
 																		][
 																			lIdxI
 																		][
-																			field
-																				.value
-																		]
-																	)
-																"
-																:label="
-																	field.displayName
-																"
-																persistent-hint
-																prepend-icon="mdi-calendar"
-																v-bind="attrs"
-																v-on="on"
-																autocomplete="off"
-																:readonly="
-																	!isEditing
-																"></v-text-field>
+																			field.value
+																		] = null;
+																		datePicker[
+																			`${field.value}-${lIdxI}`
+																		] = false;
+																	">
+																	<i
+																		class="fas fa-times"></i>
+																</v-btn>
+															</div>
 														</template>
 														<v-date-picker
 															v-model="
@@ -653,6 +707,10 @@
 			</v-card-text>
 		</v-card>
 		<v-divider class="my-2"></v-divider>
+		<history-section
+			:history-lst="historyLst"
+			:fieldToField="fieldToField"></history-section>
+		<v-divider class="my-2"></v-divider>
 		<comment-section :entry="entry"></comment-section>
 	</v-container>
 </template>
@@ -660,11 +718,13 @@
 import eventBus from "../js/event-bus.js";
 import backendService from "../services/backend-service.js";
 import CommentSection from "../components/CommentSection.vue";
+import HistorySection from "../components/HistorySection.vue";
 import mixin from "../js/mixin.js";
 export default {
 	name: "DetailForm",
 	components: {
 		"comment-section": CommentSection,
+		"history-section": HistorySection,
 	},
 	mixins: [mixin],
 	data() {
@@ -673,6 +733,7 @@ export default {
 			original: {},
 			entry: {},
 			datePicker: {},
+			historyLst: [],
 			isNew: true,
 			isEditing: false,
 			isLoading: false,
@@ -725,8 +786,11 @@ export default {
 			}
 		},
 		updateEntry() {
+			let wrappedEntry = {};
+			wrappedEntry.oldEntry = JSON.parse(this.original);
+			wrappedEntry.newEntry = this.entry;
 			this.isLoading = true;
-			backendService.updateEntry(this.entry).then(() => {
+			backendService.updateEntry(wrappedEntry).then(() => {
 				setTimeout(() => {
 					this.isLoading = false;
 					this.original = JSON.stringify(this.entry);

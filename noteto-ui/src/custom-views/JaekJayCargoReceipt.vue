@@ -4,19 +4,10 @@
 			<v-card-text>
 				<v-row>
 					<v-col>
-						<v-row>
-							<v-col>
-								<div class="text-h4">Shipping Invoice</div>
-							</v-col>
-						</v-row>
-						<v-row>
-							<v-col>
-								<div class="text-h5">
-									{{ entry["customerPaymentStatus"] }}
-								</div>
-							</v-col>
-						</v-row>
+						<div class="text-h4">Shipping Invoice</div>
 					</v-col>
+				</v-row>
+				<v-row>
 					<v-col>
 						<v-row>
 							<v-col>
@@ -28,6 +19,32 @@
 								</div>
 							</v-col>
 						</v-row>
+						<v-row
+							class="red white--text"
+							v-if="entry.customerPaymentStatus == 'Pending'">
+							<v-col>
+								<div><h2>Payment Status</h2></div>
+							</v-col>
+							<v-col>
+								<div class="text-h5 float-right">
+									{{ entry.customerPaymentStatus }}
+								</div>
+							</v-col>
+						</v-row>
+						<v-row
+							class="green white--text"
+							v-else-if="entry.customerPaymentStatus == 'Paid'">
+							<v-col>
+								<div><h2>Payment Status</h2></div>
+							</v-col>
+							<v-col>
+								<div class="text-h5 float-right">
+									{{ entry.customerPaymentStatus }}
+								</div>
+							</v-col>
+						</v-row>
+					</v-col>
+					<v-col>
 						<v-row>
 							<v-col>
 								<div class="text-h6">Tracking Number</div>

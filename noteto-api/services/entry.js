@@ -1,5 +1,6 @@
 const helper = require("../js/helper.js");
 const { ObjectId } = require("mongodb");
+const historyService = require("./history.js");
 let dbConn = null;
 function setDb(conn) {
 	dbConn = conn;
@@ -10,7 +11,24 @@ function getNextId(database) {
 		.collection("SequenceCollection")
 		.findOneAndUpdate({ database: database }, { $inc: { seqValue: 1 } });
 }
-function addEntry(entry) {
+function addEntry2(orignal, newEntry, owner) {
+	let promise = new Promise((resolve, reject) => {
+		historyService.compareForHistory(orignal, newEntry).then((response) => {
+			let history = response.data;
+			newEntry.owner = owner;
+			addEntry1(newEntry).then((response) => {
+				let addEntryResponsse = response;
+				history.createdBy = owner;
+				history.entryId = response.data._id.toString();
+				historyService.addHistory(history).then(() => {
+					resolve(addEntryResponsse);
+				});
+			});
+		});
+	});
+	return promise;
+}
+function addEntry1(entry) {
 	let todayDate = new Date();
 	let promise = new Promise((resolve, reject) => {
 		getNextId(entry.database).then((document) => {
@@ -117,7 +135,23 @@ function getEntriesByDatabase(database) {
 	});
 	return promise;
 }
-function updateEntry(entry) {
+function updateEntry2(oldEntry, newEntry, createdBy) {
+	let promise = new Promise((resolve, reject) => {
+		historyService
+			.compareForHistory(oldEntry, newEntry)
+			.then((response) => {
+				let history = response.data;
+				history.createdBy = createdBy;
+				let pm1 = historyService.addHistory(history);
+				let pm2 = updateEntry1(newEntry);
+				Promise.all([pm1, pm2]).then((values) => {
+					resolve(values[0]);
+				});
+			});
+	});
+	return promise;
+}
+function updateEntry1(entry) {
 	let promise = new Promise((resolve, reject) => {
 		let id = entry["_id"];
 		let todayDate = new Date();
@@ -167,9 +201,11 @@ function backfill(database) {
 module.exports = {
 	setDb,
 	backfill,
-	addEntry,
+	addEntry1,
+	addEntry2,
 	getEntryById,
 	getEmptyEntryByDatabase,
 	getEntriesByDatabase,
-	updateEntry,
+	updateEntry1,
+	updateEntry2,
 };

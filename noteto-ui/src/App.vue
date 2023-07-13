@@ -105,4 +105,7 @@ h6,
 div {
 	font-family: "Montserrat", sans-serif;
 }
+.kh {
+	font-family: "Battambang", cursive;
+}
 </style>

@@ -4,19 +4,10 @@
 			<v-card-text>
 				<v-row>
 					<v-col>
-						<v-row>
-							<v-col>
-								<div class="text-h4">Order Invoice</div>
-							</v-col>
-						</v-row>
-						<v-row>
-							<v-col>
-								<div class="text-h5">
-									{{ entry.paymentStatus }}
-								</div>
-							</v-col>
-						</v-row>
+						<div class="text-h4">Order Invoice</div>
 					</v-col>
+				</v-row>
+				<v-row>
 					<v-col>
 						<v-row>
 							<v-col>
@@ -25,6 +16,42 @@
 							<v-col>
 								<div class="text-subtitle-1 float-right">
 									{{ entry.id }}
+								</div>
+							</v-col>
+						</v-row>
+						<v-row
+							class="red white--text"
+							v-if="entry.paymentStatus == 'Pending'">
+							<v-col>
+								<div><h2>Payment Status</h2></div>
+							</v-col>
+							<v-col>
+								<div class="text-h5 float-right">
+									{{ entry.paymentStatus }}
+								</div>
+							</v-col>
+						</v-row>
+						<v-row
+							class="green white--text"
+							v-else-if="entry.paymentStatus == 'Paid'">
+							<v-col>
+								<div><h2>Payment Status</h2></div>
+							</v-col>
+							<v-col>
+								<div class="text-h5 float-right">
+									{{ entry.paymentStatus }}
+								</div>
+							</v-col>
+						</v-row>
+					</v-col>
+					<v-col>
+						<v-row>
+							<v-col>
+								<div class="text-h6">Tracking Number</div>
+							</v-col>
+							<v-col>
+								<div class="text-subtitle-1 float-right">
+									{{ entry.mtlTracking }}
 								</div>
 							</v-col>
 						</v-row>
@@ -147,7 +174,6 @@ export default {
 	mounted: function () {
 		publicService.getReceiptById(this.$route.params.id).then((response) => {
 			//document.title = `${this.entry["id"] - this.entry["mtlTracking#"]}`;
-			console.log(response.data);
 			this.entry = response.data;
 		});
 	},

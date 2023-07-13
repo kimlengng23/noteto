@@ -1,9 +1,7 @@
 <template>
-	<div>
+	<v-container>
+		<h3>Comments on Entry</h3>
 		<v-card elevation="0" min-width="350" width="100%">
-			<v-card-title>
-				<h3>Comment on Entry</h3>
-			</v-card-title>
 			<v-card-text class="d-flex flex-column">
 				<div class="mb-2">
 					<v-textarea label="Comment" v-model="value"></v-textarea>
@@ -60,7 +58,7 @@
 				</div>
 			</v-card-text>
 		</v-card>
-	</div>
+	</v-container>
 </template>
 <script>
 import formMixin from "@/js/form-mixin";
