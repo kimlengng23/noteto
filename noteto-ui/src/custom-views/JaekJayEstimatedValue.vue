@@ -67,6 +67,7 @@ export default {
 		};
 	},
 	mounted: function () {
+		document.title = "Jaek Jay Estimated Value - នូតតូក - Noteto";
 		publicService
 			.getEntriesByDatabase("jaekJayEstimatedValue")
 			.then((response) => {
