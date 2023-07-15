@@ -98,21 +98,23 @@
 							<thead>
 								<tr>
 									<th class="text-left">Item</th>
-									<th class="text-left">Qty</th>
-									<th class="text-left">Unit Price</th>
-									<th class="text-left">Line Total</th>
+									<th class="text-right">Qty</th>
+									<th class="text-right">Unit Price</th>
+									<th class="text-right">Line Total</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr v-for="(item, idx) in itemList" :key="idx">
-									<td class="text-subtitle-1">
-										{{ item.itemTitle }}
+									<td
+										class="text-subtitle-1"
+										style="max-width: 800px">
+										<div>{{ item.itemTitle }}</div>
 									</td>
-									<td class="text-subtitle-1">
+									<td class="text-subtitle-1 text-right">
 										{{ item.itemQty }}
 									</td>
-									<td class="text-subtitle-1">
-										{{ "$" }}
+									<td class="text-subtitle-1 text-right">
+										$
 										{{
 											(
 												item.itemUnitPrice *
@@ -122,7 +124,7 @@
 										}}
 									</td>
 
-									<td class="text-subtitle-1">
+									<td class="text-subtitle-1 text-right">
 										$
 										{{
 											(
@@ -136,20 +138,24 @@
 								</tr>
 								<tr>
 									<td class="text-subtitle-1">
-										Fee {{ entry.collectingFee }} %
+										<div>
+											Fee {{ entry.collectingFee }} %
+										</div>
 									</td>
 									<td></td>
 									<td></td>
 
-									<td class="text-subtitle-1">
+									<td class="text-subtitle-1 text-right">
 										$ {{ collectingFee.toFixed(2) }}
 									</td>
 								</tr>
 								<tr>
-									<td class="text-subtitle-1">Total</td>
-									<td></td>
-									<td></td>
 									<td class="text-subtitle-1">
+										<div>Total</div>
+									</td>
+									<td></td>
+									<td></td>
+									<td class="text-subtitle-1 text-right">
 										$ {{ totalDue.toFixed(2) }}
 									</td>
 								</tr>
@@ -171,10 +177,12 @@ export default {
 			entry: {},
 		};
 	},
+	created() {},
 	mounted: function () {
 		publicService.getReceiptById(this.$route.params.id).then((response) => {
 			//document.title = `${this.entry["id"] - this.entry["mtlTracking#"]}`;
 			this.entry = response.data;
+			document.title = `Order #${this.entry.id} - ${this.entry.mtlTracking} - នូតតូក - Noteto`;
 		});
 	},
 	computed: {

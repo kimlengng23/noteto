@@ -128,7 +128,7 @@ const router = new VueRouter({
 	routes,
 });
 router.beforeEach((to, from, next) => {
-	//scrollSection.style.overflow = "hidden";
+	document.title = "នូតតូក - Noteto";
 	if (
 		to.name == "CustomView" ||
 		to.name == "JaekJayCargoReceipt" ||

@@ -46,6 +46,7 @@ export default {
 		};
 	},
 	mounted: function () {
+		document.title = "Jaek Jay Wholesale - នូតតូក - Noteto";
 		publicService
 			.getEntriesByDatabase("jaekJayWholesale")
 			.then((response) => {
