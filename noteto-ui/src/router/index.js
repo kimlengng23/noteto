@@ -14,6 +14,7 @@ import NewDatabase from "../views/NewDatabase.vue";
 import UserRegister from "../views/UserRegister.vue";
 import GroupRegister from "../views/GroupRegister.vue";
 import EmailVerify from "../views/EmailVerify.vue";
+import CustomViewList from "../views/CustomViewList.vue";
 import JaekJayCargoReceipt from "../custom-views/JaekJayCargoReceipt.vue";
 import JaekJayCustomOrderReceipt from "../custom-views/JaekJayCustomOrderReceipt.vue";
 import JaekJayEstimatedValue from "../custom-views/JaekJayEstimatedValue.vue";
@@ -96,6 +97,11 @@ const routes = [
 		component: CustomView,
 		children: [
 			{
+				path: "list",
+				name: "CustomViewList",
+				component: CustomViewList,
+			},
+			{
 				path: "jaekjaycargoreceipt/:id",
 				name: "JaekJayCargoReceipt",
 				component: JaekJayCargoReceipt,
@@ -117,7 +123,7 @@ const routes = [
 			},
 			{
 				path: "jaekJayMainWholesale",
-				name: "jaekJayMainWholesale",
+				name: "JaekJayMainWholesale",
 				component: JaekJayMainWholesale,
 			},
 		],
@@ -131,11 +137,12 @@ router.beforeEach((to, from, next) => {
 	document.title = "នូតតូក - Noteto";
 	if (
 		to.name == "CustomView" ||
+		to.name == "CustomViewList" ||
 		to.name == "JaekJayCargoReceipt" ||
 		to.name == "JaekJayCustomOrderReceipt" ||
 		to.name == "JaekJayEstimatedValue" ||
 		to.name == "JaekJayWholesale" ||
-		to.name == "jaekJayMainWholesale" ||
+		to.name == "JaekJayMainWholesale" ||
 		to.name == "Login" ||
 		to.name == "UserRegister" ||
 		to.name == "Home" ||
