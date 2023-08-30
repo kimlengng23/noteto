@@ -84,8 +84,7 @@ export default {
 					eventBus.$emit(
 						"setSnackbar",
 						"Successfully Add a New Database",
-						"success",
-						true
+						"success"
 					);
 					this.isLoading = false;
 				}, 1000);

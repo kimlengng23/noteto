@@ -171,8 +171,7 @@ export default {
 							eventBus.$emit(
 								"setSnackbar",
 								"Successfully Updated the Layout",
-								"success",
-								true
+								"success"
 							);
 						}, 1000);
 					});

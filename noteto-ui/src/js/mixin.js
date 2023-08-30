@@ -1,29 +1,8 @@
+import _ from "lodash";
 import backendService from "../services/backend-service.js";
-import eventBus from "./event-bus.js";
 export default {
 	data() {
 		return {
-			dollarOptions: {
-				locale: "en-US",
-				prefix: "$",
-				suffix: "",
-				length: 7,
-				precision: 2,
-			},
-			kgOptions: {
-				locale: "en-US",
-				prefix: "",
-				suffix: "Kg",
-				length: 7,
-				precision: 2,
-			},
-			lbOptions: {
-				locale: "en-US",
-				prefix: "",
-				suffix: "Lbs",
-				length: 7,
-				precision: 2,
-			},
 			setTimeoutLoading: false,
 		};
 	},
@@ -80,15 +59,6 @@ export default {
 		isLoggedIn() {
 			return this.$store.getters["isLoggedIn"];
 		},
-		rows() {
-			return this.$store.getters["layout"];
-		},
-		emptyEntry() {
-			return this.$store.getters["emptyEntry"];
-		},
-		users() {
-			return this.$store.getters["users"];
-		},
 		linkButtons() {
 			let linkButtons = [];
 			for (let i = 0; i < this.automations.length; i++) {
@@ -98,6 +68,15 @@ export default {
 				}
 			}
 			return linkButtons;
+		},
+		rows() {
+			return this.$store.getters["layout"];
+		},
+		emptyEntry() {
+			return this.$store.getters["emptyEntry"];
+		},
+		users() {
+			return this.$store.getters["users"];
 		},
 	},
 	methods: {
@@ -140,9 +119,10 @@ export default {
 			this.cloneEmptyEntry();
 		},
 		cloneEmptyEntry() {
-			if (this.emptyEntry && this.emptyEntry.database) {
+			if (Object.keys(this.emptyEntry).length > 0) {
 				this.original = JSON.stringify(this.emptyEntry);
 				this.entry = JSON.parse(JSON.stringify(this.emptyEntry));
+				this.runSetAutomations();
 				this.isSubmitted = false;
 				this.setTimeoutLoading = false;
 			} else {
@@ -151,10 +131,11 @@ export default {
 				}, 1000);
 			}
 		},
-		convertSecondsToDate(seconds) {
-			let castedDate = new Date(seconds);
+		convertDateToReadable(date) {
+			let castedDate = new Date(date);
 			return castedDate.toLocaleDateString();
 		},
+
 		formatDate(date) {
 			if (!date) return null;
 			const [year, month, day] = date.split("-");
@@ -162,24 +143,21 @@ export default {
 		},
 		getEntryById(id) {
 			this.setTimeoutLoading = true;
-			backendService.getHistoryByEntryId(id).then((response) => {
-				this.historyLst = response.data;
-			});
 			backendService.getEntryById(id).then((response) => {
 				this.original = JSON.stringify(response.data);
 				this.entry = JSON.parse(this.original);
-				eventBus.$emit("getComments", this.entry);
+				backendService.getHistoryByEntryId(id).then((response) => {
+					this.historyLst = response.data;
+				});
+				backendService.getCommentsByEntryId(id).then((response) => {
+					this.comments = response.data;
+				});
 				setTimeout(() => {
 					this.setTimeoutLoading = false;
 				}, 1000);
 			});
 		},
-		getFieldType(fieldValue) {
-			let type = this.fields.find(
-				(field) => field.value == fieldValue
-			).type;
-			return type;
-		},
+
 		getFieldDisplayName(fieldValue) {
 			let displayName = this.fields.find(
 				(field) => field.value == fieldValue
@@ -187,7 +165,11 @@ export default {
 			return displayName;
 		},
 		getFullName(user) {
-			if (user) return `${user.first} ${user.last} - ${user._id}`;
+			if (user) return `${user.first} ${user.last}`;
+			else return "";
+		},
+		getUserId(user) {
+			if (user) return user._id;
 			else return "";
 		},
 		getLinkFromButton(btn) {
@@ -202,6 +184,41 @@ export default {
 				return btn.link + "?" + stringQueryParams.join("&");
 			}
 			return btn.link;
+		},
+		getEntryText(field, value) {
+			if (_.isEmpty(value) && !_.isNumber(value)) {
+				return "'EMPTY'";
+			}
+			if (field.type == "multipleSelect") {
+				return value.map((e) => e.displayName).join(", ");
+			} else if (field.type == "singleSelect") {
+				return value.displayName;
+			} else if (field.type == "singleUser") {
+				return this.getFullName(value);
+			} else if (field.type.includes("currency")) {
+				return (
+					field.options.prefix +
+					" " +
+					value.toFixed(field.options.precision)
+				);
+			} else if (field.type.includes("weight")) {
+				return (
+					value.toFixed(field.options.precision) +
+					" " +
+					field.options.suffix
+				);
+			} else if (field.type == "multipleUsers") {
+				return value.map((e) => this.getFullName(e)).join(", ");
+			} else if (field.type == "date") {
+				let date = new Date(value);
+				return `${
+					date.getMonth() + 1
+				}/${date.getDate()}/${date.getFullYear()}`;
+			} else if (field.type == "number") {
+				return value;
+			} else {
+				return value;
+			}
 		},
 		getTodayDate() {
 			let today = new Date();
@@ -221,6 +238,17 @@ export default {
 		},
 		removeFromList(idx, field) {
 			this.entry[field].splice(idx, 1);
+		},
+		runSetAutomations() {
+			let automations = this.automations;
+			for (let i = 0; i < automations.length; i++) {
+				if (automations[i].type == "set") {
+					this.setValue(
+						automations[i].actField,
+						automations[i].actValue
+					);
+				}
+			}
 		},
 		setValue(field, value) {
 			this.entry[field.value] = value;

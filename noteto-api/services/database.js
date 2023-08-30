@@ -11,38 +11,6 @@ function addDatabase(database) {
 	let todayDate = new Date();
 	let systemFields = [
 		{
-			value: "owner",
-			displayName: "Owner",
-			type: "singleUser",
-			database: database["value"],
-			dateCreated: todayDate,
-			isActive: true,
-		},
-		{
-			value: "dateCreated",
-			displayName: "Date Created",
-			type: "date",
-			database: database["value"],
-			dateCreated: todayDate,
-			isActive: true,
-		},
-		{
-			value: "dateLastModified",
-			displayName: "Date Last Modified",
-			type: "date",
-			database: database["value"],
-			dateCreated: todayDate,
-			isActive: true,
-		},
-		{
-			value: "id",
-			displayName: "Id",
-			type: "number",
-			database: database["value"],
-			dateCreated: todayDate,
-			isActive: true,
-		},
-		{
 			value: "assignedTo",
 			displayName: "Assigned To",
 			type: "singleUser",

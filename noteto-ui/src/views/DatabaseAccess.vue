@@ -102,8 +102,7 @@ export default {
 					eventBus.$emit(
 						"setSnackbar",
 						"Successfully Updated Database Access",
-						"success",
-						true
+						"success"
 					);
 				}, 1000);
 			});

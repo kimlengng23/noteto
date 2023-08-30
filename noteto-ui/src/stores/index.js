@@ -145,6 +145,11 @@ export default new Vuex.Store({
 		addEntry(state, payload) {
 			state.entries.unshift(payload);
 		},
+		deleteEntry(state, payload) {
+			state.entries = state.entries.filter((e) => {
+				return e._id != payload;
+			});
+		},
 		setAllDatabases(state, payload) {
 			state.allDatabases = payload;
 		},

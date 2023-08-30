@@ -11,14 +11,13 @@ function getNextId(database) {
 		.collection("SequenceCollection")
 		.findOneAndUpdate({ database: database }, { $inc: { seqValue: 1 } });
 }
-function addEntry2(orignal, newEntry, owner) {
+function addEntry2(orignal, newEntry) {
 	let promise = new Promise((resolve, reject) => {
 		historyService.compareForHistory(orignal, newEntry).then((response) => {
 			let history = response.data;
-			newEntry.owner = owner;
 			addEntry1(newEntry).then((response) => {
 				let addEntryResponsse = response;
-				history.createdBy = owner;
+				history.createdBy = newEntry._data.createdBy;
 				history.entryId = response.data._id.toString();
 				historyService.addHistory(history).then(() => {
 					resolve(addEntryResponsse);
@@ -29,12 +28,9 @@ function addEntry2(orignal, newEntry, owner) {
 	return promise;
 }
 function addEntry1(entry) {
-	let todayDate = new Date();
 	let promise = new Promise((resolve, reject) => {
-		getNextId(entry.database).then((document) => {
-			entry.id = document.value.seqValue;
-			entry.dateCreated = todayDate;
-			entry.dateLastModified = todayDate;
+		getNextId(entry._data.database).then((document) => {
+			entry._data.id = document.value.seqValue;
 			dbConn
 				.collection("EntryCollection")
 				.insertOne(entry, (err, result) => {
@@ -59,9 +55,7 @@ function getEmptyEntryByDatabase(database) {
 					console.log("EntryService - getEmptyEntryByDatabase", err);
 					reject({ code: 500, message: err });
 				}
-				let emptyEntry = {
-					database: database,
-				};
+				let emptyEntry = {};
 				fields.forEach((field) => {
 					if (field.type == "list") {
 						emptyEntry[field.value] = [];
@@ -94,27 +88,31 @@ function getEntryById(id) {
 	let promise = new Promise((resolve, reject) => {
 		dbConn
 			.collection("EntryCollection")
-			.findOne({ _id: new ObjectId(id) }, (err, result) => {
-				if (err) {
-					console.log("EntryService - getEntryById", err);
-					reject({ code: 500, message: err });
-				} else {
-					getEmptyEntryByDatabase(result.database).then(
-						(response) => {
-							let emptyEntry = response.data;
-							let fields = Object.keys(emptyEntry);
-							emptyEntry["_id"] = result["_id"];
-							for (let i = 0; i < fields.length; i++) {
-								let field = fields[i];
-								if (result[field]) {
-									emptyEntry[field] = result[field];
+			.findOne(
+				{ _id: new ObjectId(id), "_data.isActive": true },
+				(err, result) => {
+					if (err) {
+						console.log("EntryService - getEntryById", err);
+						reject({ code: 500, message: err });
+					} else {
+						getEmptyEntryByDatabase(result._data.database).then(
+							(response) => {
+								let emptyEntry = response.data;
+								let fields = Object.keys(emptyEntry);
+								emptyEntry["_id"] = result["_id"];
+								emptyEntry["_data"] = result["_data"];
+								for (let i = 0; i < fields.length; i++) {
+									let field = fields[i];
+									if (result[field]) {
+										emptyEntry[field] = result[field];
+									}
 								}
+								resolve({ code: 200, data: emptyEntry });
 							}
-							resolve({ code: 200, data: emptyEntry });
-						}
-					);
+						);
+					}
 				}
-			});
+			);
 	});
 	return promise;
 }
@@ -122,7 +120,7 @@ function getEntriesByDatabase(database) {
 	let promise = new Promise((resolve, reject) => {
 		dbConn
 			.collection("EntryCollection")
-			.find({ database: database })
+			.find({ "_data.database": database, "_data.isActive": true })
 			.sort({ id: -1, dateCreated: -1 })
 			.toArray((err, results) => {
 				if (err) {
@@ -152,11 +150,12 @@ function updateEntry2(oldEntry, newEntry, createdBy) {
 	return promise;
 }
 function updateEntry1(entry) {
+	console.log(entry);
 	let promise = new Promise((resolve, reject) => {
-		let id = entry["_id"];
+		let id = entry._id;
 		let todayDate = new Date();
-		entry.dateLastModified = todayDate;
-		delete entry["_id"];
+		entry._data.dateLastModified = todayDate;
+		delete entry._id;
 		dbConn
 			.collection("EntryCollection")
 			.findOneAndUpdate({ _id: new ObjectId(id) }, { $set: entry })
@@ -170,39 +169,30 @@ function updateEntry1(entry) {
 	});
 	return promise;
 }
-function backfill(database) {
+function deleteEntryById(id) {
 	let promise = new Promise((resolve, reject) => {
-		getEntriesByDatabase(database).then((response) => {
-			let entries = response.data;
-			let promises = [];
-			entries.forEach((e) => {
-				try {
-					let newEntry = {
-						_id: e._id,
-						id: parseInt(e.id),
-						database: database,
-					};
-					promises.push(updateEntry(newEntry));
-				} catch (err) {
-					console.log(err);
-				}
+		dbConn
+			.collection("EntryCollection")
+			.findOneAndUpdate(
+				{ _id: new ObjectId(id) },
+				{ $set: { "_data.isActive": false } }
+			)
+			.then(() => {
+				resolve({ code: 200 });
+			})
+			.catch((err) => {
+				console.log("EntryService - DeleteEntryById", err);
+				reject({ code: 500, message: err });
 			});
-			Promise.all(promises)
-				.then(() => {
-					resolve();
-				})
-				.catch(() => {
-					reject;
-				});
-		});
 	});
 	return promise;
 }
+
 module.exports = {
 	setDb,
-	backfill,
 	addEntry1,
 	addEntry2,
+	deleteEntryById,
 	getEntryById,
 	getEmptyEntryByDatabase,
 	getEntriesByDatabase,

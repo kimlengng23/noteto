@@ -103,8 +103,7 @@ export default {
 						eventBus.$emit(
 							"setSnackbar",
 							"Incorrect Username or Password",
-							"red darken-1 white--text",
-							true
+							"red darken-1 white--text"
 						);
 						this.isLoading = false;
 					}, 1000);

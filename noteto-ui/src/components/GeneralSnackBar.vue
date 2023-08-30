@@ -5,7 +5,7 @@
 		v-model="snackbar"
 		rounded="pill"
 		elevation="0">
-		{{ msg }}
+		{{ message }}
 		<template v-slot:action="{}">
 			<v-btn icon text @click="snackbar = false">
 				<i class="fas fa-times"></i>
@@ -20,20 +20,18 @@ export default {
 	data() {
 		return {
 			snackbar: false,
-			msg: "",
+			message: "",
 			colorClass: "",
 		};
 	},
-	props: {
-		message: String,
-	},
+
 	mounted: function () {
 		eventBus.$on("setSnackbar", this.setSnackbar);
 	},
 	methods: {
-		setSnackbar(msg, colorClass, isShown) {
-			this.msg = msg;
-			this.snackbar = isShown;
+		setSnackbar(message, colorClass) {
+			this.message = message;
+			this.snackbar = true;
 			this.colorClass = colorClass;
 		},
 	},

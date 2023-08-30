@@ -4,7 +4,7 @@ let domain = `https://localhost:3000/public`;
 if (host.toLowerCase().includes("jaekjay")) {
 	domain = `https://noteto.jaekjay.com/public`;
 }
-//domain = `https://noteto.jaekjay.com/public`;
+domain = `https://noteto.jaekjay.com/public`;
 export default {
 	getEntriesByDatabase(database) {
 		let url = domain + `/api/get/entries/by/database/${database}`;

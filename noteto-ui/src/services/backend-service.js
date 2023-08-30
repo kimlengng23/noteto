@@ -59,6 +59,11 @@ export default {
 		let url = domain + "/add/database/access";
 		return axios.post(url, access);
 	},
+	deleteEntryById(id) {
+		let url = domain + `/entry/delete/by/id/${id}`;
+		let headers = getHeaders();
+		return axios.get(url, { headers: headers });
+	},
 	getAutomationsByDatabase(database) {
 		let url = domain + `/automation/get/by/database/${database}`;
 		let headers = getHeaders();
@@ -69,10 +74,10 @@ export default {
 		let headers = getHeaders();
 		return axios.get(url, { headers: headers });
 	},
-	getCommentsByEntry(entry) {
-		let url = domain + "/comment/get/by/entry";
+	getCommentsByEntryId(entryId) {
+		let url = domain + `/comment/get/by/entry/id/${entryId}`;
 		let headers = getHeaders();
-		return axios.post(url, entry, { headers: headers });
+		return axios.get(url, { headers: headers });
 	},
 	getEntriesByDatabase(database) {
 		let url = domain + `/entry/get/database/${database}`;

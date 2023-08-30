@@ -103,8 +103,7 @@ export default {
 						eventBus.$emit(
 							"setSnackbar",
 							"User Successfully Register",
-							"success",
-							true
+							"success"
 						);
 						this.clear();
 						this.isLoading = false;
@@ -116,8 +115,7 @@ export default {
 						eventBus.$emit(
 							"setSnackbar",
 							"Ops! Something is not right!",
-							"red",
-							true
+							"red"
 						);
 						this.isLoading = false;
 					}, 1000);

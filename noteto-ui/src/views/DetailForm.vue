@@ -1,62 +1,125 @@
 <template>
 	<v-container>
-		<v-card elevation="0" min-width="350" width="100%">
-			<v-card-title class="d-flex justify-space-between">
-				<div class="text-left">
-					<p class="text-primary">
-						<span class="text-muted">Entry Number:</span>
-						{{ entry.id }}
-						<v-progress-circular
-							indeterminate
-							color="primary"
-							v-if="setTimeoutLoading"></v-progress-circular>
-					</p>
-					<p class="text-primary">
-						<span class="text-muted">Created Date:</span>
-						{{ convertSecondsToDate(entry.dateCreated) }}
-					</p>
-					<p class="text-primary">
-						<span class="text-muted">Owner:</span>
-						{{ getFullName(entry.owner) }}
-					</p>
+		<div class="text-center">
+			<v-progress-circular
+				indeterminate
+				color="primary"
+				v-if="setTimeoutLoading"></v-progress-circular>
+		</div>
+
+		<v-card
+			elevation="0"
+			min-width="350"
+			width="100%"
+			v-if="!setTimeoutLoading">
+			<v-card-text class="text-subtitle-1">
+				<div class="d-flex justify-space-between">
+					<div>
+						<span class="font-weight-bold">Entry Number:</span>
+						{{ entry._data?.id }}
+					</div>
+					<div class="text-right">
+						<div>
+							<span class="font-weight-bold">Created Date:</span>
+							{{
+								convertDateToReadable(entry._data?.dateCreated)
+							}}
+						</div>
+						<div>
+							<span class="font-weight-bold">Created By:</span>
+							{{ getFullName(entry._data?.createdBy) }}
+						</div>
+					</div>
 				</div>
-				<div class="mt-5">
-					<v-btn
-						v-if="!isEditing"
-						rounded
-						class="warning ml-2"
-						depressed
-						@click="isEditing = !isEditing"
-						:disabled="!isLoggedIn">
-						<i class="fas fa-pencil-alt mr-2"></i>
-						<span v-if="!isEditing">Edit</span>
-						<span v-else>Stop Editing</span>
-					</v-btn>
-					<v-btn
-						v-else
-						rounded
-						class="primary ml-2"
-						depressed
-						@click="isEditing = !isEditing"
-						:disabled="!isLoggedIn">
-						<i class="fas fa-pencil-alt mr-2"></i>
-						Stop Editing
-					</v-btn>
-					<v-btn
-						rounded
-						class="success ml-2"
-						depressed
-						@click="updateEntry"
-						:loading="isLoading"
-						:disabled="!isLoggedIn || !isDirty">
-						<i class="fa fa-save mr-2"></i>
-						Update
-					</v-btn>
-				</div>
-			</v-card-title>
+			</v-card-text>
+			<v-card-text class="d-flex flex-wrap justify-space-between py-0">
+				<v-slide-group class="py-1">
+					<v-slide-item>
+						<div>
+							<v-btn
+								v-if="!isEditing"
+								rounded
+								class="warning mr-2"
+								depressed
+								@click="isEditing = !isEditing"
+								:disabled="!isLoggedIn">
+								<i class="fas fa-pencil-alt mr-2"></i>
+								<span v-if="!isEditing">Edit</span>
+								<span v-else>Stop Editing</span>
+							</v-btn>
+							<v-btn
+								v-else
+								rounded
+								class="primary mr-2"
+								depressed
+								@click="isEditing = !isEditing"
+								:disabled="!isLoggedIn">
+								<i class="fas fa-pencil-alt mr-2"></i>
+								Stop Editing
+							</v-btn>
+							<v-btn
+								rounded
+								class="success mr-2"
+								depressed
+								@click="updateEntry"
+								:loading="isLoading"
+								:disabled="!isLoggedIn || !isDirty">
+								<i class="fa fa-save mr-2"></i>
+								Update
+							</v-btn>
+						</div>
+					</v-slide-item>
+					<v-slide-item>
+						<div>
+							<v-btn
+								rounded
+								class="error"
+								depressed
+								@click="deleteEntry"
+								:loading="isDeleteLoading"
+								:disabled="
+									!isLoggedIn ||
+									entry._data.createdBy._id !=
+										currentUser.userId
+								">
+								<i class="fa fa-trash mr-2"></i>
+								Delete
+							</v-btn>
+						</div>
+					</v-slide-item>
+				</v-slide-group>
+				<v-slide-group
+					class="py-1"
+					v-if="autoButtons.length + linkButtons.length > 0">
+					<v-slide-item
+						v-for="(btn, idx) in autoButtons"
+						:key="`auto-btn-${idx}`">
+						<v-btn
+							class="primary mr-2"
+							depressed
+							rounded
+							@click="setValue(btn.actField, btn.actValue)">
+							{{ getActValue(btn.actField, btn.actValue) }}
+						</v-btn>
+					</v-slide-item>
+					<v-slide-item
+						v-for="(btn, idx) in linkButtons"
+						:key="`link-btn-${idx}`">
+						<v-btn
+							class="primary mr-2"
+							depressed
+							rounded
+							target="_blank"
+							:href="processLink(btn.link)">
+							{{ btn.btnName }}
+						</v-btn>
+					</v-slide-item>
+				</v-slide-group>
+			</v-card-text>
+
 			<v-card-text>
 				<v-row>
-					<v-col cols="11">
+					<v-col>
 						<div class="card bg-light">
 							<div
 								class="card-header d-flex flex-row justify-content-between"></div>
@@ -79,12 +142,12 @@
 										</p>
 										<v-text-field
 											v-else-if="
-												fieldToField[col.field].type ===
-												'singleLine'
+												fieldToField[col.field]
+													?.type === 'singleLine'
 											"
 											:label="
 												fieldToField[col.field]
-													.displayName
+													?.displayName
 											"
 											v-model="entry[col.field]"
 											:readonly="
@@ -92,12 +155,12 @@
 											"></v-text-field>
 										<v-text-field
 											v-else-if="
-												fieldToField[col.field].type ===
-												'number'
+												fieldToField[col.field]
+													?.type === 'number'
 											"
 											:label="
 												fieldToField[col.field]
-													.displayName
+													?.displayName
 											"
 											v-model.number="entry[col.field]"
 											:readonly="
@@ -105,12 +168,13 @@
 											"></v-text-field>
 										<vuetify-money
 											v-else-if="
-												fieldToField[col.field].type ===
+												fieldToField[col.field]
+													?.type ===
 												'currencyInDollar'
 											"
 											:label="
 												fieldToField[col.field]
-													.displayName
+													?.displayName
 											"
 											v-model.number="entry[col.field]"
 											:options="
@@ -121,12 +185,12 @@
 											"></vuetify-money>
 										<vuetify-money
 											v-else-if="
-												fieldToField[col.field].type ===
-												'weightInKg'
+												fieldToField[col.field]
+													?.type === 'weightInKg'
 											"
 											:label="
 												fieldToField[col.field]
-													.displayName
+													?.displayName
 											"
 											v-model.number="entry[col.field]"
 											:options="
@@ -137,12 +201,12 @@
 											"></vuetify-money>
 										<vuetify-money
 											v-else-if="
-												fieldToField[col.field].type ===
-												'weightInLb'
+												fieldToField[col.field]
+													?.type === 'weightInLb'
 											"
 											:label="
 												fieldToField[col.field]
-													.displayName
+													?.displayName
 											"
 											v-model.number="entry[col.field]"
 											:options="
@@ -153,24 +217,24 @@
 											"></vuetify-money>
 										<v-textarea
 											v-else-if="
-												fieldToField[col.field].type ===
-												'multipleLines'
+												fieldToField[col.field]
+													?.type === 'multipleLines'
 											"
 											:label="
 												fieldToField[col.field]
-													.displayName
+													?.displayName
 											"
 											v-model="entry[col.field]"
 											:readonly="!isEditing"></v-textarea>
 										<v-autocomplete
 											@change="automate(col.field)"
 											v-else-if="
-												fieldToField[col.field].type ===
-												'singleSelect'
+												fieldToField[col.field]
+													?.type === 'singleSelect'
 											"
 											:label="
 												fieldToField[col.field]
-													.displayName
+													?.displayName
 											"
 											v-model="entry[col.field]"
 											return-object
@@ -181,12 +245,12 @@
 											"></v-autocomplete>
 										<v-autocomplete
 											v-else-if="
-												fieldToField[col.field].type ===
-												'multipleSelect'
+												fieldToField[col.field]
+													?.type === 'multipleSelect'
 											"
 											:label="
 												fieldToField[col.field]
-													.displayName
+													?.displayName
 											"
 											v-model="entry[col.field]"
 											return-object
@@ -202,12 +266,12 @@
 										<v-autocomplete
 											@change="automate(col.field)"
 											v-else-if="
-												fieldToField[col.field].type ===
-												'singleUser'
+												fieldToField[col.field]
+													?.type === 'singleUser'
 											"
 											:label="
 												fieldToField[col.field]
-													.displayName
+													?.displayName
 											"
 											v-model="entry[col.field]"
 											return-object
@@ -218,12 +282,12 @@
 											"></v-autocomplete>
 										<v-autocomplete
 											v-else-if="
-												fieldToField[col.field].type ===
-												'multipleUsers'
+												fieldToField[col.field]
+													?.type === 'multipleUsers'
 											"
 											:label="
 												fieldToField[col.field]
-													.displayName
+													?.displayName
 											"
 											v-model="entry[col.field]"
 											return-object
@@ -239,8 +303,8 @@
 										<v-menu
 											class="pb-5"
 											v-else-if="
-												fieldToField[col.field].type ===
-												'date'
+												fieldToField[col.field]
+													?.type === 'date'
 											"
 											v-model="datePicker[col.field]"
 											:close-on-content-click="false"
@@ -265,7 +329,7 @@
 														:label="
 															fieldToField[
 																col.field
-															].displayName
+															]?.displayName
 														"
 														persistent-hint
 														prepend-icon="mdi-calendar"
@@ -303,8 +367,8 @@
 										</v-menu>
 										<div
 											v-else-if="
-												fieldToField[col.field].type ===
-												'list'
+												fieldToField[col.field]
+													?.type === 'list'
 											">
 											<v-row>
 												<v-col>
@@ -313,7 +377,7 @@
 														{{
 															fieldToField[
 																col.field
-															].displayName
+															]?.displayName
 														}}
 													</p>
 												</v-col>
@@ -331,11 +395,11 @@
 													:key="lIdxJ">
 													<v-text-field
 														v-if="
-															field.type ===
+															field?.type ===
 															'singleLine'
 														"
 														:label="
-															field.displayName
+															field?.displayName
 														"
 														v-model="
 															entry[col.field][
@@ -347,11 +411,11 @@
 														"></v-text-field>
 													<v-text-field
 														v-else-if="
-															field.type ===
+															field?.type ===
 															'number'
 														"
 														:label="
-															field.displayName
+															field?.displayName
 														"
 														v-model.number="
 															entry[col.field][
@@ -363,11 +427,11 @@
 														"></v-text-field>
 													<vuetify-money
 														v-else-if="
-															field.type ===
+															field?.type ===
 															'currencyInDollar'
 														"
 														:label="
-															field.displayName
+															field?.displayName
 														"
 														v-model.number="
 															entry[col.field][
@@ -380,11 +444,11 @@
 														"></vuetify-money>
 													<vuetify-money
 														v-else-if="
-															field.type ===
+															field?.type ===
 															'weightInKg'
 														"
 														:label="
-															field.displayName
+															field?.displayName
 														"
 														v-model.number="
 															entry[col.field][
@@ -397,11 +461,11 @@
 														"></vuetify-money>
 													<vuetify-money
 														v-else-if="
-															field.type ===
+															field?.type ===
 															'weightInLb'
 														"
 														:label="
-															field.displayName
+															field?.displayName
 														"
 														v-model.number="
 															entry[col.field][
@@ -414,11 +478,11 @@
 														"></vuetify-money>
 													<v-textarea
 														v-else-if="
-															field.type ===
+															field?.type ===
 															'multipleLines'
 														"
 														:label="
-															field.displayName
+															field?.displayName
 														"
 														v-model="
 															entry[col.field][
@@ -433,11 +497,11 @@
 															automate(col.field)
 														"
 														v-else-if="
-															field.type ===
+															field?.type ===
 															'singleSelect'
 														"
 														:label="
-															field.displayName
+															field?.displayName
 														"
 														v-model="
 															entry[col.field][
@@ -456,11 +520,11 @@
 														"></v-autocomplete>
 													<v-autocomplete
 														v-else-if="
-															field.type ===
+															field?.type ===
 															'multipleSelect'
 														"
 														:label="
-															field.displayName
+															field?.displayName
 														"
 														v-model="
 															entry[col.field][
@@ -488,13 +552,13 @@
 														v-else-if="
 															fieldToField[
 																col.field
-															].type ===
+															]?.type ===
 															'singleUser'
 														"
 														:label="
 															fieldToField[
 																col.field
-															].displayName
+															]?.displayName
 														"
 														v-model="
 															entry[col.field][
@@ -511,13 +575,13 @@
 														v-else-if="
 															fieldToField[
 																col.field
-															].type ===
+															]?.type ===
 															'multipleUsers'
 														"
 														:label="
 															fieldToField[
 																col.field
-															].displayName
+															]?.displayName
 														"
 														v-model="
 															entry[col.field][
@@ -537,7 +601,7 @@
 													<v-menu
 														class="pb-5"
 														v-else-if="
-															field.type ===
+															field?.type ===
 															'date'
 														"
 														v-model="
@@ -574,7 +638,7 @@
 																		)
 																	"
 																	:label="
-																		field.displayName
+																		field?.displayName
 																	"
 																	persistent-hint
 																	prepend-icon="mdi-calendar"
@@ -668,50 +732,33 @@
 							</div>
 						</div>
 					</v-col>
-					<v-col cols="1">
-						<div>
-							<v-btn
-								class="primary mb-2"
-								v-for="(btn, idx) in autoButtons"
-								:key="`auto-btn-${idx}`"
-								depressed
-								rounded
-								@click="setValue(btn.actField, btn.actValue)">
-								{{ getActValue(btn.actField, btn.actValue) }}
-							</v-btn>
-							<v-btn
-								class="primary"
-								v-for="(btn, idx) in linkButtons"
-								:key="`link-btn-${idx}`"
-								depressed
-								rounded
-								target="_blank"
-								:href="processLink(btn.link)">
-								{{ btn.btnName }}
-							</v-btn>
-							<!-- <v-btn
-                class="mb-2"
-                depressed
-                rounded
-                :color="btn.color"
-                v-for="(btn, btnIdx) in autoButtons"
-                :key="btnIdx"
-                :href="getLinkFromButton(btn)"
-                v-show="btn.detailForm"
-                target="_blank"
-                ><i :class="btn.icon"></i>{{ btn.label }}</v-btn
-              > -->
-						</div>
-					</v-col>
 				</v-row>
 			</v-card-text>
 		</v-card>
 		<v-divider class="my-2"></v-divider>
 		<history-section
+			v-if="!setTimeoutLoading"
 			:history-lst="historyLst"
 			:fieldToField="fieldToField"></history-section>
 		<v-divider class="my-2"></v-divider>
-		<comment-section :entry="entry"></comment-section>
+		<v-card elevation="0">
+			<v-card-text>
+				<v-textarea label="Comment" v-model="commentValue"></v-textarea>
+				<v-btn
+					class="float-right"
+					depressed
+					rounded
+					color="success"
+					@click="addComment"
+					:loading="isCommentLoading">
+					<i class="far fa-paper-plane mr-2"></i>
+					Send
+				</v-btn>
+			</v-card-text>
+		</v-card>
+		<comment-section
+			v-if="!setTimeoutLoading"
+			:comments="comments"></comment-section>
 	</v-container>
 </template>
 <script>
@@ -734,9 +781,13 @@ export default {
 			entry: {},
 			datePicker: {},
 			historyLst: [],
+			commentValue: "",
+			comments: [],
 			isNew: true,
 			isEditing: false,
 			isLoading: false,
+			isCommentLoading: false,
+			isDeleteLoading: false,
 		};
 	},
 	computed: {
@@ -745,12 +796,49 @@ export default {
 		},
 	},
 	mounted: function () {
+		eventBus.$on("confirm-delete", this.confirmDeleteEntry);
 		if (this.$route.params.id) {
 			this.isNew = false;
 			this.getEntryById(this.$route.params.id);
 		}
 	},
 	methods: {
+		addComment() {
+			let comment = {};
+			comment.value = this.commentValue;
+			comment.database = this.entry._data.database;
+			comment.entryId = this.entry._id;
+			this.isCommentLoading = true;
+			backendService.addComment(comment).then((response) => {
+				setTimeout(() => {
+					eventBus.$emit(
+						"setSnackbar",
+						"Successfully Added Comment",
+						"success"
+					);
+					this.comments.unshift(response.data);
+					this.commentValue = "";
+					this.isCommentLoading = false;
+				}, 1000);
+			});
+		},
+		confirmDeleteEntry() {
+			this.isDeleteLoading = true;
+			backendService.deleteEntryById(this.entry._id).then(() => {
+				setTimeout(() => {
+					this.isDeleteLoading = false;
+					this.$store.commit("deleteEntry", this.entry._id);
+					this.$router.push({ name: "ListView" });
+				}, 1000);
+			});
+		},
+		deleteEntry() {
+			eventBus.$emit(
+				"setDialog",
+				"Are you sure you want to delete this entry?",
+				"confirm-delete"
+			);
+		},
 		getActField(actField) {
 			return this.getConField(actField);
 		},
@@ -760,27 +848,27 @@ export default {
 		getConValue(conField, conValue) {
 			if (
 				!conField ||
-				!conField.displayName ||
+				!conField?.displayName ||
 				!conValue ||
 				(!conValue && !conValue.value && !conValue.username)
 			)
 				return "";
 			if (
-				conField.type == "singleSelect" ||
-				conField.type == "multipleSelect"
+				conField?.type == "singleSelect" ||
+				conField?.type == "multipleSelect"
 			)
-				return conValue.displayName;
+				return conValue?.displayName;
 			else if (
-				conField.type == "singleUser" ||
-				conField.type == "multipleUsers"
+				conField?.type == "singleUser" ||
+				conField?.type == "multipleUsers"
 			)
 				return conValue.username;
 			else return conValue;
 		},
 		getConField(conField) {
-			if (!conField || !conField.displayName) return "";
-			else if (conField && conField.displayName) {
-				return conField.displayName;
+			if (!conField || !conField?.displayName) return "";
+			else if (conField && conField?.displayName) {
+				return conField?.displayName;
 			} else {
 				return "";
 			}
@@ -798,8 +886,7 @@ export default {
 					eventBus.$emit(
 						"setSnackbar",
 						"Successfully Update the Entry",
-						"success",
-						true
+						"success"
 					);
 					this.isEditing = false;
 				}, 1000);
@@ -815,6 +902,9 @@ export default {
 			}
 			return newLink;
 		},
+	},
+	beforeUnmount: function () {
+		eventBus.$off("confirm-delete");
 	},
 };
 </script>
