@@ -79,7 +79,7 @@
 								:loading="isDeleteLoading"
 								:disabled="
 									!isLoggedIn ||
-									entry._data.createdBy._id !=
+									entry._data?.createdBy._id !=
 										currentUser.userId
 								">
 								<i class="fa fa-trash mr-2"></i>
@@ -741,7 +741,7 @@
 			:history-lst="historyLst"
 			:fieldToField="fieldToField"></history-section>
 		<v-divider class="my-2"></v-divider>
-		<v-card elevation="0">
+		<v-card elevation="0" v-if="!setTimeoutLoading">
 			<v-card-text>
 				<v-textarea label="Comment" v-model="commentValue"></v-textarea>
 				<v-btn

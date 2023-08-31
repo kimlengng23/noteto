@@ -114,7 +114,7 @@ export default {
 		},
 		headers() {
 			let rawHeaders = this.$store.getters["headers"];
-			let processedHeaders = this.defaultHeaders;
+			let processedHeaders = [...this.defaultHeaders];
 			if (!rawHeaders) return processedHeaders;
 			for (let i = 0; i < rawHeaders.length; i++) {
 				let processedHeader = { ...rawHeaders[i] };
