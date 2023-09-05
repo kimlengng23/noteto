@@ -17,7 +17,7 @@ function getReceiptById(id) {
 					reject({ code: 500, message: err });
 				} else {
 					fieldService
-						.getFieldsByDatabase(result.database)
+						.getFieldsByDatabase(result._data.database)
 						.then((response) => {
 							let fields = response.data;
 							let entry = {};
@@ -41,7 +41,7 @@ function getEntriesByDatabase(database) {
 	let promise = new Promise((resolve, reject) => {
 		dbConn
 			.collection("EntryCollection")
-			.find({ database: database })
+			.find({ "_data.database": database })
 			.toArray((err, results) => {
 				if (err) {
 					console.log("EntryService - getEntriesByDatabase", err);

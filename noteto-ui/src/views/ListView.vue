@@ -24,29 +24,19 @@
 					index % 2 == 0 ? 'bg-grey entry' : 'entry',
 					selected == item._data.id ? 'selected-row' : '',
 				]"
+				:key="`item-${index}`"
 				@click="highlightRow(item._data.id)"
 				@dblclick="goToDetailForm(item._id)">
-				<td v-for="(header, idx) in headers" :key="`header-${idx}`">
+				<td
+					v-for="(header, idx) in headers"
+					:key="`header-${index}-${idx}`">
 					<span v-if="header.isDefault && header.value == '_data.id'">
 						<a @click="goToDetailForm(item._id)">
 							{{ item._data.id }}
 						</a>
 					</span>
-					<span
-						v-else-if="
-							header.isDefault &&
-							header.value == '_data.createdBy'
-						">
-						{{
-							`${item._data.createdBy.first} ${item._data.createdBy.last}`
-						}}
-					</span>
-					<span
-						v-else-if="
-							header.isDefault &&
-							header.value == '_data.dateCreated'
-						">
-						{{ formatDate(item._data.dateCreated) }}
+					<span v-else-if="header.isDefault">
+						{{ getDataText(header, item) }}
 					</span>
 					<span v-else>
 						{{ getEntryText(header, item) }}
@@ -99,15 +89,26 @@ export default {
 			for (let key in this.search) {
 				let searchStr = this.search[key].trim().toLowerCase();
 				let header = this.headers.find((header) => header.value == key);
-				if (searchStr && searchStr.length && header) {
-					entries = entries.filter((e) => {
-						let str = this.getEntryText(header, e);
-						return str
-							.toString()
-							.trim()
-							.toLowerCase()
-							.includes(this.search[key]);
-					});
+				if (searchStr && searchStr.length) {
+					if (header && !header.isDefault) {
+						entries = entries.filter((e) => {
+							let str = this.getEntryText(header, e);
+							return str
+								.toString()
+								.trim()
+								.toLowerCase()
+								.includes(this.search[key]);
+						});
+					} else if (header && header.isDefault) {
+						entries = entries.filter((e) => {
+							let str = this.getDataText(header, e);
+							return str
+								.toString()
+								.trim()
+								.toLowerCase()
+								.includes(this.search[key]);
+						});
+					}
 				}
 			}
 			return entries;
@@ -150,6 +151,17 @@ export default {
 			return `${
 				date.getMonth() + 1
 			}/${date.getDate()}/${date.getFullYear()}`;
+		},
+		getDataText(header, entry) {
+			if (header.value == "_data.id") {
+				return entry._data.id;
+			} else if (header.value == "_data.dateCreated") {
+				return this.formatDate(entry._data.dateCreated);
+			} else if (header.value == "_data.createdBy") {
+				return this.getFullName(entry._data.createdBy);
+			} else {
+				return "";
+			}
 		},
 		getEntryText(header, entry) {
 			if (!header.type) {
@@ -195,7 +207,8 @@ export default {
 		},
 
 		getFullName(user) {
-			return user.first + " " + user.last;
+			if (user) return `${user.first} ${user.last}`;
+			else return "";
 		},
 		highlightRow(idx) {
 			this.selected = idx;
