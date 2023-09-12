@@ -10,8 +10,7 @@ function setDb(conn) {
 }
 
 app.use(express.json());
-app.use(helper.verifyToken);
-app.post("/add", (req, res) => {
+app.post("/add", helper.verifyToken, (req, res) => {
 	let wrappedEntry = req.body;
 	let todayDate = new Date();
 	let createdBy = {
@@ -38,7 +37,7 @@ app.post("/add", (req, res) => {
 			res.status(response.code).send(response.message);
 		});
 });
-app.get("/delete/by/id/:id", (req, res) => {
+app.get("/delete/by/id/:id", helper.verifyToken, (req, res) => {
 	entryService
 		.deleteEntryById(req.params.id)
 		.then((response) => {
@@ -48,7 +47,17 @@ app.get("/delete/by/id/:id", (req, res) => {
 			res.status(response.code).send(response.message);
 		});
 });
-app.get("/get/database/:database", (req, res) => {
+app.get("/get/assigned", helper.verifyToken, (req, res) => {
+	entryService
+		.getAssignedEntriesByUserId(req.decoded.userId)
+		.then((response) => {
+			res.status(response.code).send(response.data);
+		})
+		.catch((response) => {
+			res.status(response.code).send(response.message);
+		});
+});
+app.get("/get/by/database/:database", helper.verifyToken, (req, res) => {
 	entryService
 		.getEntriesByDatabase(req.params.database)
 		.then((response) => {
@@ -58,17 +67,21 @@ app.get("/get/database/:database", (req, res) => {
 			res.status(response.code).send(response.message);
 		});
 });
-app.get("/get/id/:id", (req, res) => {
-	entryService
-		.getEntryById(req.params.id)
-		.then((response) => {
-			res.status(response.code).send(response.data);
-		})
-		.catch((response) => {
-			res.status(response.code).send(response.message);
-		});
-});
-app.get("/get/empty/:database", (req, res) => {
+app.get(
+	"/get/by/id/:id",
+	[helper.verifyToken, helper.verifyAccess],
+	(req, res) => {
+		entryService
+			.getEntryById(req.params.id)
+			.then((response) => {
+				res.status(response.code).send(response.data);
+			})
+			.catch((response) => {
+				res.status(response.code).send(response.message);
+			});
+	}
+);
+app.get("/get/empty/:database", helper.verifyToken, (req, res) => {
 	let database = req.params.database;
 	entryService
 		.getEmptyEntryByDatabase(database)
@@ -79,7 +92,7 @@ app.get("/get/empty/:database", (req, res) => {
 			res.status(response.code).send(response.message);
 		});
 });
-app.post("/update/", (req, res) => {
+app.post("/update", [helper.verifyToken, helper.verifyAccess], (req, res) => {
 	let wrappedEntry = req.body;
 	let createdBy = {
 		_id: req.decoded.userId,
@@ -96,7 +109,7 @@ app.post("/update/", (req, res) => {
 			res.status(response.code).send(response.message);
 		});
 });
-app.get("/backfill/:database", (req, res) => {
+app.get("/backfill/:database", helper.verifyToken, (req, res) => {
 	entryService.backfill(req.params.database).then(() => {
 		res.sendStatus(200);
 	});

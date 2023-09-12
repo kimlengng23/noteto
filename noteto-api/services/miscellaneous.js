@@ -31,6 +31,7 @@ function getNavigationOptions() {
 		dbConn
 			.collection("NavigationOptionCollection")
 			.find({})
+			.sort({ order: 1 })
 			.toArray((err, options) => {
 				if (err) {
 					console.log(

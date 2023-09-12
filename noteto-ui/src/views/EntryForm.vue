@@ -120,9 +120,11 @@
 							"
 							:label="fieldToField[col.field]?.displayName"
 							v-model="entry[col.field]"
-							return-object
 							:items="fieldToChoices[col.field]"
-							item-text="displayName"></v-autocomplete>
+							item-text="displayName"
+							return-object
+							small-chips
+							deletable-chips></v-autocomplete>
 						<v-autocomplete
 							v-else-if="
 								fieldToField[col.field]?.type ===
@@ -130,12 +132,11 @@
 							"
 							:label="fieldToField[col.field]?.displayName"
 							v-model="entry[col.field]"
-							return-object
 							:items="fieldToChoices[col.field]"
 							item-text="displayName"
-							deletable-chipsoutlined
+							return-object
 							multiple
-							chips
+							small-chips
 							deletable-chips></v-autocomplete>
 						<v-autocomplete
 							@change="automate(col.field)"
@@ -272,9 +273,11 @@
 										v-model="
 											entry[col.field][lIdxI][field.value]
 										"
-										return-object
 										:items="fieldToChoices[field.value]"
-										item-text="displayName"></v-autocomplete>
+										item-text="displayName"
+										return-object
+										small-chips
+										deletable-chips></v-autocomplete>
 									<v-autocomplete
 										v-else-if="
 											field?.type === 'multipleSelect'
@@ -283,12 +286,11 @@
 										v-model="
 											entry[col.field][lIdxI][field.value]
 										"
-										return-object
 										:items="fieldToChoices[field.value]"
 										item-text="displayName"
-										deletable-chipsoutlined
+										return-object
 										multiple
-										chips
+										small-chips
 										deletable-chips></v-autocomplete>
 									<v-autocomplete
 										@change="automate(col.field)"
@@ -408,7 +410,7 @@ export default {
 	mixins: [mixin],
 	data() {
 		return {
-			original: {},
+			original: "{}",
 			entry: {},
 			datePicker: {},
 			isNew: true,
@@ -440,7 +442,7 @@ export default {
 					this.isSubmitted = true;
 					eventBus.$emit(
 						"setSnackbar",
-						"Successfully Added a New Entry",
+						"Successfully added a new entry",
 						"success"
 					);
 				}, 1000);

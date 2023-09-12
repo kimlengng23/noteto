@@ -237,12 +237,12 @@
 													?.displayName
 											"
 											v-model="entry[col.field]"
-											return-object
 											:items="fieldToChoices[col.field]"
 											item-text="displayName"
-											:readonly="
-												!isEditing
-											"></v-autocomplete>
+											:readonly="!isEditing"
+											return-object
+											small-chips
+											deletable-chips></v-autocomplete>
 										<v-autocomplete
 											v-else-if="
 												fieldToField[col.field]
@@ -256,9 +256,8 @@
 											return-object
 											:items="fieldToChoices[col.field]"
 											item-text="displayName"
-											deletable-chipsoutlined
 											multiple
-											chips
+											small-chips
 											deletable-chips
 											:readonly="
 												!isEditing
@@ -508,16 +507,16 @@
 																lIdxI
 															][field.value]
 														"
-														return-object
 														item-text="displayName"
 														:items="
 															fieldToChoices[
 																field.value
 															]
 														"
-														:readonly="
-															!isEditing
-														"></v-autocomplete>
+														:readonly="!isEditing"
+														return-object
+														small-chips
+														deletable-chips></v-autocomplete>
 													<v-autocomplete
 														v-else-if="
 															field?.type ===
@@ -538,9 +537,8 @@
 																field.value
 															]
 														"
-														deletable-chipsoutlined
 														multiple
-														chips
+														small-chips
 														deletable-chips
 														:readonly="
 															!isEditing
@@ -777,7 +775,7 @@ export default {
 	data() {
 		return {
 			count: 0,
-			original: {},
+			original: "{}",
 			entry: {},
 			datePicker: {},
 			historyLst: [],
@@ -795,8 +793,10 @@ export default {
 			return this.original != JSON.stringify(this.entry);
 		},
 	},
-	mounted: function () {
+	created: function () {
 		eventBus.$on("confirm-delete", this.confirmDeleteEntry);
+	},
+	mounted: function () {
 		if (this.$route.params.id) {
 			this.isNew = false;
 			this.getEntryById(this.$route.params.id);
@@ -813,7 +813,7 @@ export default {
 				setTimeout(() => {
 					eventBus.$emit(
 						"setSnackbar",
-						"Successfully Added Comment",
+						"Successfully added comment",
 						"success"
 					);
 					this.comments.unshift(response.data);
@@ -878,19 +878,31 @@ export default {
 			wrappedEntry.oldEntry = JSON.parse(this.original);
 			wrappedEntry.newEntry = this.entry;
 			this.isLoading = true;
-			backendService.updateEntry(wrappedEntry).then(() => {
-				setTimeout(() => {
-					this.isLoading = false;
-					this.original = JSON.stringify(this.entry);
-					this.$store.commit("setEntry", this.entry);
-					eventBus.$emit(
-						"setSnackbar",
-						"Successfully Update the Entry",
-						"success"
-					);
-					this.isEditing = false;
-				}, 1000);
-			});
+			backendService
+				.updateEntry(wrappedEntry)
+				.then(() => {
+					setTimeout(() => {
+						this.isLoading = false;
+						this.original = JSON.stringify(this.entry);
+						this.$store.commit("setEntry", this.entry);
+						eventBus.$emit(
+							"setSnackbar",
+							"Successfully updated the entry",
+							"success"
+						);
+						this.isEditing = false;
+					}, 1000);
+				})
+				.catch(() => {
+					setTimeout(() => {
+						this.isLoading = false;
+						eventBus.$emit(
+							"setSnackbar",
+							"Oops! Something is not right!",
+							"success"
+						);
+					}, 1000);
+				});
 		},
 		processLink(link) {
 			let newLink = link;
@@ -903,7 +915,7 @@ export default {
 			return newLink;
 		},
 	},
-	beforeUnmount: function () {
+	beforeDestroy: function () {
 		eventBus.$off("confirm-delete");
 	},
 };

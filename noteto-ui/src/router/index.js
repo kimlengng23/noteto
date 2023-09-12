@@ -15,6 +15,7 @@ import UserRegister from "../views/UserRegister.vue";
 import GroupRegister from "../views/GroupRegister.vue";
 import EmailVerify from "../views/EmailVerify.vue";
 import CustomViewList from "../views/CustomViewList.vue";
+import AssignedListView from "../views/AssignedListView.vue";
 import JaekJayCargoReceipt from "../custom-views/JaekJayCargoReceipt.vue";
 import JaekJayCustomOrderReceipt from "../custom-views/JaekJayCustomOrderReceipt.vue";
 import JaekJayEstimatedValue from "../custom-views/JaekJayEstimatedValue.vue";
@@ -92,6 +93,11 @@ const routes = [
 		component: EmailVerify,
 	},
 	{
+		path: "/assigned/list/view",
+		name: "AssignedListView",
+		component: AssignedListView,
+	},
+	{
 		path: "/custom/view",
 		name: "CustomView",
 		component: CustomView,
@@ -156,7 +162,9 @@ router.beforeEach((to, from, next) => {
 			to.name == "NewDatabase" ||
 			to.name == "GroupRegister" ||
 			to.name == "Logout" ||
-			to.name == "DatabaseAccess"
+			to.name == "DatabaseAccess" ||
+			to.name == "AssignedListView" ||
+			to.name == "DetailForm"
 		) {
 			next();
 		} else if (

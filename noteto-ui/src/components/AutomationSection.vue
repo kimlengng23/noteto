@@ -278,7 +278,7 @@ export default {
 					this.actValue = null;
 					eventBus.$emit(
 						"setSnackbar",
-						"Successfully Added Automation",
+						"Successfully added automation",
 						"success"
 					);
 					this.isLoading = false;

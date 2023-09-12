@@ -64,8 +64,14 @@ export default {
 		let headers = getHeaders();
 		return axios.get(url, { headers: headers });
 	},
+
 	getAutomationsByDatabase(database) {
 		let url = domain + `/automation/get/by/database/${database}`;
+		let headers = getHeaders();
+		return axios.get(url, { headers: headers });
+	},
+	getAssignedEntries() {
+		let url = domain + `/entry/get/assigned`;
 		let headers = getHeaders();
 		return axios.get(url, { headers: headers });
 	},
@@ -80,7 +86,7 @@ export default {
 		return axios.get(url, { headers: headers });
 	},
 	getEntriesByDatabase(database) {
-		let url = domain + `/entry/get/database/${database}`;
+		let url = domain + `/entry/get/by/database/${database}`;
 		let headers = getHeaders();
 		return axios.get(url, { headers: headers });
 	},
@@ -135,7 +141,7 @@ export default {
 		return axios.get(url, { headers: headers });
 	},
 	getEntryById(id) {
-		let url = domain + `/entry/get/id/${id}`;
+		let url = domain + `/entry/get/by/id/${id}`;
 		let headers = getHeaders();
 		return axios.get(url, { headers: headers });
 	},

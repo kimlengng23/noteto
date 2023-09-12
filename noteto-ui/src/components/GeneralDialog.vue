@@ -30,7 +30,7 @@ export default {
 		};
 	},
 
-	mounted: function () {
+	created: function () {
 		eventBus.$on("setDialog", this.setDialog);
 	},
 	methods: {
@@ -44,7 +44,7 @@ export default {
 			this.dialog = true;
 		},
 	},
-	beforeUnmount: function () {
+	beforeDestroy: function () {
 		eventBus.$off("setDialog");
 	},
 };

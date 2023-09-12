@@ -25,7 +25,7 @@ export default {
 		};
 	},
 
-	mounted: function () {
+	created: function () {
 		eventBus.$on("setSnackbar", this.setSnackbar);
 	},
 	methods: {
@@ -35,7 +35,7 @@ export default {
 			this.colorClass = colorClass;
 		},
 	},
-	beforeUnmount: function () {
+	beforeDestroy: function () {
 		eventBus.$off("setSnackbar");
 	},
 };

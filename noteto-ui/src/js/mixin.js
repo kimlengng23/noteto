@@ -1,5 +1,6 @@
 import _ from "lodash";
 import backendService from "../services/backend-service.js";
+import eventBus from "./event-bus.js";
 export default {
 	data() {
 		return {
@@ -143,19 +144,57 @@ export default {
 		},
 		getEntryById(id) {
 			this.setTimeoutLoading = true;
-			backendService.getEntryById(id).then((response) => {
-				this.original = JSON.stringify(response.data);
-				this.entry = JSON.parse(this.original);
-				backendService.getHistoryByEntryId(id).then((response) => {
-					this.historyLst = response.data;
+			backendService
+				.getEntryById(id)
+				.then((response) => {
+					this.original = JSON.stringify(response.data);
+					this.entry = JSON.parse(this.original);
+					backendService.getHistoryByEntryId(id).then((response) => {
+						this.historyLst = response.data;
+					});
+					backendService.getCommentsByEntryId(id).then((response) => {
+						this.comments = response.data;
+					});
+					//console.log("mixin");
+
+					this.$store.dispatch(
+						"getLayoutByDatabase",
+						this.entry._data.database
+					);
+
+					this.$store.dispatch(
+						"getFieldsByDatabase",
+						this.entry._data.database
+					);
+
+					this.$store.dispatch(
+						"getChoicesByDatabase",
+						this.entry._data.database
+					);
+
+					setTimeout(() => {
+						this.setTimeoutLoading = false;
+					}, 1000);
+				})
+				.catch((err) => {
+					let code = err.response.status;
+					setTimeout(() => {
+						this.setTimeoutLoading = false;
+						if (code == 404) {
+							eventBus.$emit(
+								"setSnackbar",
+								"Entry not found!",
+								"error"
+							);
+						} else if (code == 401) {
+							eventBus.$emit(
+								"setSnackbar",
+								"No access to the entry!",
+								"error"
+							);
+						}
+					}, 1000);
 				});
-				backendService.getCommentsByEntryId(id).then((response) => {
-					this.comments = response.data;
-				});
-				setTimeout(() => {
-					this.setTimeoutLoading = false;
-				}, 1000);
-			});
 		},
 
 		getFieldDisplayName(fieldValue) {

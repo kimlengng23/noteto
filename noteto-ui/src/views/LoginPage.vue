@@ -102,7 +102,7 @@ export default {
 					setTimeout(() => {
 						eventBus.$emit(
 							"setSnackbar",
-							"Incorrect Username or Password",
+							"Incorrect username or password",
 							"red darken-1 white--text"
 						);
 						this.isLoading = false;

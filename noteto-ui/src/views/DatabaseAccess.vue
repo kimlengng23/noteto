@@ -101,7 +101,7 @@ export default {
 					this.isLoading = false;
 					eventBus.$emit(
 						"setSnackbar",
-						"Successfully Updated Database Access",
+						"Successfully updated database access",
 						"success"
 					);
 				}, 1000);

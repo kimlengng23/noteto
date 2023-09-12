@@ -170,7 +170,7 @@ export default {
 							this.isLoading = false;
 							eventBus.$emit(
 								"setSnackbar",
-								"Successfully Updated the Layout",
+								"Successfully updated the layout",
 								"success"
 							);
 						}, 1000);

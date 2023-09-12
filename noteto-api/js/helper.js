@@ -6,13 +6,13 @@ const fs = require("fs");
 const _ = require("lodash");
 const secret = fs.readFileSync(path.join(__dirname, "/../keys/key.private"));
 let dbConn = null;
-let excludedUrls = {
-	"/api/user/register": true,
-	"/api/user/login": true,
-	"/api/user/logout": true,
-	"/api/user/get/avatars": true,
-	"/api/user/get/avatar": true,
-};
+// let excludedUrls = {
+// 	"/api/user/register": true,
+// 	"/api/user/login": true,
+// 	"/api/user/logout": true,
+// 	"/api/user/get/avatars": true,
+// 	"/api/user/get/avatar": true,
+// };
 function setDb(conn) {
 	dbConn = conn;
 }
@@ -136,6 +136,49 @@ function removeVerifyTokenBySessionId(sessionId) {
 	});
 	return promise;
 }
+function verifyAccess(req, res, next) {
+	let entryId = req.params.id;
+	dbConn
+		.collection("EntryCollection")
+		.findOne(
+			{ _id: ObjectId(entryId), "_data.isActive": true },
+			(err, result) => {
+				if (err) {
+					console.log("Helper - verifyAccess", err);
+					res.status(500).send(err);
+				} else {
+					let userId = req.decoded.userId;
+					if (
+						result &&
+						result.assignedTo &&
+						result.assignedTo._id == userId
+					) {
+						next();
+					} else if (result) {
+						let databaseValue = result._data.database;
+						dbConn.collection("DatabaseAccessCollection").findOne(
+							{
+								"database.value": databaseValue,
+								"user._id": userId,
+							},
+							(err, result) => {
+								if (err) {
+									console.log("Helper - verifyAccess", err);
+									res.status(500).send(err);
+								} else if (result) {
+									next();
+								} else {
+									res.sendStatus(401);
+								}
+							}
+						);
+					} else {
+						res.sendStatus(404);
+					}
+				}
+			}
+		);
+}
 function verifyAdminToken(req, res, next) {
 	let authorization = req.headers["authorization"];
 	if (authorization) {
@@ -183,10 +226,8 @@ function verifyEmailToken(req, res, next) {
 function verifyToken(req, res, next) {
 	let authorization = req.headers["authorization"];
 	let url = req.originalUrl.split("?")[0];
-	console.log(url, authorization);
-	if (excludedUrls[url] || url.indexOf("/id/") >= 0) {
-		return next();
-	}
+	//console.log(url, authorization);
+
 	if (authorization) {
 		let sessionId = authorization;
 		getTokenBySessionId(sessionId).then((response) => {
@@ -319,6 +360,7 @@ module.exports = {
 	verifyAdminToken,
 	verifyEmailToken,
 	verifyToken,
+	verifyAccess,
 	upload,
 	setDb,
 };

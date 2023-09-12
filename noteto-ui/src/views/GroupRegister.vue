@@ -204,7 +204,7 @@ export default {
 					setTimeout(() => {
 						eventBus.$emit(
 							"setSnackbar",
-							"Ops! Something is not right!",
+							"Oops! Something is not right!",
 							"red"
 						);
 						this.isLoading = false;
@@ -224,7 +224,7 @@ export default {
 					this.isLoading = false;
 					eventBus.$emit(
 						"setSnackbar",
-						"Successfully Updated Members",
+						"Successfully updated members",
 						"success"
 					);
 				}, 1000);
@@ -241,7 +241,7 @@ export default {
 				setTimeout(() => {
 					eventBus.$emit(
 						"setSnackbar",
-						"Successfully Updated Database's Groups",
+						"Successfully updated database's groups",
 						"success"
 					);
 					this.isLoading = false;

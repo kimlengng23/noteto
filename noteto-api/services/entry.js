@@ -45,6 +45,30 @@ function addEntry1(entry) {
 	});
 	return promise;
 }
+function getAssignedEntriesByUserId(userId) {
+	let promise = new Promise((resolve, reject) => {
+		dbConn
+			.collection("EntryCollection")
+			.find({ "assignedTo._id": userId })
+			.sort({
+				"_data.id": -1,
+				"_data.dateCreated": -1,
+				"_data.database": 1,
+			})
+			.toArray((err, results) => {
+				if (err) {
+					console.log(
+						"EntryService - getAssignedEntriesByUserId",
+						err
+					);
+					reject({ code: 500, message: err });
+				} else {
+					resolve({ code: 200, data: results });
+				}
+			});
+	});
+	return promise;
+}
 function getEmptyEntryByDatabase(database) {
 	let promise = new Promise((resolve, reject) => {
 		dbConn
@@ -193,6 +217,7 @@ module.exports = {
 	addEntry1,
 	addEntry2,
 	deleteEntryById,
+	getAssignedEntriesByUserId,
 	getEntryById,
 	getEmptyEntryByDatabase,
 	getEntriesByDatabase,

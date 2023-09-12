@@ -184,7 +184,7 @@ export default {
 	mounted: function () {
 		publicService.getReceiptById(this.$route.params.id).then((response) => {
 			this.entry = response.data;
-			document.title = `Bill #${this.entry.id} - ${this.entry["mtlTracking#"]} - នូតតូក - Noteto`;
+			document.title = `Bill #${this.entry._data.id} - ${this.entry["mtlTracking#"]} - នូតតូក - Noteto`;
 		});
 	},
 	computed: {

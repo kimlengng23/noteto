@@ -78,6 +78,15 @@ export default {
 		SecondNavbar,
 	},
 	computed: {
+		databaseToChoices() {
+			return this.$store.getters["databaseToChoices"];
+		},
+		databaseToFields() {
+			return this.$store.getters["databaseToFields"];
+		},
+		databaseToLayoutMappings() {
+			return this.$store.getters["databaseToLayoutMappings"];
+		},
 		isAdmin() {
 			return this.$store.getters["isAdmin"];
 		},

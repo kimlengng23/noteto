@@ -287,7 +287,7 @@ export default {
 					this.fieldType == "multipleSelect"
 				) {
 					backendService.addChoices(this.choices).then((response) => {
-						this.$store.commit("addChoices", response.data);
+						this.$store.commit("addNewChoices", response.data);
 					});
 				}
 				setTimeout(() => {
@@ -299,7 +299,7 @@ export default {
 					this.isLoading = false;
 					eventBus.$emit(
 						"setSnackbar",
-						"Successfully Created A New Field",
+						"Successfully created a new field",
 						"success"
 					);
 				}, 1000);
@@ -384,7 +384,7 @@ export default {
 				}
 				eventBus.$emit(
 					"setSnackbar",
-					"Successfully Updated Field",
+					"Successfully updated field",
 					"success"
 				);
 			});
@@ -405,7 +405,7 @@ export default {
 								this.isUpdatingLoading = false;
 								eventBus.$emit(
 									"setSnackbar",
-									"Successfully Updated Headers",
+									"Successfully updated headers",
 									"success"
 								);
 							}, 1000);
