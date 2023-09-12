@@ -15,7 +15,7 @@
 							</v-col>
 							<v-col>
 								<div class="text-subtitle-1 float-right">
-									{{ entry.id }}
+									{{ entry._data.id }}
 								</div>
 							</v-col>
 						</v-row>

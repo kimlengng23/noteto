@@ -265,11 +265,7 @@ function getEntryText(field, fldVal) {
 	} else if (field.type == "multipleUsers") {
 		return fldVal.map((e) => getFullName(e)).join(", ");
 	} else if (field.type == "date") {
-		let date = new Date(fldVal);
-		if (field.value == "dateCreated") {
-			console.log(date, fldVal);
-		}
-		return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+		return formatDate(fldVal);
 	} else if (field.type == "number") {
 		return fldVal;
 	} else if (field.type == "list") {
@@ -334,6 +330,18 @@ function isDiff(fld, oVal, nVal) {
 function getFullName(user) {
 	return user.first.trim() + " " + user.last.trim();
 }
+function formatDate(dateStr) {
+	let date = new Date(dateStr);
+	return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+}
+function getDataText(rawData) {
+	let data = {};
+	data.id = rawData.id;
+	data.dateCreated = formatDate(rawData.dateCreated);
+	data.dateModified = formatDate(rawData.dateModified);
+	data.createdBy = getFullName(rawData.createdBy);
+	return data;
+}
 //=====================================File Upload=======================================
 const multer = require("multer");
 let storage = multer.diskStorage({
@@ -349,6 +357,9 @@ function setDb(conn) {
 	dbConn = conn;
 }
 module.exports = {
+	formatDate,
+	getFullName,
+	getDataText,
 	getSalt,
 	getHash,
 	getEntryText,

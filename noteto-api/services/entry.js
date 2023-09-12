@@ -145,7 +145,7 @@ function getEntriesByDatabase(database) {
 		dbConn
 			.collection("EntryCollection")
 			.find({ "_data.database": database, "_data.isActive": true })
-			.sort({ id: -1, dateCreated: -1 })
+			.sort({ "_data.id": -1, "_data.dateCreated": -1 })
 			.toArray((err, results) => {
 				if (err) {
 					console.log("EntryService - getAllEntriesByDatabase", err);

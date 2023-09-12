@@ -29,6 +29,7 @@ function getReceiptById(id) {
 									fldVal
 								);
 							}
+							entry._data = helper.getDataText(result._data);
 							resolve({ code: 200, data: entry });
 						});
 				}
@@ -62,6 +63,9 @@ function getEntriesByDatabase(database) {
 										fldVal
 									);
 								}
+								entry._data = helper.getDataText(
+									results[i]._data
+								);
 								entries.push(entry);
 							}
 							resolve({ code: 200, data: entries });
