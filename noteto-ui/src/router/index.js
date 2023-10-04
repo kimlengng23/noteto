@@ -134,7 +134,7 @@ const routes = [
 			},
 			{
 				path: "mtlWholesale",
-				name: "MTLWholesale",
+				name: "MtlWholesale",
 				component: MtlWholesale,
 			},
 		],
