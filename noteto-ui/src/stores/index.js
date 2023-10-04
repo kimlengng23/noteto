@@ -172,6 +172,8 @@ export default new Vuex.Store({
 			let field = payload[0].field;
 			let database = payload[0].database
 			let choices = state.databaseToChoices[database]
+			if(!choices)
+				choices = []
 			choices =  choices.filter((choice) => choice.field != field)
 			choices = choices.concat(payload)
 			state.databaseToChoices[database] = choices;

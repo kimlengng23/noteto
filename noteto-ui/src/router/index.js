@@ -154,6 +154,7 @@ router.beforeEach((to, from, next) => {
 		to.name == "JaekJayEstimatedValue" ||
 		to.name == "JaekJayWholesale" ||
 		to.name == "JaekJayMainWholesale" ||
+		to.name == "MtlWholesale" ||
 		to.name == "Login" ||
 		to.name == "UserRegister" ||
 		to.name == "Home" ||
