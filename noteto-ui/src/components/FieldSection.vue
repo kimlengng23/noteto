@@ -347,6 +347,9 @@ export default {
                 field.type == "multipleSelect"
             ) {
                 this.choices = this.fieldToChoices[field.value];
+                if (!this.choices) {
+                    this.choices = [];
+                }
             }
         },
         getSelectedHeadersByDatabase() {
