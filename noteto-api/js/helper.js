@@ -137,7 +137,9 @@ function removeVerifyTokenBySessionId(sessionId) {
 	return promise;
 }
 function verifyAccess(req, res, next) {
+	
 	let entryId = req.params.id;
+	console.log(entryId)
 	dbConn
 		.collection("EntryCollection")
 		.findOne(
@@ -148,6 +150,7 @@ function verifyAccess(req, res, next) {
 					res.status(500).send(err);
 				} else {
 					let userId = req.decoded.userId;
+					console.log(result)
 					if (
 						result &&
 						result.assignedTo &&

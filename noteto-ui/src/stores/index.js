@@ -168,6 +168,14 @@ export default new Vuex.Store({
 				return e._id != payload;
 			});
 		},
+		replaceChoicesInDatabaseToChoices(state,payload) {
+			let field = payload[0].field;
+			let database = payload[0].database
+			let choices = state.databaseToChoices[database]
+			choices =  choices.filter((choice) => choice.field != field)
+			choices = choices.concat(payload)
+			state.databaseToChoices[database] = choices;
+		},
 		setAllDatabases(state, payload) {
 			state.allDatabases = payload;
 		},
@@ -271,11 +279,6 @@ export default new Vuex.Store({
 					}
 				});
 			});
-		},
-		setChoicesInDatabaseToChoices(state, payload) {
-			let fieldValue = payload[0].field;
-			let databaseValue = payload[0].database;
-			state.databaseToChoices[databaseValue][fieldValue] = payload;
 		},
 		setLayout(state, payload) {
 			state.layout = payload;

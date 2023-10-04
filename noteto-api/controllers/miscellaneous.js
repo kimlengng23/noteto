@@ -37,6 +37,7 @@ app.get("/get/navigation/options", (req, res) => {
 		});
 });
 app.get("/get/dropdowns", (req, res) => {
+	
 	miscellService
 		.getDropdowns()
 		.then((response) => {

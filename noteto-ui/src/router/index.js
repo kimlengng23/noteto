@@ -21,7 +21,7 @@ import JaekJayCustomOrderReceipt from "../custom-views/JaekJayCustomOrderReceipt
 import JaekJayEstimatedValue from "../custom-views/JaekJayEstimatedValue.vue";
 import JaekJayWholesale from "../custom-views/JaekJayWholesale.vue";
 import JaekJayMainWholesale from "../custom-views/JaekJayMainWholesale.vue";
-//import BillTrackerReceipt from "../components/BillTrackerReceipt.vue";
+import MtlWholesale from "../custom-views/MtlWholesale.vue";
 import store from "../stores/index.js";
 Vue.use(VueRouter);
 //const scrollSection = document.getElementById("SCROLL_SECTION_ID");
@@ -131,6 +131,11 @@ const routes = [
 				path: "jaekJayMainWholesale",
 				name: "JaekJayMainWholesale",
 				component: JaekJayMainWholesale,
+			},
+			{
+				path: "mtlWholesale",
+				name: "MTLWholesale",
+				component: MtlWholesale,
 			},
 		],
 	},

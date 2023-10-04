@@ -92,7 +92,7 @@ app.get("/get/empty/:database", helper.verifyToken, (req, res) => {
 			res.status(response.code).send(response.message);
 		});
 });
-app.post("/update", [helper.verifyToken, helper.verifyAccess], (req, res) => {
+app.post("/update/:id", [helper.verifyToken, helper.verifyAccess], (req, res) => {
 	let wrappedEntry = req.body;
 	let createdBy = {
 		_id: req.decoded.userId,
