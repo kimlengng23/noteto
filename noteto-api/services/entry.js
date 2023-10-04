@@ -174,7 +174,6 @@ function updateEntry2(oldEntry, newEntry, createdBy) {
 	return promise;
 }
 function updateEntry1(entry) {
-	console.log(entry);
 	let promise = new Promise((resolve, reject) => {
 		let id = entry._id;
 		let todayDate = new Date();

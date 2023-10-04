@@ -319,7 +319,6 @@ export default {
                 }, 1000);
             });
         },
-
         getAttributes(databaseValue) {
             // this.fields = this.databaseToFields[databaseValue];
             // this.fieldToChoices = this.databaseToChoices[databaseValue];
