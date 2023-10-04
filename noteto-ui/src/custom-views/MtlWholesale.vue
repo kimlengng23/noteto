@@ -21,8 +21,8 @@
                             <v-card-text
                                 class="padless d-flex justify-space-between red--text">
                                 <h2>
-                                    {{ "$"
-                                    }}{{ entry.wholesalePrice.toUpperCase() }}
+                                    {{ entry.wholesalePrice.toUpperCase() }}
+                                    {{ "đ" }}
                                 </h2>
                                 <h2>
                                     {{
