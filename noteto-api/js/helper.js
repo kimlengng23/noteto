@@ -325,6 +325,11 @@ function isDiff(fld, oVal, nVal) {
 		if (oVal.length != nVal.length) {
 			return true;
 		}
+		else {
+			if(JSON.stringify(oVal) != JSON.stringify(nVal)) {
+				return true;
+			}
+		}
 	} else {
 		return false;
 	}

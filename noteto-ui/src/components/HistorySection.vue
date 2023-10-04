@@ -23,6 +23,12 @@
                             {{ getEntryText(fieldToField[name], value.to) }}
                         </span>
                     </div>
+                    <div v-else>
+                        {{ fieldToField[name].displayName }} -
+                        <span class="blue--text text--lighten-2"
+                            >'Updated'</span
+                        >
+                    </div>
                 </div>
             </v-container>
             <v-divider class="my-2"></v-divider>
