@@ -307,6 +307,7 @@ export default {
 		},
 
 		getAttributes(databaseValue) {
+			this.$store.dispatch("getChoicesByDatabase");
 			this.fields = this.databaseToFields[databaseValue];
 			this.fieldToChoices = this.databaseToChoices[databaseValue];
 			this.getSelectedHeadersByDatabase(databaseValue);
@@ -334,6 +335,11 @@ export default {
 				field.type == "multipleSelect"
 			) {
 				this.choices = this.fieldToChoices[field.value];
+				console.log(this.choices);
+				if (!this.choices) {
+					console.log(this.choices);
+					this.choices = [];
+				}
 			}
 		},
 		getSelectedHeadersByDatabase() {

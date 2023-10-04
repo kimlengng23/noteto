@@ -197,8 +197,8 @@ export default {
 		let url = domain + `/search/entries`;
 		return axios.post(url, filter).catch();
 	},
-	updateEntry(wrappedEntry) {
-		let url = domain + `/entry/update`;
+	updateEntryById(id, wrappedEntry) {
+		let url = domain + `/entry/update/${id}`;
 		let headers = getHeaders();
 		return axios.post(url, wrappedEntry, { headers: headers });
 	},

@@ -879,7 +879,7 @@ export default {
 			wrappedEntry.newEntry = this.entry;
 			this.isLoading = true;
 			backendService
-				.updateEntry(wrappedEntry)
+				.updateEntryById(this.entry._id, wrappedEntry)
 				.then(() => {
 					setTimeout(() => {
 						this.isLoading = false;
@@ -899,7 +899,7 @@ export default {
 						eventBus.$emit(
 							"setSnackbar",
 							"Oops! Something is not right!",
-							"success"
+							"error"
 						);
 					}, 1000);
 				});

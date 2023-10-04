@@ -72,8 +72,13 @@ function getDatabaseToChoices() {
 					let databaseToChoices = {};
 					choices.forEach((choice) => {
 						if (!databaseToChoices[choice.database])
-							databaseToChoices[choice.database] = [];
-						databaseToChoices[choice.database].push(choice);
+							databaseToChoices[choice.database] = {};
+						if (!databaseToChoices[choice.database][choice.field])
+							databaseToChoices[choice.database][choice.field] =
+								[];
+						databaseToChoices[choice.database][choice.field].push(
+							choice
+						);
 					});
 					resolve({ code: 200, data: databaseToChoices });
 				}

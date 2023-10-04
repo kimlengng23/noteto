@@ -92,23 +92,31 @@ app.get("/get/empty/:database", helper.verifyToken, (req, res) => {
 			res.status(response.code).send(response.message);
 		});
 });
-app.post("/update", [helper.verifyToken, helper.verifyAccess], (req, res) => {
-	let wrappedEntry = req.body;
-	let createdBy = {
-		_id: req.decoded.userId,
-		first: req.decoded.first,
-		last: req.decoded.last,
-		username: req.decoded.username,
-	};
-	entryService
-		.updateEntry2(wrappedEntry.oldEntry, wrappedEntry.newEntry, createdBy)
-		.then((response) => {
-			res.status(response.code).send(response.data);
-		})
-		.catch((response) => {
-			res.status(response.code).send(response.message);
-		});
-});
+app.post(
+	"/update/:id",
+	[helper.verifyToken, helper.verifyAccess],
+	(req, res) => {
+		let wrappedEntry = req.body;
+		let createdBy = {
+			_id: req.decoded.userId,
+			first: req.decoded.first,
+			last: req.decoded.last,
+			username: req.decoded.username,
+		};
+		entryService
+			.updateEntry2(
+				wrappedEntry.oldEntry,
+				wrappedEntry.newEntry,
+				createdBy
+			)
+			.then((response) => {
+				res.status(response.code).send(response.data);
+			})
+			.catch((response) => {
+				res.status(response.code).send(response.message);
+			});
+	}
+);
 app.get("/backfill/:database", helper.verifyToken, (req, res) => {
 	entryService.backfill(req.params.database).then(() => {
 		res.sendStatus(200);

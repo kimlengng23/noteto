@@ -38,7 +38,6 @@ function compareForHistory(oldEntry, newEntry) {
 						oldEntry[fld.value],
 						newEntry[fld.value]
 					);
-					console.log(fld.value, isDiff);
 					if (isDiff) {
 						changes[fld.value] = {
 							from: oldEntry[fld.value],
