@@ -64,22 +64,18 @@ function getDatabaseToChoices() {
 			.collection("ChoiceCollection")
 			.find({})
 			.sort({ field: 1, value: 1 })
-			.toArray((err, choices) => {
+			.toArray((err, results) => {
 				if (err) {
 					console.log("ChoiceService - getAllChoicesByDatabase", err);
 					reject({ code: 500, message: err });
 				} else {
 					let databaseToChoices = {};
-					choices.forEach((choice) => {
+					for (let i = 0; i < results.length; i++) {
+						let choice = results[i];
 						if (!databaseToChoices[choice.database])
-							databaseToChoices[choice.database] = {};
-						if (!databaseToChoices[choice.database][choice.field])
-							databaseToChoices[choice.database][choice.field] =
-								[];
-						databaseToChoices[choice.database][choice.field].push(
-							choice
-						);
-					});
+							databaseToChoices[choice.database] = [];
+						databaseToChoices[choice.database].push(choice);
+					}
 					resolve({ code: 200, data: databaseToChoices });
 				}
 			});

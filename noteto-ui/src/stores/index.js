@@ -168,15 +168,18 @@ export default new Vuex.Store({
 				return e._id != payload;
 			});
 		},
-		replaceChoicesInDatabaseToChoices(state,payload) {
+		replaceChoicesInDatabaseToChoices(state, payload) {
 			let field = payload[0].field;
-			let database = payload[0].database
-			let choices = state.databaseToChoices[database]
-			if(!choices)
-				choices = []
-			choices =  choices.filter((choice) => choice.field != field)
-			choices = choices.concat(payload)
+			let database = payload[0].database;
+			let choices = state.databaseToChoices[database];
+			if (!choices) choices = [];
+			choices = choices.filter((choice) => choice.field != field);
+			choices = choices.concat(payload);
 			state.databaseToChoices[database] = choices;
+		},
+		replaceHeadersInDatabaseToHeaders(state, payload) {
+			let database = payload[0].database;
+			state.databaseToHeaders[database] = payload;
 		},
 		setAllDatabases(state, payload) {
 			state.allDatabases = payload;

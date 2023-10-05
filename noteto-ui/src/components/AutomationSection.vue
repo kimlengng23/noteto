@@ -237,10 +237,16 @@ export default {
 			return this.$store.getters["databaseToChoices"];
 		},
 		fieldToChoices() {
-			if (this.databaseValue) {
-				return this.databaseToChoices[this.databaseValue];
+			let fieldToChoices = {};
+			let choices = this.databaseToChoices[this.databaseValue];
+			if (choices) {
+				for (let i = 0; i < choices.length; i++) {
+					if (!fieldToChoices[choices[i].field])
+						fieldToChoices[choices[i].field] = [];
+					fieldToChoices[choices[i].field].push(choices[i]);
+				}
 			}
-			return {};
+			return fieldToChoices;
 		},
 	},
 	methods: {
