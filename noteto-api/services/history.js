@@ -26,7 +26,7 @@ function addHistory(history) {
 function compareForHistory(oldEntry, newEntry) {
 	let promise = new Promise((resolve, reject) => {
 		fieldController
-			.getFieldsByDatabase(oldEntry.database)
+			.getFieldsByDatabase(oldEntry._data.database)
 			.then((response) => {
 				let fields = response.data;
 				let history = {};
@@ -38,7 +38,6 @@ function compareForHistory(oldEntry, newEntry) {
 						oldEntry[fld.value],
 						newEntry[fld.value]
 					);
-					console.log(isDiff);
 					if (isDiff) {
 						changes[fld.value] = {
 							from: oldEntry[fld.value],

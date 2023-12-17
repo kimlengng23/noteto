@@ -17,7 +17,7 @@ function getReceiptById(id) {
 					reject({ code: 500, message: err });
 				} else {
 					fieldService
-						.getFieldsByDatabase(result.database)
+						.getFieldsByDatabase(result._data.database)
 						.then((response) => {
 							let fields = response.data;
 							let entry = {};
@@ -29,6 +29,7 @@ function getReceiptById(id) {
 									fldVal
 								);
 							}
+							entry._data = helper.getDataText(result._data);
 							resolve({ code: 200, data: entry });
 						});
 				}
@@ -41,7 +42,7 @@ function getEntriesByDatabase(database) {
 	let promise = new Promise((resolve, reject) => {
 		dbConn
 			.collection("EntryCollection")
-			.find({ database: database })
+			.find({ "_data.database": database })
 			.toArray((err, results) => {
 				if (err) {
 					console.log("EntryService - getEntriesByDatabase", err);
@@ -62,6 +63,9 @@ function getEntriesByDatabase(database) {
 										fldVal
 									);
 								}
+								entry._data = helper.getDataText(
+									results[i]._data
+								);
 								entries.push(entry);
 							}
 							resolve({ code: 200, data: entries });

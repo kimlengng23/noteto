@@ -6,13 +6,13 @@ const fs = require("fs");
 const _ = require("lodash");
 const secret = fs.readFileSync(path.join(__dirname, "/../keys/key.private"));
 let dbConn = null;
-let excludedUrls = {
-	"/api/user/register": true,
-	"/api/user/login": true,
-	"/api/user/logout": true,
-	"/api/user/get/avatars": true,
-	"/api/user/get/avatar": true,
-};
+// let excludedUrls = {
+// 	"/api/user/register": true,
+// 	"/api/user/login": true,
+// 	"/api/user/logout": true,
+// 	"/api/user/get/avatars": true,
+// 	"/api/user/get/avatar": true,
+// };
 function setDb(conn) {
 	dbConn = conn;
 }
@@ -136,6 +136,52 @@ function removeVerifyTokenBySessionId(sessionId) {
 	});
 	return promise;
 }
+function verifyAccess(req, res, next) {
+	
+	let entryId = req.params.id;
+	console.log(entryId)
+	dbConn
+		.collection("EntryCollection")
+		.findOne(
+			{ _id: ObjectId(entryId), "_data.isActive": true },
+			(err, result) => {
+				if (err) {
+					console.log("Helper - verifyAccess", err);
+					res.status(500).send(err);
+				} else {
+					let userId = req.decoded.userId;
+					console.log(result)
+					if (
+						result &&
+						result.assignedTo &&
+						result.assignedTo._id == userId
+					) {
+						next();
+					} else if (result) {
+						let databaseValue = result._data.database;
+						dbConn.collection("DatabaseAccessCollection").findOne(
+							{
+								"database.value": databaseValue,
+								"user._id": userId,
+							},
+							(err, result) => {
+								if (err) {
+									console.log("Helper - verifyAccess", err);
+									res.status(500).send(err);
+								} else if (result) {
+									next();
+								} else {
+									res.sendStatus(401);
+								}
+							}
+						);
+					} else {
+						res.sendStatus(404);
+					}
+				}
+			}
+		);
+}
 function verifyAdminToken(req, res, next) {
 	let authorization = req.headers["authorization"];
 	if (authorization) {
@@ -183,10 +229,8 @@ function verifyEmailToken(req, res, next) {
 function verifyToken(req, res, next) {
 	let authorization = req.headers["authorization"];
 	let url = req.originalUrl.split("?")[0];
-	console.log(url, authorization);
-	if (excludedUrls[url] || url.indexOf("/id/") >= 0) {
-		return next();
-	}
+	//console.log(url, authorization);
+
 	if (authorization) {
 		let sessionId = authorization;
 		getTokenBySessionId(sessionId).then((response) => {
@@ -224,11 +268,7 @@ function getEntryText(field, fldVal) {
 	} else if (field.type == "multipleUsers") {
 		return fldVal.map((e) => getFullName(e)).join(", ");
 	} else if (field.type == "date") {
-		let date = new Date(fldVal);
-		if (field.value == "dateCreated") {
-			console.log(date, fldVal);
-		}
-		return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+		return formatDate(fldVal);
 	} else if (field.type == "number") {
 		return fldVal;
 	} else if (field.type == "list") {
@@ -285,6 +325,11 @@ function isDiff(fld, oVal, nVal) {
 		if (oVal.length != nVal.length) {
 			return true;
 		}
+		else {
+			if(JSON.stringify(oVal) != JSON.stringify(nVal)) {
+				return true;
+			}
+		}
 	} else {
 		return false;
 	}
@@ -292,6 +337,18 @@ function isDiff(fld, oVal, nVal) {
 }
 function getFullName(user) {
 	return user.first.trim() + " " + user.last.trim();
+}
+function formatDate(dateStr) {
+	let date = new Date(dateStr);
+	return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+}
+function getDataText(rawData) {
+	let data = {};
+	data.id = rawData.id;
+	data.dateCreated = formatDate(rawData.dateCreated);
+	data.dateModified = formatDate(rawData.dateModified);
+	data.createdBy = getFullName(rawData.createdBy);
+	return data;
 }
 //=====================================File Upload=======================================
 const multer = require("multer");
@@ -308,6 +365,9 @@ function setDb(conn) {
 	dbConn = conn;
 }
 module.exports = {
+	formatDate,
+	getFullName,
+	getDataText,
 	getSalt,
 	getHash,
 	getEntryText,
@@ -319,6 +379,7 @@ module.exports = {
 	verifyAdminToken,
 	verifyEmailToken,
 	verifyToken,
+	verifyAccess,
 	upload,
 	setDb,
 };
