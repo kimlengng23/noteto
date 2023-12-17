@@ -97,13 +97,18 @@ function getCustomerDashboard(customer) {
 							row.idx = i + 1;
 							row._id = results[i]._id;
 							row.type = "Shipment";
-							row.tracking = results[i]["mtlTracking#"];
+							row.tracking = results[i]["mtlTracking#"]
+								? results[i]["mtlTracking#"]
+								: "N/A";
 							row.dateCreated =
 								results[i]["_data"]["dateCreated"];
-							row.paymentStatus =
-								results[i]["customerPaymentStatus"][
-									"displayName"
-								];
+							row.paymentStatus = results[i][
+								"customerPaymentStatus"
+							]
+								? results[i]["customerPaymentStatus"][
+										"displayName"
+								  ]
+								: "N/A";
 							row.amount = 0;
 							if (results[i]["chargeList"]) {
 								let sum = 0;
@@ -118,12 +123,17 @@ function getCustomerDashboard(customer) {
 						} else {
 							row.idx = i + 1;
 							row._id = results[i]._id;
-							row.type = results[i]["invoiceType"]["displayName"];
-							row.tracking = results[i]["mtlTracking"];
+							row.type = results[i]["invoiceType"]
+								? results[i]["invoiceType"]["displayName"]
+								: "N/A";
+							row.tracking = results[i]["mtlTracking"]
+								? results[i]["mtlTracking"]
+								: "N/A";
 							row.dateCreated =
 								results[i]["_data"]["dateCreated"];
-							row.paymentStatus =
-								results[i]["paymentStatus"]["displayName"];
+							row.paymentStatus = results[i]["paymentStatus"]
+								? results[i]["paymentStatus"]["displayName"]
+								: "N/A";
 							row.amount = 0;
 							if (results[i]["itemList"]) {
 								let sum = 0;
