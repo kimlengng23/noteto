@@ -109,6 +109,9 @@
 						<span v-else-if="header.value == 'dateCreated'">
 							{{ formatDate(item.dateCreated) }}
 						</span>
+						<span v-else-if="header.value == 'amount'">
+							{{ `$ ${item[header.value].toFixed(2)}` }}
+						</span>
 						<span v-else>
 							{{ item[header.value] }}
 						</span>
@@ -160,6 +163,9 @@
 							</span>
 							<span v-else-if="header.value == 'dateCreated'">
 								{{ formatDate(item.dateCreated) }}
+							</span>
+							<span v-else-if="header.value == 'amount'">
+								{{ `$ ${item[header.value].toFixed(2)}` }}
 							</span>
 							<span v-else>
 								{{ item[header.value] }}
@@ -285,6 +291,11 @@ export default {
 					text: "Payment Status",
 					align: "start",
 					value: "paymentStatus",
+				},
+				{
+					text: "Amount",
+					align: "start",
+					value: "amount",
 				},
 			],
 		};

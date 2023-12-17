@@ -153,6 +153,11 @@ function getCustomerDashboard(customer) {
 								}
 								row.amount = sum;
 							}
+							row.amount = results[i]["collectingFee"]
+								? ((results[i]["collectingFee"] + 100) *
+										row.amount) /
+								  100
+								: row.amount;
 						}
 						rows.push(row);
 					}
