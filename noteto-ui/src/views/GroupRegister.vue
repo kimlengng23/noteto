@@ -194,8 +194,7 @@ export default {
 						eventBus.$emit(
 							"setSnackbar",
 							"Successfully added a group",
-							"success",
-							true
+							"success"
 						);
 						this.isLoading = false;
 					}, 1000);
@@ -205,9 +204,8 @@ export default {
 					setTimeout(() => {
 						eventBus.$emit(
 							"setSnackbar",
-							"Ops! Something is not right!",
-							"red",
-							true
+							"Oops! Something is not right!",
+							"red"
 						);
 						this.isLoading = false;
 					}, 1000);
@@ -226,9 +224,8 @@ export default {
 					this.isLoading = false;
 					eventBus.$emit(
 						"setSnackbar",
-						"Successfully Updated Members",
-						"success",
-						true
+						"Successfully updated members",
+						"success"
 					);
 				}, 1000);
 			});
@@ -244,9 +241,8 @@ export default {
 				setTimeout(() => {
 					eventBus.$emit(
 						"setSnackbar",
-						"Successfully Updated Database's Groups",
-						"success",
-						true
+						"Successfully updated database's groups",
+						"success"
 					);
 					this.isLoading = false;
 				}, 1000);

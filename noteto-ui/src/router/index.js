@@ -15,12 +15,14 @@ import UserRegister from "../views/UserRegister.vue";
 import GroupRegister from "../views/GroupRegister.vue";
 import EmailVerify from "../views/EmailVerify.vue";
 import CustomViewList from "../views/CustomViewList.vue";
+import AssignedListView from "../views/AssignedListView.vue";
 import JaekJayCargoReceipt from "../custom-views/JaekJayCargoReceipt.vue";
 import JaekJayCustomOrderReceipt from "../custom-views/JaekJayCustomOrderReceipt.vue";
 import JaekJayEstimatedValue from "../custom-views/JaekJayEstimatedValue.vue";
 import JaekJayWholesale from "../custom-views/JaekJayWholesale.vue";
 import JaekJayMainWholesale from "../custom-views/JaekJayMainWholesale.vue";
-//import BillTrackerReceipt from "../components/BillTrackerReceipt.vue";
+import JaekJayCustomerDashboard from "../custom-views/JaekJayCustomerDashboard.vue";
+import MtlWholesale from "../custom-views/MtlWholesale.vue";
 import store from "../stores/index.js";
 Vue.use(VueRouter);
 //const scrollSection = document.getElementById("SCROLL_SECTION_ID");
@@ -92,6 +94,11 @@ const routes = [
 		component: EmailVerify,
 	},
 	{
+		path: "/assigned/list/view",
+		name: "AssignedListView",
+		component: AssignedListView,
+	},
+	{
 		path: "/custom/view",
 		name: "CustomView",
 		component: CustomView,
@@ -126,6 +133,16 @@ const routes = [
 				name: "JaekJayMainWholesale",
 				component: JaekJayMainWholesale,
 			},
+			{
+				path: "jaekJayCustomerDashboard",
+				name: "JaekJayCustomerDashboard",
+				component: JaekJayCustomerDashboard,
+			},
+			{
+				path: "mtlWholesale",
+				name: "MtlWholesale",
+				component: MtlWholesale,
+			},
 		],
 	},
 ];
@@ -143,6 +160,7 @@ router.beforeEach((to, from, next) => {
 		to.name == "JaekJayEstimatedValue" ||
 		to.name == "JaekJayWholesale" ||
 		to.name == "JaekJayMainWholesale" ||
+		to.name == "MtlWholesale" ||
 		to.name == "Login" ||
 		to.name == "UserRegister" ||
 		to.name == "Home" ||
@@ -156,7 +174,10 @@ router.beforeEach((to, from, next) => {
 			to.name == "NewDatabase" ||
 			to.name == "GroupRegister" ||
 			to.name == "Logout" ||
-			to.name == "DatabaseAccess"
+			to.name == "DatabaseAccess" ||
+			to.name == "AssignedListView" ||
+			to.name == "DetailForm" ||
+			to.name == "JaekJayCustomerDashboard"
 		) {
 			next();
 		} else if (
@@ -169,6 +190,7 @@ router.beforeEach((to, from, next) => {
 			next({ name: "Home" });
 		}
 	} else {
+		localStorage.setItem("nextRouteName", to.name);
 		next({ name: "Login" });
 	}
 });

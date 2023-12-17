@@ -5,11 +5,13 @@
 		<v-main>
 			<router-view></router-view>
 		</v-main>
+		<general-dialog></general-dialog>
 		<general-snackbar></general-snackbar>
 	</v-app>
 </template>
 
 <script>
+import GeneralDialog from "./components/GeneralDialog.vue";
 import GeneralSnackbar from "./components/GeneralSnackbar.vue";
 import MainNavbar from "./components/Navbar.vue";
 import SecondNavbar from "./components/SecondNavbar.vue";
@@ -70,11 +72,21 @@ export default {
 		}
 	},
 	components: {
+		GeneralDialog,
 		GeneralSnackbar,
 		MainNavbar,
 		SecondNavbar,
 	},
 	computed: {
+		databaseToChoices() {
+			return this.$store.getters["databaseToChoices"];
+		},
+		databaseToFields() {
+			return this.$store.getters["databaseToFields"];
+		},
+		databaseToLayoutMappings() {
+			return this.$store.getters["databaseToLayoutMappings"];
+		},
 		isAdmin() {
 			return this.$store.getters["isAdmin"];
 		},

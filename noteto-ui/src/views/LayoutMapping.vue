@@ -170,9 +170,8 @@ export default {
 							this.isLoading = false;
 							eventBus.$emit(
 								"setSnackbar",
-								"Successfully Updated the Layout",
-								"success",
-								true
+								"Successfully updated the layout",
+								"success"
 							);
 						}, 1000);
 					});

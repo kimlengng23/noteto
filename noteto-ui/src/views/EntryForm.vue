@@ -1,45 +1,58 @@
 <template>
 	<v-container>
-		<v-card elevation="0" min-width="350" width="100%">
-			<v-card-title class="d-flex justify-space-between">
-				<div class="text-left">
-					<p v-show="isNew" class="text-primary">
-						New Entry
-						<v-progress-circular
-							indeterminate
-							color="primary"
-							v-if="setTimeoutLoading"></v-progress-circular>
-					</p>
+		<div class="text-center">
+			<v-progress-circular
+				indeterminate
+				color="primary"
+				v-if="setTimeoutLoading"></v-progress-circular>
+		</div>
+		<v-card
+			elevation="0"
+			min-width="350"
+			width="100%"
+			v-if="!setTimeoutLoading">
+			<v-card-text class="text-subtitle-1">
+				<div class="d-flex justify-space-between">
+					<div>
+						<span class="font-weight-bold">New Entry</span>
+					</div>
+					<div class="text-right">
+						<div>
+							<span class="font-weight-bold">Today Date:</span>
 
-					<p v-show="isNew" class="text-primary">
-						<span class="text-muted">Today Date:</span>
-						{{ getTodayDate() }}
-					</p>
+							{{ getTodayDate() }}
+						</div>
+					</div>
 				</div>
-
-				<div class="mt-3">
-					<v-btn
-						v-show="isNew"
-						rounded
-						class="warning ml-2"
-						depressed
-						@click="clearEntry">
-						<i class="fas fa-eraser mr-2"></i>
-						Clear
-					</v-btn>
-					<v-btn
-						v-show="isNew"
-						rounded
-						class="primary ml-2"
-						depressed
-						@click="addEntry"
-						:loading="isLoading"
-						:disabled="!isLoggedIn || !isDirty">
-						<i class="fas fa-save mr-2"></i>
-						Submit
-					</v-btn>
-				</div>
-			</v-card-title>
+			</v-card-text>
+			<v-card-text class="d-flex flex-wrap justify-space-between py-0">
+				<v-slide-group class="py-1">
+					<v-slide-item>
+						<v-btn
+							v-show="isNew"
+							rounded
+							class="warning ml-2"
+							depressed
+							@click="clearEntry">
+							<i class="fas fa-eraser mr-2"></i>
+							Clear
+						</v-btn>
+					</v-slide-item>
+					<v-slide-item>
+						<v-btn
+							v-show="isNew"
+							rounded
+							class="primary ml-2"
+							depressed
+							@click="addEntry"
+							:loading="isLoading"
+							:disabled="!isLoggedIn || !isDirty">
+							<i class="fas fa-save mr-2"></i>
+							Submit
+						</v-btn>
+					</v-slide-item>
+				</v-slide-group>
+			</v-card-text>
 			<v-card-text>
 				<v-row v-for="(row, idxI) in rows" :key="`row-${idxI}`">
 					<p
@@ -55,89 +68,92 @@
 						</p>
 						<v-text-field
 							v-else-if="
-								fieldToField[col.field].type === 'singleLine'
+								fieldToField[col.field]?.type === 'singleLine'
 							"
-							:label="fieldToField[col.field].displayName"
+							:label="fieldToField[col.field]?.displayName"
 							v-model="entry[col.field]"></v-text-field>
 						<vuetify-money
 							v-else-if="
-								fieldToField[col.field].type ===
+								fieldToField[col.field]?.type ===
 								'currencyInDollar'
 							"
-							:label="fieldToField[col.field].displayName"
+							:label="fieldToField[col.field]?.displayName"
 							v-model.number="entry[col.field]"
 							:options="
 								fieldToField[col.field].options
 							"></vuetify-money>
 						<vuetify-money
 							v-else-if="
-								fieldToField[col.field].type === 'weightInLb'
+								fieldToField[col.field]?.type === 'weightInLb'
 							"
-							:label="fieldToField[col.field].displayName"
+							:label="fieldToField[col.field]?.displayName"
 							v-model.number="entry[col.field]"
 							:options="
 								fieldToField[col.field].options
 							"></vuetify-money>
 						<vuetify-money
 							v-else-if="
-								fieldToField[col.field].type === 'weightInKg'
+								fieldToField[col.field]?.type === 'weightInKg'
 							"
-							:label="fieldToField[col.field].displayName"
+							:label="fieldToField[col.field]?.displayName"
 							v-model.number="entry[col.field]"
 							:options="
 								fieldToField[col.field].options
 							"></vuetify-money>
 						<v-text-field
 							v-else-if="
-								fieldToField[col.field].type === 'number'
+								fieldToField[col.field]?.type === 'number'
 							"
-							:label="fieldToField[col.field].displayName"
+							:label="fieldToField[col.field]?.displayName"
 							v-model.number="entry[col.field]"></v-text-field>
 						<v-textarea
 							v-else-if="
-								fieldToField[col.field].type === 'multipleLines'
+								fieldToField[col.field]?.type ===
+								'multipleLines'
 							"
-							:label="fieldToField[col.field].displayName"
+							:label="fieldToField[col.field]?.displayName"
 							v-model="entry[col.field]"></v-textarea>
 						<v-autocomplete
 							@change="automate(col.field)"
 							v-else-if="
-								fieldToField[col.field].type === 'singleSelect'
+								fieldToField[col.field]?.type === 'singleSelect'
 							"
-							:label="fieldToField[col.field].displayName"
+							:label="fieldToField[col.field]?.displayName"
 							v-model="entry[col.field]"
-							return-object
-							:items="fieldToChoices[col.field]"
-							item-text="displayName"></v-autocomplete>
-						<v-autocomplete
-							v-else-if="
-								fieldToField[col.field].type ===
-								'multipleSelect'
-							"
-							:label="fieldToField[col.field].displayName"
-							v-model="entry[col.field]"
-							return-object
 							:items="fieldToChoices[col.field]"
 							item-text="displayName"
-							deletable-chipsoutlined
+							return-object
+							small-chips
+							deletable-chips></v-autocomplete>
+						<v-autocomplete
+							v-else-if="
+								fieldToField[col.field]?.type ===
+								'multipleSelect'
+							"
+							:label="fieldToField[col.field]?.displayName"
+							v-model="entry[col.field]"
+							:items="fieldToChoices[col.field]"
+							item-text="displayName"
+							return-object
 							multiple
-							chips
+							small-chips
 							deletable-chips></v-autocomplete>
 						<v-autocomplete
 							@change="automate(col.field)"
 							v-else-if="
-								fieldToField[col.field].type === 'singleUser'
+								fieldToField[col.field]?.type === 'singleUser'
 							"
-							:label="fieldToField[col.field].displayName"
+							:label="fieldToField[col.field]?.displayName"
 							v-model="entry[col.field]"
 							return-object
 							:items="users"
 							:item-text="getFullName"></v-autocomplete>
 						<v-autocomplete
 							v-else-if="
-								fieldToField[col.field].type === 'multipleUsers'
+								fieldToField[col.field]?.type ===
+								'multipleUsers'
 							"
-							:label="fieldToField[col.field].displayName"
+							:label="fieldToField[col.field]?.displayName"
 							v-model="entry[col.field]"
 							return-object
 							:items="users"
@@ -147,7 +163,7 @@
 							chips
 							deletable-chips></v-autocomplete>
 						<v-menu
-							v-else-if="fieldToField[col.field].type === 'date'"
+							v-else-if="fieldToField[col.field]?.type === 'date'"
 							v-model="datePicker[col.field]"
 							:close-on-content-click="false"
 							transition="scale-transition"
@@ -157,7 +173,9 @@
 							<template v-slot:activator="{ on, attrs }">
 								<v-text-field
 									:value="formatDate(entry[col.field])"
-									:label="fieldToField[col.field].displayName"
+									:label="
+										fieldToField[col.field]?.displayName
+									"
 									persistent-hint
 									prepend-icon="mdi-calendar"
 									v-bind="attrs"
@@ -171,13 +189,15 @@
 								"></v-date-picker>
 						</v-menu>
 						<div
-							v-else-if="fieldToField[col.field].type === 'list'">
+							v-else-if="
+								fieldToField[col.field]?.type === 'list'
+							">
 							<v-row>
 								<v-col>
 									<p
 										class="font-weight-bold subtitle-1 black--text">
 										{{
-											fieldToField[col.field].displayName
+											fieldToField[col.field]?.displayName
 										}}
 									</p>
 								</v-col>
@@ -191,17 +211,17 @@
 									].listFields"
 									:key="`lCol-${lIdxJ}`">
 									<v-text-field
-										v-if="field.type === 'singleLine'"
-										:label="field.displayName"
+										v-if="field?.type === 'singleLine'"
+										:label="field?.displayName"
 										v-model="
 											entry[col.field][lIdxI][field.value]
 										"></v-text-field>
 									<vuetify-money
 										v-else-if="
-											field.type === 'currencyInDollar'
+											field?.type === 'currencyInDollar'
 										"
 										prefix="$"
-										:label="field.displayName"
+										:label="field?.displayName"
 										v-model.number="
 											entry[col.field][lIdxI][field.value]
 										"
@@ -209,15 +229,17 @@
 											field.options
 										"></vuetify-money>
 									<v-text-field
-										v-else-if="field.type === 'number'"
-										:label="field.displayName"
+										v-else-if="field?.type === 'number'"
+										:label="field?.displayName"
 										v-model.number="
 											entry[col.field][lIdxI][field.value]
 										"></v-text-field>
 									<vuetify-money
-										v-else-if="field.typee === 'weightInLb'"
+										v-else-if="
+											field?.typee === 'weightInLb'
+										"
 										suffix="Lbs"
-										:label="field.displayName"
+										:label="field?.displayName"
 										v-model.number="
 											entry[col.field][lIdxI][field.value]
 										"
@@ -225,9 +247,9 @@
 											field.options
 										"></vuetify-money>
 									<vuetify-money
-										v-else-if="field.type === 'weightInKg'"
+										v-else-if="field?.type === 'weightInKg'"
 										suffix="Kg"
-										:label="field.displayName"
+										:label="field?.displayName"
 										v-model.number="
 											entry[col.field][lIdxI][field.value]
 										"
@@ -236,47 +258,48 @@
 										"></vuetify-money>
 									<v-textarea
 										v-else-if="
-											field.type === 'multipleLines'
+											field?.type === 'multipleLines'
 										"
-										:label="field.displayName"
+										:label="field?.displayName"
 										v-model="
 											entry[col.field][lIdxI][field.value]
 										"></v-textarea>
 									<v-autocomplete
 										@change="automate(col.field)"
 										v-else-if="
-											field.type === 'singleSelect'
+											field?.type === 'singleSelect'
 										"
-										:label="field.displayName"
+										:label="field?.displayName"
 										v-model="
 											entry[col.field][lIdxI][field.value]
 										"
-										return-object
-										:items="fieldToChoices[field.value]"
-										item-text="displayName"></v-autocomplete>
-									<v-autocomplete
-										v-else-if="
-											field.type === 'multipleSelect'
-										"
-										:label="field.displayName"
-										v-model="
-											entry[col.field][lIdxI][field.value]
-										"
-										return-object
 										:items="fieldToChoices[field.value]"
 										item-text="displayName"
-										deletable-chipsoutlined
+										return-object
+										small-chips
+										deletable-chips></v-autocomplete>
+									<v-autocomplete
+										v-else-if="
+											field?.type === 'multipleSelect'
+										"
+										:label="field?.displayName"
+										v-model="
+											entry[col.field][lIdxI][field.value]
+										"
+										:items="fieldToChoices[field.value]"
+										item-text="displayName"
+										return-object
 										multiple
-										chips
+										small-chips
 										deletable-chips></v-autocomplete>
 									<v-autocomplete
 										@change="automate(col.field)"
 										v-else-if="
-											fieldToField[col.field].type ===
+											fieldToField[col.field]?.type ===
 											'singleUser'
 										"
 										:label="
-											fieldToField[col.field].displayName
+											fieldToField[col.field]?.displayName
 										"
 										v-model="
 											entry[col.field][lIdxI][field.value]
@@ -288,11 +311,11 @@
 										"></v-autocomplete>
 									<v-autocomplete
 										v-else-if="
-											fieldToField[col.field].type ===
+											fieldToField[col.field]?.type ===
 											'multipleUsers'
 										"
 										:label="
-											fieldToField[col.field].displayName
+											fieldToField[col.field]?.displayName
 										"
 										v-model="
 											entry[col.field][lIdxI][field.value]
@@ -305,7 +328,7 @@
 										chips
 										deletable-chips></v-autocomplete>
 									<v-menu
-										v-else-if="field.type === 'date'"
+										v-else-if="field?.type === 'date'"
 										v-model="
 											datePicker[
 												`${field.value}-${lIdxI}`
@@ -326,7 +349,7 @@
 														]
 													)
 												"
-												:label="field.displayName"
+												:label="field?.displayName"
 												persistent-hint
 												prepend-icon="mdi-calendar"
 												v-bind="attrs"
@@ -384,11 +407,10 @@ import backendService from "../services/backend-service.js";
 import mixin from "../js/mixin.js";
 export default {
 	name: "EntryForm",
-
 	mixins: [mixin],
 	data() {
 		return {
-			original: {},
+			original: "{}",
 			entry: {},
 			datePicker: {},
 			isNew: true,
@@ -399,10 +421,6 @@ export default {
 	},
 	mounted: function () {
 		this.clearEntry();
-		if (this.$route.params.id) {
-			this.isNew = false;
-			this.getEntryById(this.$route.params.id);
-		}
 	},
 	computed: {
 		isDirty() {
@@ -413,9 +431,9 @@ export default {
 		addEntry() {
 			let wrappedEntry = {};
 			this.isLoading = true;
-			this.entry.database = this.database.value;
 			wrappedEntry.newEntry = this.entry;
 			wrappedEntry.oldEntry = this.emptyEntry;
+			wrappedEntry.database = this.database.value;
 			backendService.addEntry(wrappedEntry).then((response) => {
 				this.original = JSON.stringify(this.entry);
 				this.$store.commit("addEntry", response.data);
@@ -424,9 +442,8 @@ export default {
 					this.isSubmitted = true;
 					eventBus.$emit(
 						"setSnackbar",
-						"Successfully Added a New Entry",
-						"success",
-						true
+						"Successfully added a new entry",
+						"success"
 					);
 				}, 1000);
 			});

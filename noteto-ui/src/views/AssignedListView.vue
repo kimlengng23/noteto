@@ -9,16 +9,15 @@
 				<th v-for="(header, idx) in headers" :key="`header-${idx}`">
 					<v-text-field
 						class="ma-2"
-						rounded
 						v-model="search[header.value]"
 						placeholder="filter"
+						rounded
 						solo-inverted
 						hide-details
 						flat></v-text-field>
 				</th>
 			</tr>
 		</template>
-
 		<template v-slot:item="{ item, index }">
 			<tr
 				:class="[
@@ -31,16 +30,16 @@
 				<td
 					v-for="(header, idx) in headers"
 					:key="`header-${index}-${idx}`">
-					<span v-if="header.isDefault && header.value == '_data.id'">
+					<span v-if="header.isDefault && header.value == 'idx'">
+						{{ index + 1 }}
+					</span>
+					<span v-if="header.isDefault && header.value == '_id'">
 						<a @click="goToDetailForm(item._id)">
-							{{ item._data.id }}
+							{{ item._id }}
 						</a>
 					</span>
 					<span v-else-if="header.isDefault">
 						{{ getDataText(header, item) }}
-					</span>
-					<span v-else>
-						{{ getEntryText(header, item) }}
 					</span>
 				</td>
 			</tr>
@@ -48,17 +47,23 @@
 	</v-data-table>
 </template>
 <script>
-//import backendService from "../services/backend-service.js";
+import backendService from "@/services/backend-service";
+
 export default {
-	name: "ListView",
+	name: "AssignedListView",
 	data() {
 		return {
-			datePicker: {},
-			filter: {},
-			defaultHeaders: [
+			entries: [],
+			headers: [
 				{
-					value: "_data.id",
-					text: "Id",
+					value: "_id",
+					text: "Long Id",
+					align: "start",
+					isDefault: true,
+				},
+				{
+					value: "_data.database",
+					text: "Entry Id",
 					align: "start",
 					isDefault: true,
 				},
@@ -75,15 +80,19 @@ export default {
 					isDefault: true,
 				},
 			],
+			search: {},
+			selected: 0,
 		};
 	},
-	mounted: function () {},
+	mounted: function () {
+		this.getAssignedEntries();
+	},
 	computed: {
+		currentUser() {
+			return this.$store.getters["currentUser"];
+		},
 		database() {
 			return this.$store.getters["currentDatabase"];
-		},
-		entries() {
-			return this.$store.getters["entries"];
 		},
 		filteredEntries() {
 			let entries = this.entries;
@@ -98,7 +107,7 @@ export default {
 								.toString()
 								.trim()
 								.toLowerCase()
-								.includes(this.search[key].toLowerCase());
+								.includes(searchStr);
 						});
 					} else if (header && header.isDefault) {
 						entries = entries.filter((e) => {
@@ -107,43 +116,15 @@ export default {
 								.toString()
 								.trim()
 								.toLowerCase()
-								.includes(this.search[key].toLowerCase());
+								.includes(searchStr);
 						});
 					}
 				}
 			}
 			return entries;
 		},
-		headers() {
-			let rawHeaders = this.$store.getters["headers"];
-			let processedHeaders = [...this.defaultHeaders];
-			if (!rawHeaders) return processedHeaders;
-			for (let i = 0; i < rawHeaders.length; i++) {
-				let processedHeader = { ...rawHeaders[i] };
-				processedHeader.text = rawHeaders[i].displayName;
-				processedHeader.align = "start";
-				processedHeaders.push(processedHeader);
-			}
-			return processedHeaders;
-		},
 		itemsPerPage() {
 			return this.$store.getters["itemsPerPage"];
-		},
-		search: {
-			get: function () {
-				return this.$store.getters["search"];
-			},
-			set: function (val) {
-				this.$store.commit("setSearch", val);
-			},
-		},
-		selected: {
-			get: function () {
-				return this.$store.getters["selectedRow"];
-			},
-			set: function (val) {
-				this.$store.commit("setSelectedRow", val);
-			},
 		},
 	},
 	methods: {
@@ -153,6 +134,11 @@ export default {
 				date.getMonth() + 1
 			}/${date.getDate()}/${date.getFullYear()}`;
 		},
+		getAssignedEntries() {
+			backendService.getAssignedEntries().then((response) => {
+				this.entries = response.data;
+			});
+		},
 		getDataText(header, entry) {
 			if (header.value == "_data.id") {
 				return entry._data.id;
@@ -160,81 +146,31 @@ export default {
 				return this.formatDate(entry._data.dateCreated);
 			} else if (header.value == "_data.createdBy") {
 				return this.getFullName(entry._data.createdBy);
+			} else if (header.value == "_data.database") {
+				return `${entry._data.database}-${entry._data.id}`;
 			} else {
-				return "";
+				return entry[header.value];
 			}
 		},
-		getEntryText(header, entry) {
-			if (!header.type) {
-				return entry[header.value];
-			}
-			if (!entry[header.value]) {
-				return "";
-			}
-			if (header.type == "multipleSelect") {
-				return entry[header.value].map((e) => e.displayName).join(", ");
-			} else if (header.type == "singleSelect") {
-				return entry[header.value].displayName;
-			} else if (header.type == "singleUser") {
-				return this.getFullName(entry[header.value]);
-			} else if (header.type.includes("currency")) {
-				return (
-					header.options.prefix +
-					" " +
-					entry[header.value].toFixed(header.options.precision)
-				);
-			} else if (header.type.includes("weight")) {
-				return (
-					entry[header.value].toFixed(header.options.precision) +
-					" " +
-					header.options.suffix
-				);
-			} else if (header.type == "multipleUsers") {
-				return entry[header.value]
-					.map((e) => this.getFullName(e))
-					.join(", ");
-			} else if (header.type == "date") {
-				return this.formatDate(entry[header.value]);
-			} else if (header.type == "number") {
-				return entry[header.value];
-			} else {
-				return entry[header.value];
-			}
+		getFullName(user) {
+			if (user) return `${user.first} ${user.last}`;
+			else return "";
 		},
 		goToDetailForm(id) {
 			this.$router
 				.push({ name: "DetailForm", params: { id: id } })
 				.catch(() => {});
 		},
-
-		getFullName(user) {
-			if (user) return `${user.first} ${user.last}`;
-			else return "";
-		},
 		highlightRow(idx) {
 			this.selected = idx;
-		},
-		isNumber(header) {
-			if (header.type.includes("currency")) {
-				return true;
-			} else if (header.type.includes("weight")) {
-				return true;
-			} else if (header.type.includes("number")) {
-				return true;
-			} else {
-				return false;
-			}
 		},
 		setItemsPerPage(val) {
 			this.$store.commit("setItemsPerPage", val);
 		},
 	},
-	watch: {
-		database: function () {},
-	},
 };
 </script>
-<style scoped>
+<style>
 tbody tr.entry:hover {
 	background-color: #ff8521 !important;
 	color: white;
@@ -253,9 +189,5 @@ tbody tr.entry:hover a {
 }
 .bg-grey {
 	background-color: #e6e6e6;
-}
-.filter {
-	border-radius: 15px !important;
-	min-height: 10px;
 }
 </style>

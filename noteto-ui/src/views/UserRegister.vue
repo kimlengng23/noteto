@@ -102,9 +102,8 @@ export default {
 					setTimeout(() => {
 						eventBus.$emit(
 							"setSnackbar",
-							"User Successfully Register",
-							"success",
-							true
+							"Successfully registered user",
+							"success"
 						);
 						this.clear();
 						this.isLoading = false;
@@ -115,9 +114,8 @@ export default {
 					setTimeout(() => {
 						eventBus.$emit(
 							"setSnackbar",
-							"Ops! Something is not right!",
-							"red",
-							true
+							"Oops! Something is not right!",
+							"red"
 						);
 						this.isLoading = false;
 					}, 1000);

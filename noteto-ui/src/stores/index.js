@@ -107,11 +107,9 @@ export default new Vuex.Store({
 		fieldToField: (state) => {
 			return state.fieldToField;
 		},
-
 		layout: (state) => {
 			return state.layout;
 		},
-
 		selectedHeaders: (state) => {
 			return state.selectedHeaders;
 		},
@@ -129,10 +127,7 @@ export default new Vuex.Store({
 		addNewDatabaseToList(state, payload) {
 			state.allDatabases.push(payload);
 		},
-		addNewField(state, payload) {
-			state.databaseToFields[payload.database].push(payload);
-		},
-		addChoices(state, payload) {
+		addNewChoices(state, payload) {
 			let databaseToChoices = state.databaseToChoices;
 			payload.forEach((choice) => {
 				if (!databaseToChoices[choice.database])
@@ -142,8 +137,49 @@ export default new Vuex.Store({
 				databaseToChoices[choice.database][choice.field].push(choice);
 			});
 		},
+		addNewField(state, payload) {
+			state.databaseToFields[payload.database].push(payload);
+		},
+
 		addEntry(state, payload) {
 			state.entries.unshift(payload);
+		},
+		addChoicesToDict(state, payload) {
+			if (payload && payload.length > 0) {
+				let databaseValue = payload[0].database;
+				state.databaseToChoices[databaseValue] = payload;
+			}
+		},
+		addFieldsToDict(state, payload) {
+			if (payload && payload.length > 0) {
+				let databaseValue = payload[0].database;
+				state.databaseToFields[databaseValue] = payload;
+			}
+		},
+		addLayoutToDict(state, payload) {
+			if (payload && payload.length > 0) {
+				let databaseValue = payload[0].database;
+				state.databaseToLayoutMappings[databaseValue] = payload;
+			}
+		},
+
+		deleteEntry(state, payload) {
+			state.entries = state.entries.filter((e) => {
+				return e._id != payload;
+			});
+		},
+		replaceChoicesInDatabaseToChoices(state, payload) {
+			let field = payload[0].field;
+			let database = payload[0].database;
+			let choices = state.databaseToChoices[database];
+			if (!choices) choices = [];
+			choices = choices.filter((choice) => choice.field != field);
+			choices = choices.concat(payload);
+			state.databaseToChoices[database] = choices;
+		},
+		replaceHeadersInDatabaseToHeaders(state, payload) {
+			let database = payload[0].database;
+			state.databaseToHeaders[database] = payload;
 		},
 		setAllDatabases(state, payload) {
 			state.allDatabases = payload;
@@ -249,14 +285,10 @@ export default new Vuex.Store({
 				});
 			});
 		},
-		setChoicesInDatabaseToChoices(state, payload) {
-			let fieldValue = payload[0].field;
-			let databaseValue = payload[0].database;
-			state.databaseToChoices[databaseValue][fieldValue] = payload;
-		},
 		setLayout(state, payload) {
 			state.layout = payload;
 		},
+
 		setEmptyEntry(state, payload) {
 			state.emptyEntry = payload;
 		},
@@ -324,12 +356,24 @@ export default new Vuex.Store({
 				})
 				.catch(() => {});
 		},
-		getChoicesByDatabase(context) {
-			backendService
-				.getChoicesByDatabase(context.state.currentDatabase.value)
-				.then((response) => {
-					context.commit("setChoices", response.data);
-				});
+		getChoicesByDatabase(context, payload) {
+			let databaseValue = payload;
+			if (!databaseValue) {
+				databaseValue = context.state.currentDatabase.value;
+			}
+			if (context.state.databaseToChoices[databaseValue]) {
+				context.commit(
+					"setChoices",
+					context.state.databaseToChoices[databaseValue]
+				);
+			} else {
+				backendService
+					.getChoicesByDatabase(databaseValue)
+					.then((response) => {
+						context.commit("addChoicesToDict", response.data);
+						context.commit("setChoices", response.data);
+					});
+			}
 		},
 		getDatabaseToFields(context) {
 			backendService
@@ -383,12 +427,24 @@ export default new Vuex.Store({
 					context.commit("setEntries", response.data);
 				});
 		},
-		getFieldsByDatabase(context) {
-			backendService
-				.getFieldsByDatabase(context.state.currentDatabase.value)
-				.then((response) => {
-					context.commit("setFields", response.data);
-				});
+		getFieldsByDatabase(context, payload) {
+			let databaseValue = payload;
+			if (!databaseValue) {
+				databaseValue = context.state.currentDatabase.value;
+			}
+			if (context.state.databaseToFields[databaseValue]) {
+				context.commit(
+					"setFields",
+					context.state.databaseToFields[databaseValue]
+				);
+			} else {
+				backendService
+					.getFieldsByDatabase(databaseValue)
+					.then((response) => {
+						context.commit("addFieldsToDict", response.data);
+						context.commit("setFields", response.data);
+					});
+			}
 		},
 		getHeadersByDatabase(context) {
 			backendService
@@ -410,12 +466,24 @@ export default new Vuex.Store({
 					context.commit("setUsers", response.data);
 				});
 		},
-		getLayoutByDatabase(context) {
-			backendService
-				.getLayoutByDatabase(context.state.currentDatabase.value)
-				.then((response) => {
-					context.commit("setLayout", response.data);
-				});
+		getLayoutByDatabase(context, payload) {
+			let databaseValue = payload;
+			if (!databaseValue) {
+				databaseValue = context.state.currentDatabase.value;
+			}
+			if (context.state.databaseToLayoutMappings[databaseValue]) {
+				context.commit(
+					"setLayout",
+					context.state.databaseToLayoutMappings[databaseValue]
+				);
+			} else {
+				backendService
+					.getLayoutByDatabase(databaseValue)
+					.then((response) => {
+						context.commit("addLayoutToDict", response.data);
+						context.commit("setLayout", response.data);
+					});
+			}
 		},
 	},
 	modules: {},

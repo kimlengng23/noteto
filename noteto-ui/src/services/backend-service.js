@@ -59,8 +59,19 @@ export default {
 		let url = domain + "/add/database/access";
 		return axios.post(url, access);
 	},
+	deleteEntryById(id) {
+		let url = domain + `/entry/delete/by/id/${id}`;
+		let headers = getHeaders();
+		return axios.get(url, { headers: headers });
+	},
+
 	getAutomationsByDatabase(database) {
 		let url = domain + `/automation/get/by/database/${database}`;
+		let headers = getHeaders();
+		return axios.get(url, { headers: headers });
+	},
+	getAssignedEntries() {
+		let url = domain + `/entry/get/assigned`;
 		let headers = getHeaders();
 		return axios.get(url, { headers: headers });
 	},
@@ -69,13 +80,13 @@ export default {
 		let headers = getHeaders();
 		return axios.get(url, { headers: headers });
 	},
-	getCommentsByEntry(entry) {
-		let url = domain + "/comment/get/by/entry";
+	getCommentsByEntryId(entryId) {
+		let url = domain + `/comment/get/by/entry/id/${entryId}`;
 		let headers = getHeaders();
-		return axios.post(url, entry, { headers: headers });
+		return axios.get(url, { headers: headers });
 	},
 	getEntriesByDatabase(database) {
-		let url = domain + `/entry/get/database/${database}`;
+		let url = domain + `/entry/get/by/database/${database}`;
 		let headers = getHeaders();
 		return axios.get(url, { headers: headers });
 	},
@@ -130,7 +141,7 @@ export default {
 		return axios.get(url, { headers: headers });
 	},
 	getEntryById(id) {
-		let url = domain + `/entry/get/id/${id}`;
+		let url = domain + `/entry/get/by/id/${id}`;
 		let headers = getHeaders();
 		return axios.get(url, { headers: headers });
 	},
@@ -186,8 +197,8 @@ export default {
 		let url = domain + `/search/entries`;
 		return axios.post(url, filter).catch();
 	},
-	updateEntry(wrappedEntry) {
-		let url = domain + `/entry/update`;
+	updateEntryById(id, wrappedEntry) {
+		let url = domain + `/entry/update/${id}`;
 		let headers = getHeaders();
 		return axios.post(url, wrappedEntry, { headers: headers });
 	},

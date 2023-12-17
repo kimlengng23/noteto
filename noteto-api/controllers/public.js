@@ -70,6 +70,19 @@ app.get(
 			});
 	}
 );
+app.get("/api/get/customer/dashboard", helper.verifyToken, (req, res) => {
+	let customer = {
+		_id: req.decoded.userId,
+	};
+	publicService
+		.getCustomerDashboard(customer)
+		.then((response) => {
+			res.status(response.code).send(response.data);
+		})
+		.catch((response) => {
+			res.status(response.code).send(response.message);
+		});
+});
 app.get("/send/email", (req, res) => {
 	mailService
 		.sendAccountVerifyEmail({

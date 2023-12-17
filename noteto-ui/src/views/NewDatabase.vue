@@ -83,9 +83,8 @@ export default {
 					this.resetValidation();
 					eventBus.$emit(
 						"setSnackbar",
-						"Successfully Add a New Database",
-						"success",
-						true
+						"Successfully added a new database",
+						"success"
 					);
 					this.isLoading = false;
 				}, 1000);

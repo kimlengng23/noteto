@@ -15,7 +15,7 @@
 							</v-col>
 							<v-col>
 								<div class="text-subtitle-1 float-right">
-									{{ entry.id }}
+									{{ entry._data.id }}
 								</div>
 							</v-col>
 						</v-row>
@@ -61,7 +61,7 @@
 							</v-col>
 							<v-col>
 								<div class="text-subtitle-1 float-right">
-									{{ entry.dateCreated }}
+									{{ entry._data.dateCreated }}
 								</div>
 							</v-col>
 						</v-row>
@@ -182,7 +182,7 @@ export default {
 		publicService.getReceiptById(this.$route.params.id).then((response) => {
 			//document.title = `${this.entry["id"] - this.entry["mtlTracking#"]}`;
 			this.entry = response.data;
-			document.title = `Order #${this.entry.id} - ${this.entry.mtlTracking} - នូតតូក - Noteto`;
+			document.title = `Order #${this.entry._data.id} - ${this.entry.mtlTracking} - នូតតូក - Noteto`;
 		});
 	},
 	computed: {

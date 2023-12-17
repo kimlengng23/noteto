@@ -9,7 +9,7 @@
 							<h4>{{ entry.title }}</h4>
 						</div>
 						<v-card-text class="d-flex justify-space-between">
-							<h1 class="primary--text">{{ entry.id }}</h1>
+							<h1 class="primary--text">{{ entry._data.id }}</h1>
 							<img class="image-preview" :src="entry.imageLink" />
 						</v-card-text>
 						<v-card-text class="padless d-flex flex-column">

@@ -94,7 +94,13 @@ export default {
 						this.$store.dispatch("getDatabaseToChoices");
 					}
 					setTimeout(() => {
-						this.$router.push({ name: "Home" });
+						let nextRouteName = "Home";
+						if (localStorage.getItem("nextRouteName")) {
+							nextRouteName =
+								localStorage.getItem("nextRouteName");
+							localStorage.removeItem("nextRouteName");
+						}
+						this.$router.push({ name: nextRouteName });
 						this.isLoading = false;
 					}, 1000);
 				})
@@ -102,9 +108,8 @@ export default {
 					setTimeout(() => {
 						eventBus.$emit(
 							"setSnackbar",
-							"Incorrect Username or Password",
-							"red darken-1 white--text",
-							true
+							"Incorrect username or password",
+							"red darken-1 white--text"
 						);
 						this.isLoading = false;
 					}, 1000);

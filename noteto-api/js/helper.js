@@ -137,9 +137,7 @@ function removeVerifyTokenBySessionId(sessionId) {
 	return promise;
 }
 function verifyAccess(req, res, next) {
-	
 	let entryId = req.params.id;
-	console.log(entryId)
 	dbConn
 		.collection("EntryCollection")
 		.findOne(
@@ -150,7 +148,6 @@ function verifyAccess(req, res, next) {
 					res.status(500).send(err);
 				} else {
 					let userId = req.decoded.userId;
-					console.log(result)
 					if (
 						result &&
 						result.assignedTo &&
@@ -324,9 +321,8 @@ function isDiff(fld, oVal, nVal) {
 	} else if (fld.type == "list") {
 		if (oVal.length != nVal.length) {
 			return true;
-		}
-		else {
-			if(JSON.stringify(oVal) != JSON.stringify(nVal)) {
+		} else {
+			if (JSON.stringify(oVal) != JSON.stringify(nVal)) {
 				return true;
 			}
 		}
