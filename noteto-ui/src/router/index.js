@@ -21,6 +21,7 @@ import JaekJayCustomOrderReceipt from "../custom-views/JaekJayCustomOrderReceipt
 import JaekJayEstimatedValue from "../custom-views/JaekJayEstimatedValue.vue";
 import JaekJayWholesale from "../custom-views/JaekJayWholesale.vue";
 import JaekJayMainWholesale from "../custom-views/JaekJayMainWholesale.vue";
+import JaekJayCustomerDashboard from "../custom-views/JaekJayCustomerDashboard.vue";
 import MtlWholesale from "../custom-views/MtlWholesale.vue";
 import store from "../stores/index.js";
 Vue.use(VueRouter);
@@ -133,6 +134,11 @@ const routes = [
 				component: JaekJayMainWholesale,
 			},
 			{
+				path: "jaekJayCustomerDashboard",
+				name: "JaekJayCustomerDashboard",
+				component: JaekJayCustomerDashboard,
+			},
+			{
 				path: "mtlWholesale",
 				name: "MtlWholesale",
 				component: MtlWholesale,
@@ -170,7 +176,8 @@ router.beforeEach((to, from, next) => {
 			to.name == "Logout" ||
 			to.name == "DatabaseAccess" ||
 			to.name == "AssignedListView" ||
-			to.name == "DetailForm"
+			to.name == "DetailForm" ||
+			to.name == "JaekJayCustomerDashboard"
 		) {
 			next();
 		} else if (
@@ -183,6 +190,7 @@ router.beforeEach((to, from, next) => {
 			next({ name: "Home" });
 		}
 	} else {
+		localStorage.setItem("nextRouteName", to.name);
 		next({ name: "Login" });
 	}
 });

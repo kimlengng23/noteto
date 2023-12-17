@@ -94,7 +94,13 @@ export default {
 						this.$store.dispatch("getDatabaseToChoices");
 					}
 					setTimeout(() => {
-						this.$router.push({ name: "Home" });
+						let nextRouteName = "Home";
+						if (localStorage.getItem("nextRouteName")) {
+							nextRouteName =
+								localStorage.getItem("nextRouteName");
+							localStorage.removeItem("nextRouteName");
+						}
+						this.$router.push({ name: nextRouteName });
 						this.isLoading = false;
 					}, 1000);
 				})

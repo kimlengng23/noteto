@@ -4,6 +4,11 @@ let domain = `https://localhost:3000/public`;
 if (host.toLowerCase().includes("jaekjay")) {
 	domain = `https://noteto.jaekjay.com/public`;
 }
+function getHeaders() {
+	let headers = {};
+	headers.authorization = `${localStorage.getItem("sessionId")}`;
+	return headers;
+}
 //domain = `https://noteto.jaekjay.com/public`;
 export default {
 	getEntriesByDatabase(database) {
@@ -14,7 +19,11 @@ export default {
 		let url = domain + `/api/get/entry/${id}`;
 		return axios.get(url);
 	},
-
+	getCustomerDashboard() {
+		let url = domain + `/api/get/customer/dashboard`;
+		let headers = getHeaders();
+		return axios.get(url, { headers: headers });
+	},
 	verifyEmailBySessionId(sessionId) {
 		let url = domain + `/api/verify/by/session/${sessionId}`;
 		return axios.get(url);
