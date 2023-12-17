@@ -11,29 +11,32 @@ function getReceiptById(id) {
 	let promise = new Promise((resolve, reject) => {
 		dbConn
 			.collection("EntryCollection")
-			.findOne({ _id: new ObjectId(id) }, (err, result) => {
-				if (err) {
-					console.log("EntryService - getEntryById", err);
-					reject({ code: 500, message: err });
-				} else {
-					fieldService
-						.getFieldsByDatabase(result._data.database)
-						.then((response) => {
-							let fields = response.data;
-							let entry = {};
-							for (let i = 0; i < fields.length; i++) {
-								let field = fields[i];
-								let fldVal = result[field.value];
-								entry[field.value] = helper.getEntryText(
-									field,
-									fldVal
-								);
-							}
-							entry._data = helper.getDataText(result._data);
-							resolve({ code: 200, data: entry });
-						});
+			.findOne(
+				{ _id: new ObjectId(id), "_data.isActive": true },
+				(err, result) => {
+					if (err) {
+						console.log("EntryService - getEntryById", err);
+						reject({ code: 500, message: err });
+					} else {
+						fieldService
+							.getFieldsByDatabase(result._data.database)
+							.then((response) => {
+								let fields = response.data;
+								let entry = {};
+								for (let i = 0; i < fields.length; i++) {
+									let field = fields[i];
+									let fldVal = result[field.value];
+									entry[field.value] = helper.getEntryText(
+										field,
+										fldVal
+									);
+								}
+								entry._data = helper.getDataText(result._data);
+								resolve({ code: 200, data: entry });
+							});
+					}
 				}
-			});
+			);
 	});
 	return promise;
 }
@@ -82,6 +85,7 @@ function getCustomerDashboard(customer) {
 				"_data.database": {
 					$in: ["jaekJayCargo", "jaekJayCustomOrder"],
 				},
+				"_data.isActive": true,
 				"customer._id": customer._id,
 			})
 			.toArray((err, results) => {
