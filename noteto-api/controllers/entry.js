@@ -138,7 +138,7 @@ app.get("/get/cvs/report/:database", helper.verifyToken, (req, res) => {
 			dateCreated: { $gt: "2023-01-01T00:00:00.000Z" },
 		};
 	}
-	entryService.getReportList(req.params.database).then(() => {
+	entryService.getReportList(req.params.database).then((response) => {
 		res.status(response.code).send(response.data);
 	});
 });
