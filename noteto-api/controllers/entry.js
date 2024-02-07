@@ -122,6 +122,26 @@ app.get("/backfill/:database", helper.verifyToken, (req, res) => {
 		res.sendStatus(200);
 	});
 });
+app.get("/get/cvs/report/:database", helper.verifyToken, (req, res) => {
+	let database = req.params.database;
+	let filter = {};
+	if (database == "jaekJayCargo") {
+		filter = {
+			"_data.database": database,
+			"_data.isActive": true,
+			dateShipped: { $gt: "2023-01-01" },
+		};
+	} else if (database == "jaekJayCustomOrder") {
+		filter = {
+			"_data.database": database,
+			"_data.isActive": true,
+			dateCreated: { $gt: "2023-01-01T00:00:00.000Z" },
+		};
+	}
+	entryService.getReportList(req.params.database).then(() => {
+		res.status(response.code).send(response.data);
+	});
+});
 
 module.exports = {
 	app,

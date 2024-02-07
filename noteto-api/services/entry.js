@@ -157,6 +157,23 @@ function getEntriesByDatabase(database) {
 	});
 	return promise;
 }
+function getReportList(database, filter) {
+	let promise = new Promise((resolve, reject) => {
+		dbConn
+			.collection("EntryCollection")
+			.find(filter)
+			.sort({ "_data.id": -1, "_data.dateCreated": -1 })
+			.toArray((err, results) => {
+				if (err) {
+					console.log("EntryService - getAllEntriesByDatabase", err);
+					reject({ code: 500, message: err });
+				} else {
+					resolve({ code: 200, data: results });
+				}
+			});
+	});
+	return promise;
+}
 function updateEntry2(oldEntry, newEntry, createdBy) {
 	let promise = new Promise((resolve, reject) => {
 		historyService
@@ -220,6 +237,7 @@ module.exports = {
 	getEntryById,
 	getEmptyEntryByDatabase,
 	getEntriesByDatabase,
+	getReportList,
 	updateEntry1,
 	updateEntry2,
 };
