@@ -135,7 +135,7 @@ app.get("/get/cvs/report/:database", helper.verifyToken, (req, res) => {
 		filter = {
 			"_data.database": database,
 			"_data.isActive": true,
-			dateCreated: { $gt: "2023-01-01T00:00:00.000Z" },
+			"_data.id": { $gte: 92, $lte: 282 },
 		};
 	}
 	entryService.getReportList(filter).then((response) => {
