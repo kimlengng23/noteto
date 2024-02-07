@@ -157,7 +157,7 @@ function getEntriesByDatabase(database) {
 	});
 	return promise;
 }
-function getReportList(database, filter) {
+function getReportList(filter) {
 	let promise = new Promise((resolve, reject) => {
 		dbConn
 			.collection("EntryCollection")
