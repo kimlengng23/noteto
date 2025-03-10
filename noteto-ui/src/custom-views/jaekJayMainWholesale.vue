@@ -8,9 +8,7 @@
 						<v-card elevation="0" outlined class="rounded-xl">
 							<v-card-title>{{ entry.item }}</v-card-title>
 							<v-card-text class="d-flex justify-space-between">
-								<h1 class="primary--text">
-									{{ entry._data.id }}
-								</h1>
+								<h1 class="primary--text">{{ entry.id }}</h1>
 								<img
 									class="image-preview"
 									:src="entry.imageLink" />
@@ -20,10 +18,7 @@
 							</v-card-text>
 							<v-card-text
 								class="padless d-flex justify-space-between red--text">
-								<h2>
-									{{ "$"
-									}}{{ entry.wholesalePrice.toFixed(2) }}
-								</h2>
+								<h2>${{ entry.wholesalePrice.toFixed(2) }}</h2>
 								<h2>
 									{{
 										`Min: ${entry.minQty} ${entry.unitType}`
@@ -48,7 +43,6 @@ export default {
 		};
 	},
 	mounted: function () {
-		document.title = "Jaek Jay Main Wholesale - នូតតូក - Noteto";
 		publicService
 			.getEntriesByDatabase("jaekJayMainWholesale")
 			.then((response) => {
