@@ -45,7 +45,7 @@ export default {
 		currentUser() {
 			return this.$store.getters["currentUser"];
 		},
-		database() {
+		currentDatabase() {
 			return this.$store.getters["currentDatabase"];
 		},
 		fields() {
@@ -116,6 +116,7 @@ export default {
 			this.entry[field].push({});
 		},
 		clearEntry() {
+			this.isNew = true;
 			this.setTimeoutLoading = true;
 			this.cloneEmptyEntry();
 		},
@@ -132,6 +133,12 @@ export default {
 				}, 1000);
 			}
 		},
+		convertToDate(date) {
+			if (!date) return null;
+			if (date.includes("T")) date = date.split("T")[0];
+			const [year, month, day] = date.split("-");
+			return `${month.padStart(2, "0")}/${day.padStart(2, "0")}/${year}`;
+		},
 		convertDateToReadable(date) {
 			let castedDate = new Date(date);
 			return castedDate.toLocaleDateString();
@@ -143,6 +150,7 @@ export default {
 			return `${month}/${day}/${year}`;
 		},
 		getEntryById(id) {
+			this.isNew = false;
 			this.setTimeoutLoading = true;
 			backendService
 				.getEntryById(id)
@@ -155,7 +163,6 @@ export default {
 					backendService.getCommentsByEntryId(id).then((response) => {
 						this.comments = response.data;
 					});
-					//console.log("mixin");
 
 					this.$store.dispatch(
 						"getLayoutByDatabase",

@@ -65,6 +65,7 @@ function login(account) {
 								? result["options"]
 								: getDefaultUserOptions(),
 						};
+						console.log(sessionInfo)
 						helper.createSession(sessionInfo).then((response) => {
 							sessionInfo["sessionId"] = response.data._id;
 							resolve({ code: 200, data: sessionInfo });
@@ -90,7 +91,7 @@ function getAllUsers() {
 	let promise = new Promise((resolve, reject) => {
 		dbConn
 			.collection("UserCollection")
-			.find({}, { fields: { username: 1, first: 1, last: 1 } })
+			.find({}, { fields: { username: 1, first: 1, last: 1,dateCreated:1 } })
 			.sort({ first: 1, last: 1 })
 			.toArray((err, users) => {
 				if (err) {

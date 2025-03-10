@@ -85,6 +85,11 @@ export default {
 		let headers = getHeaders();
 		return axios.get(url, { headers: headers });
 	},
+	getDashboardData() {
+		let url = domain + `/entry/get/dashboard/data`;
+		let headers = getHeaders();
+		return axios.get(url, { headers: headers });
+	},
 	getEntriesByDatabase(database) {
 		let url = domain + `/entry/get/by/database/${database}`;
 		let headers = getHeaders();

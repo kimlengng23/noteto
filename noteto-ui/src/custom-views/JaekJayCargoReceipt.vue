@@ -1,219 +1,213 @@
 <template>
-	<v-container>
-		<v-card elevation="0">
-			<v-card-text>
-				<v-row>
-					<v-col>
-						<div class="text-h4">Shipping Invoice</div>
-					</v-col>
-				</v-row>
-				<v-row>
-					<v-col>
-						<v-row>
-							<v-col>
-								<div class="text-h6">Invoice Number</div>
-							</v-col>
-							<v-col>
-								<div class="text-subtitle-1 float-right">
-									{{ entry._data.id }}
-								</div>
-							</v-col>
-						</v-row>
-						<v-row
-							class="red white--text"
-							v-if="entry.customerPaymentStatus == 'Pending'">
-							<v-col>
-								<div><h2>Payment Status</h2></div>
-							</v-col>
-							<v-col>
-								<div class="text-h5 float-right">
-									{{ entry.customerPaymentStatus }}
-								</div>
-							</v-col>
-						</v-row>
-						<v-row
-							class="green white--text"
-							v-else-if="entry.customerPaymentStatus == 'Paid'">
-							<v-col>
-								<div><h2>Payment Status</h2></div>
-							</v-col>
-							<v-col>
-								<div class="text-h5 float-right">
-									{{ entry.customerPaymentStatus }}
-								</div>
-							</v-col>
-						</v-row>
-					</v-col>
-					<v-col>
-						<v-row>
-							<v-col>
-								<div class="text-h6">Tracking Number</div>
-							</v-col>
-							<v-col>
-								<div class="text-subtitle-1 float-right">
-									{{ entry["mtlTracking#"] }}
-								</div>
-							</v-col>
-						</v-row>
-						<v-row>
-							<v-col>
-								<div class="text-h6">Date Shipped</div>
-							</v-col>
-							<v-col>
-								<div class="text-subtitle-1 float-right">
-									{{ entry["dateShipped"] }}
-								</div>
-							</v-col>
-						</v-row>
-					</v-col>
-				</v-row>
-				<v-row>
-					<v-col>
-						<div class="text-h6">Sender</div>
-						<div class="text-subtitle-1">
-							<span>
-								{{ entry["customer"] }} -
-								{{ entry["customerNumber"] }}
-							</span>
-						</div>
-						<div class="text-subtitle-1">
-							{{ entry["customerAddress"] }}
-						</div>
-					</v-col>
-					<v-col>
-						<div class="text-h6">Receiver</div>
-						<div class="text-subtitle-1">
-							<span>
-								{{ entry["receiver"] }} -
-								{{ entry["receiverNumber"] }}
-							</span>
-						</div>
-						<div class="text-subtitle-1">
-							{{ entry["receiverAddress"] }}
-						</div>
-					</v-col>
-				</v-row>
-				<v-row>
-					<v-col>
-						<div class="text-h6">Number of Box</div>
-						<div class="text-subtitle-1">
-							{{ entry["numBoxes"] }}
-						</div>
-					</v-col>
-					<v-col>
-						<div class="text-h6">Total Weight</div>
-						<div class="text-subtitle-1">
-							{{ entry["totalWeight"] }} {{ "lbs" }}
-						</div>
-					</v-col>
-				</v-row>
-				<v-row>
-					<v-col>
-						<div class="text-h6">Notes</div>
-						<p>{{ entry["notes"] }}</p>
-					</v-col>
-				</v-row>
-				<v-row>
-					<v-col><div class="text-h6">Charge List</div></v-col>
-				</v-row>
-				<v-row>
-					<v-col cols="12">
-						<v-simple-table>
-							<thead>
-								<tr>
-									<th class="text-left">Item</th>
-									<th class="text-right">Qty</th>
-									<th class="text-right">Unit Price</th>
-									<th class="text-right">Line Total</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr
-									v-for="(item, idx) in chargeList"
-									:key="idx">
-									<td
-										class="text-subtitle-1"
-										style="max-width: 800px">
-										<div>{{ item.itemDescription }}</div>
-									</td>
-									<td class="text-subtitle-1 text-right">
-										{{ item.quantity }}
-									</td>
-									<td class="text-subtitle-1 text-right">
-										{{ "$" }}
-										{{ item.unitPrice.toFixed(2) }}
-									</td>
-									<td class="text-subtitle-1 text-right">
-										{{ "$" }}
-										{{
-											(
-												item.quantity * item.unitPrice +
-												0.00001
-											).toFixed(2)
-										}}
-									</td>
-								</tr>
-								<tr>
-									<td class="text-subtitle-1">
-										<div>Total</div>
-									</td>
-									<td></td>
-									<td></td>
-									<td class="text-subtitle-1 text-right">
-										$ {{ totalDue.toFixed(2) }}
-									</td>
-								</tr>
-							</tbody>
-						</v-simple-table>
-					</v-col>
-				</v-row>
-			</v-card-text>
-		</v-card>
-	</v-container>
+  <v-container class="rounded-xl white mt-2">
+    <v-card elevation="0">
+      <v-card-text>
+        <v-row>
+          <v-col class="text-h4"
+            ><span style="font-family: 'Dangrek', cursive">ចែកចាយ</span>
+            -
+            <span style="font-family: 'Sora', sans-serif">Jaek Jay</span></v-col
+          >
+          <v-col>
+            <div class="text-h4">Shipping Invoice</div>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-row>
+              <v-col>
+                <div class="text-h6">Invoice Number</div>
+              </v-col>
+              <v-col>
+                <div class="text-subtitle-1 float-right">
+                  {{ entry._data.id }}
+                </div>
+              </v-col>
+            </v-row>
+            <v-row
+              class="red white--text rounded-xl"
+              v-if="entry.customerPaymentStatus == 'Pending'">
+              <v-col>
+                <div><h2>Payment Status</h2></div>
+              </v-col>
+              <v-col>
+                <div class="text-h5 float-right">
+                  {{ entry.customerPaymentStatus }}
+                </div>
+              </v-col>
+            </v-row>
+            <v-row
+              class="green white--text"
+              v-else-if="entry.customerPaymentStatus == 'Paid'">
+              <v-col>
+                <div><h2>Payment Status</h2></div>
+              </v-col>
+              <v-col>
+                <div class="text-h5 float-right">
+                  {{ entry.customerPaymentStatus }}
+                </div>
+              </v-col>
+            </v-row>
+          </v-col>
+          <v-col>
+            <v-row>
+              <v-col>
+                <div class="text-h6">Tracking Number</div>
+              </v-col>
+              <v-col>
+                <div class="text-subtitle-1 float-right">
+                  {{ entry["mtlTracking#"] }}
+                </div>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <div class="text-h6">Date Shipped</div>
+              </v-col>
+              <v-col>
+                <div class="text-subtitle-1 float-right">
+                  {{ entry["dateShipped"] }}
+                </div>
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <div class="text-h6">Sender</div>
+            <div class="text-subtitle-1">
+              <span>
+                {{ entry["customer"] }} -
+                {{ entry["customerNumber"] }}
+              </span>
+            </div>
+            <div class="text-subtitle-1">
+              {{ entry["customerAddress"] }}
+            </div>
+          </v-col>
+          <v-col>
+            <div class="text-h6">Receiver</div>
+            <div class="text-subtitle-1">
+              <span>
+                {{ entry["receiver"] }} -
+                {{ entry["receiverNumber"] }}
+              </span>
+            </div>
+            <div class="text-subtitle-1">
+              {{ entry["receiverAddress"] }}
+            </div>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <div class="text-h6">Number of Box</div>
+            <div class="text-subtitle-1">
+              {{ entry["numBoxes"] }}
+            </div>
+          </v-col>
+          <v-col>
+            <div class="text-h6">Total Weight</div>
+            <div class="text-subtitle-1">
+              {{ entry["totalWeight"] }} {{ "lbs" }}
+            </div>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <div class="text-h6">Notes</div>
+            <p>{{ entry["notes"] }}</p>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col><div class="text-h6">Charge List</div></v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12">
+            <v-simple-table class="rounded-xl border">
+              <thead>
+                <tr>
+                  <th class="text-left">Item</th>
+                  <th class="text-right">Qty</th>
+                  <th class="text-right">Unit Price</th>
+                  <th class="text-right">Line Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item, idx) in chargeList" :key="idx">
+                  <td class="text-subtitle-1" style="max-width: 800px">
+                    <div>{{ item.itemDescription }}</div>
+                  </td>
+                  <td class="text-subtitle-1 text-right">
+                    {{ item.quantity }}
+                  </td>
+                  <td class="text-subtitle-1 text-right">
+                    {{ "$" }}
+                    {{ item.unitPrice.toFixed(2) }}
+                  </td>
+                  <td class="text-subtitle-1 text-right">
+                    {{ "$" }}
+                    {{ (item.quantity * item.unitPrice + 0.00001).toFixed(2) }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="text-subtitle-1">
+                    <div>Total</div>
+                  </td>
+                  <td></td>
+                  <td></td>
+                  <td class="text-subtitle-1 text-right">
+                    $ {{ totalDue.toFixed(2) }}
+                  </td>
+                </tr>
+              </tbody>
+            </v-simple-table>
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
+  </v-container>
 </template>
 <script>
 import publicService from "@/services/public-backend-service";
 
 export default {
-	name: "JaekJayCargoReceipt",
-	data() {
-		return {
-			entry: {},
-		};
-	},
-	mounted: function () {
-		publicService.getReceiptById(this.$route.params.id).then((response) => {
-			this.entry = response.data;
-			document.title = `Bill #${this.entry._data.id} - ${this.entry["mtlTracking#"]} - នូតតូក - Noteto`;
-		});
-	},
-	computed: {
-		chargeList() {
-			if (!this.entry.chargeList) return [];
-			return this.entry.chargeList;
-		},
-		totalDue() {
-			let total = 0;
-			if (!this.entry.chargeList) return total;
-			for (let i = 0; i < this.entry.chargeList.length; i++) {
-				let item = this.entry.chargeList[i];
-				total += item.unitPrice * item.quantity;
-			}
-			return total;
-		},
-	},
+  name: "JaekJayCargoReceipt",
+  data() {
+    return {
+      entry: {},
+    };
+  },
+  mounted: function () {
+    console.log(this.$route);
+    publicService.getReceiptById(this.$route.params.id).then((response) => {
+      this.entry = response.data;
+      document.title = `Bill #${this.entry._data.id} - ${this.entry["mtlTracking#"]} - នូតតូក - Noteto`;
+    });
+  },
+  computed: {
+    chargeList() {
+      if (!this.entry.chargeList) return [];
+      return this.entry.chargeList;
+    },
+    totalDue() {
+      let total = 0;
+      if (!this.entry.chargeList) return total;
+      for (let i = 0; i < this.entry.chargeList.length; i++) {
+        let item = this.entry.chargeList[i];
+        total += item.unitPrice * item.quantity;
+      }
+      return total;
+    },
+  },
 };
 </script>
 <style scoped>
 div.text-h6 {
-	color: #0091ea;
+  color: #0091ea;
 }
 
 p,
 div {
-	white-space: pre-wrap;
-}
-.row {
-	border: 1px solid;
+  white-space: pre-wrap;
 }
 </style>

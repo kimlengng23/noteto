@@ -1,3 +1,6 @@
+
+const { ObjectId } = require("mongodb");
+
 const entryService = require("./entry.js");
 let dbConn;
 function setDb(conn) {
@@ -7,8 +10,8 @@ function getEntriesByDatabase(database) {
 	let promise = new Promise((resolve, reject) => {
 		dbConn
 			.collection("EntryCollection")
-			.find({ database: database })
-			.sort({ id: -1, dateCreated: -1 })
+			.find({ "_data.database":database })
+			.sort({ "_id":1 })
 			.toArray((err, results) => {
 				if (err) {
 					console.log("EntryService - getAllEntriesByDatabase", err);
@@ -22,57 +25,93 @@ function getEntriesByDatabase(database) {
 }
 function run(database) {
 	let promise = new Promise((resolve, reject) => {
-		getEntriesByDatabase(database).then((response) => {
-			let entries = response.data;
-			let promises = [];
-			console.log(response);
-			entries.forEach((e) => {
-				try {
-					let id = e.id;
-					let database = e.database;
-					let dateCreated = e.dateCreated;
-					let dateLastModified = e.dateLastModified;
-					let createdBy = e.owner;
-					let data = {
-						id,
-						database,
-						createdBy,
-						dateCreated,
-						dateLastModified,
-						isActive: true,
-					};
-					let newEntry = {
-						_id: e._id,
-						_data: data,
-					};
-
-					promises.push(entryService.updateEntry1(newEntry));
-				} catch (err) {
-					console.log(err);
+		getEntriesByDatabase("jaekJayCargo").then((response) => {
+			let mainEntries = response.data;
+			let mainDict = {}
+			const regex = /\d{4}/;
+			
+			for(let i=0;i<mainEntries.length;i++) {
+				let e = mainEntries[i]
+				if(e['mtlTracking#']) {
+					let tracking = e['mtlTracking#'].match(regex);
+					if(tracking)
+						mainDict[tracking] = e
 				}
-			});
-			Promise.all(promises)
+					
+			}
+			//console.log(Object.keys(mainDict))
+			let promises = [];
+			getEntriesByDatabase("jaekJayCustomOrder").then((response) => {
+				let subEntries = response.data;
+				let preDate = null;
+				for(let i=0;i<subEntries.length;i++) {
+					let e = subEntries[i]
+					if(e['mtlTracking']) {
+						let tracking = e['mtlTracking'].match(regex)
+						if(mainDict[tracking]) {
+							let promise = new Promise((resolve,reject)=> {
+								let dateShipped = mainDict[tracking]['dateShipped']
+								if(dateShipped != null)
+									preDate = dateShipped;
+								else 
+									dateShipped = preDate;
+								dbConn.collection("EntryCollection").updateOne(
+									{ _id: ObjectId(e._id) },
+									{
+										$set: {
+											"_data.dateCreated":dateShipped
+										},
+										
+									},
+									{upsert:true}
+								);
+								resolve();
+							})
+							promises.push(promise)
+						}
+						else {
+							let promise = new Promise((resolve,reject)=> {
+								dbConn.collection("EntryCollection").updateOne(
+									{ _id: ObjectId(e._id) },
+									{
+										$set: {
+											"_data.dateCreated":preDate
+										},
+										
+									},
+									{upsert:true}
+								);
+								resolve();
+							})
+							promises.push(promise)
+						}
+					}else {
+						let promise = new Promise((resolve,reject)=> {
+							dbConn.collection("EntryCollection").updateOne(
+								{ _id: ObjectId(e._id) },
+								{
+									$set: {
+										"_data.dateCreated":preDate
+									},
+									
+								},
+								{upsert:true}
+							);
+							resolve();
+						})
+						promises.push(promise)
+					}
+				}
+				Promise.all(promises)
 				.then(() => {
-					// entries.forEach((e) => {
-					// 	dbConn.collection("EntryCollection").updateOne(
-					// 		{ _id: e._id },
-					// 		{
-					// 			$unset: {
-					// 				id: "",
-					// 				database: "",
-					// 				owner: "",
-					// 				dateCreated: "",
-					// 				dateLastModified: "",
-					// 			},
-					// 		}
-					// 	);
-					// });
+					
 					resolve({ code: 200 });
 				})
 				.catch((err) => {
 					console.log("BackfillService - run", err);
 					reject({ code: 500, message: err });
 				});
+			})
 		});
 	});
 	return promise;

@@ -22,6 +22,11 @@ function addComment(comment) {
 					resolve({ code: 200, data: result.ops[0] });
 				}
 			});
+		dbConn.collection("EntryCollection")
+		.updateOne(
+			{ _id: ObjectId(comment.entryId) },
+			{$inc:{'_data.comment':1}
+		})
 	});
 	return promise;
 }

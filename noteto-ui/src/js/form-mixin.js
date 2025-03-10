@@ -23,7 +23,7 @@ export default {
       emailRules: [
         (v) => !!v || "Required",
         (v) =>
-          /^[A-Za-z\d.]+@[A-Za-z]+\.[A-Za-z]+$/.test(v) ||
+          /^[A-Za-z\d._-]+@[A-Za-z]+\.[A-Za-z]+$/.test(v) ||
           "Invalid email format",
       ],
       nameRules: [

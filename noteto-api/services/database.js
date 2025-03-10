@@ -214,6 +214,7 @@ function updateDatabaseAccess(wrappedAccess, createdBy) {
 }
 function updateGroupsInDatabase(database) {
 	let promise = new Promise((resolve, reject) => {
+		console.log(database)
 		dbConn
 			.collection("DatabaseCollection")
 			.updateOne(

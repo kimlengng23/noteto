@@ -13,6 +13,7 @@ function setDb(conn) {
 app.use(express.json());
 app.use(helper.verifyToken);
 app.post("/add/headers", helper.verifyAdminToken, (req, res) => {
+	console.log(req.body)
 	let headers = req.body;
 	if (headers.length == 0) {
 		return res.sendStatus(200);

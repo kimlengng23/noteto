@@ -1,6 +1,7 @@
 const { MongoClient, ObjectID } = require("mongodb");
 const connUrl = process.env.CONN_STR;
 const dbName = process.env.DB_NAME;
+console.log(dbName,connUrl)
 const connOption = {
   useUnifiedTopology: true,
 };

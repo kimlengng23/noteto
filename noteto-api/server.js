@@ -1,10 +1,11 @@
-require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` });
-const express = require("express");
+
+require("dotenv").config();
+const fs = require("fs");
 const path = require("path");
+const express = require("express");
 const cors = require("cors");
 const http = require("http");
 const https = require("https");
-const fs = require("fs");
 const app = express();
 const key = fs.readFileSync(path.join(__dirname, "certs", "server.key"));
 const cert = fs.readFileSync(path.join(__dirname, "certs", "server.crt"));
@@ -55,8 +56,8 @@ const httpsServer = https.createServer(
 // httpServer.listen(nonSecuredPort, () => {
 //   console.log("App is listening on port ", nonSecuredPort);
 // });
-httpsServer.listen(process.env.SECURED_PORT, () => {
-	console.log("App is listening on port ", process.env.SECURED_PORT);
+httpsServer.listen(3000, () => {
+	console.log("App is listening on port ", 3000);
 });
 database.createDbConn().then((dbConn) => {
 	automationController.setDb(dbConn);

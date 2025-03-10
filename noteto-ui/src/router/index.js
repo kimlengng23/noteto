@@ -4,7 +4,6 @@ import CustomView from "../views/CustomView.vue";
 import ListView from "../views/ListView.vue";
 import EntryForm from "../views/EntryForm.vue";
 import DatabaseAccess from "../views/DatabaseAccess.vue";
-import DetailForm from "../views/DetailForm.vue";
 import FormSetting from "../views/FormSetting.vue";
 import LayoutMapping from "@/views/LayoutMapping.vue";
 import LoginPage from "../views/LoginPage.vue";
@@ -18,6 +17,7 @@ import CustomViewList from "../views/CustomViewList.vue";
 import AssignedListView from "../views/AssignedListView.vue";
 import JaekJayCargoReceipt from "../custom-views/JaekJayCargoReceipt.vue";
 import JaekJayCustomOrderReceipt from "../custom-views/JaekJayCustomOrderReceipt.vue";
+import JaekJayCustomOrder from "../custom-views/JaekJayCustomOrder.vue";
 import JaekJayEstimatedValue from "../custom-views/JaekJayEstimatedValue.vue";
 import JaekJayWholesale from "../custom-views/JaekJayWholesale.vue";
 import JaekJayMainWholesale from "../custom-views/JaekJayMainWholesale.vue";
@@ -40,7 +40,7 @@ const routes = [
 	{
 		path: "/detail/:id",
 		name: "DetailForm",
-		component: DetailForm,
+		component: EntryForm,
 	},
 	{
 		path: "/form/setting",
@@ -119,6 +119,11 @@ const routes = [
 				component: JaekJayCustomOrderReceipt,
 			},
 			{
+				path: "jaekjaycustomorder/:id",
+				name: "JaekJayCustomOrder",
+				component: JaekJayCustomOrder,
+			},
+			{
 				path: "jaekjayestimatedvalue",
 				name: "JaekJayEstimatedValue",
 				component: JaekJayEstimatedValue,
@@ -157,6 +162,7 @@ router.beforeEach((to, from, next) => {
 		to.name == "CustomViewList" ||
 		to.name == "JaekJayCargoReceipt" ||
 		to.name == "JaekJayCustomOrderReceipt" ||
+		to.name == "JaekJayCustomOrder" ||
 		to.name == "JaekJayEstimatedValue" ||
 		to.name == "JaekJayWholesale" ||
 		to.name == "JaekJayMainWholesale" ||
@@ -180,15 +186,19 @@ router.beforeEach((to, from, next) => {
 			to.name == "JaekJayCustomerDashboard"
 		) {
 			next();
-		} else if (
-			(store.getters.currentDatabase &&
-				store.getters.currentDatabase.value) ||
-			localStorage.getItem("currentDatabase")
-		) {
-			next();
-		} else {
-			next({ name: "Home" });
-		}
+		} else  {
+			let query = to.query;
+			if(query.database) {
+				let database = query.database?query.database:''
+				if(database == '')
+					database = JSON.parse(localStorage.getItem("currentDatabase")).value
+				next();
+			}
+			else {
+				next({name:'Home'})
+			}
+		
+		} 
 	} else {
 		localStorage.setItem("nextRouteName", to.name);
 		next({ name: "Login" });

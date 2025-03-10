@@ -179,6 +179,7 @@ export default new Vuex.Store({
 		},
 		replaceHeadersInDatabaseToHeaders(state, payload) {
 			let database = payload[0].database;
+			console.log(database)
 			state.databaseToHeaders[database] = payload;
 		},
 		setAllDatabases(state, payload) {
@@ -214,6 +215,9 @@ export default new Vuex.Store({
 			}
 			if (payload.options && payload.options.isAdmin) {
 				state.isAdmin = true;
+			}
+			else {
+				state.isAdmin = false;
 			}
 		},
 		setCurrentDatabase(state, payload) {
