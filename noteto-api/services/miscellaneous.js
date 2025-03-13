@@ -1,4 +1,5 @@
 const helper = require("../js/helper.js");
+const { ObjectId } = require("mongodb");
 let dbConn = null;
 function setDb(conn) {
 	dbConn = conn;
@@ -150,6 +151,44 @@ function getDatabaseToHeaders() {
 	});
 	return promise;
 }
+function getDemoRequests() {
+	let promise = new Promise((resolve, reject) => {
+		dbConn
+			.collection("DemoRequestCollection")
+			.find({ isActive: true })
+			.sort({ dateCreated: 1 })
+			.toArray((err, results) => {
+				if (err) {
+					console.log("Miscellaneous Service - getDemoRequests", err);
+					reject({ code: 500, message: err });
+				} else {
+					resolve({ code: 200, data: results });
+				}
+			});
+	});
+	return promise;
+}
+function deleteDemoRequestById(id) {
+	let promise = new Promise((resolve, reject) => {
+		dbConn
+			.collection("DemoRequestCollection")
+			.findOneAndUpdate(
+				{ _id: new ObjectId(id) },
+				{ $set: { isActive: false } }
+			)
+			.then(() => {
+				resolve({ code: 200 });
+			})
+			.catch((err) => {
+				console.log(
+					"Miscellaneous Service - DeleteDemoRequestById",
+					err
+				);
+				reject({ code: 500, message: err });
+			});
+	});
+	return promise;
+}
 module.exports = {
 	setDb,
 	addHeaders,
@@ -159,4 +198,6 @@ module.exports = {
 	getDropdowns,
 	getHeadersByDatabase,
 	removeHeadersByDatabase,
+	getDemoRequests,
+	deleteDemoRequestById,
 };

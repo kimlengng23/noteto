@@ -28,4 +28,8 @@ export default {
 		let url = domain + `/api/verify/by/session/${sessionId}`;
 		return axios.get(url);
 	},
+	addDemoRequest(demoRequest) {
+		let url = domain + `/api/add/demo/request`;
+		return axios.post(url, demoRequest);
+	},
 };

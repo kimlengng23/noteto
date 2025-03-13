@@ -167,9 +167,28 @@ function getCustomerDashboard(customer) {
 	});
 	return promise;
 }
+function addDemoRequest(demoRequest) {
+	let todayDate = new Date();
+	demoRequest["dateCreated"] = todayDate;
+	demoRequest["isActive"] = true;
+	let promise = new Promise((resolve, reject) => {
+		dbConn
+			.collection("DemoRequestCollection")
+			.insertOne(demoRequest, (err, result) => {
+				if (err) {
+					console.log("PublicService - addDemoRequest", err);
+					reject({ code: 500, message: err });
+				} else {
+					resolve({ code: 200 });
+				}
+			});
+	});
+	return promise;
+}
 module.exports = {
 	setDb,
 	getEntriesByDatabase,
 	getReceiptById,
 	getCustomerDashboard,
+	addDemoRequest,
 };

@@ -15,6 +15,7 @@ import GroupRegister from "../views/GroupRegister.vue";
 import EmailVerify from "../views/EmailVerify.vue";
 import CustomViewList from "../views/CustomViewList.vue";
 import AssignedListView from "../views/AssignedListView.vue";
+import DemoRequestList from "../views/DemoRequestList.vue";
 import JaekJayCargoReceipt from "../custom-views/JaekJayCargoReceipt.vue";
 import JaekJayCustomOrderReceipt from "../custom-views/JaekJayCustomOrderReceipt.vue";
 import JaekJayCustomOrder from "../custom-views/JaekJayCustomOrder.vue";
@@ -24,6 +25,7 @@ import JaekJayMainWholesale from "../custom-views/JaekJayMainWholesale.vue";
 import JaekJayCustomerDashboard from "../custom-views/JaekJayCustomerDashboard.vue";
 import MtlWholesale from "../custom-views/MtlWholesale.vue";
 import store from "../stores/index.js";
+import _ from "lodash";
 Vue.use(VueRouter);
 //const scrollSection = document.getElementById("SCROLL_SECTION_ID");
 const routes = [
@@ -97,6 +99,11 @@ const routes = [
 		path: "/assigned/list/view",
 		name: "AssignedListView",
 		component: AssignedListView,
+	},
+	{
+		path: "/demo/request/list",
+		name: "DemoRequestList",
+		component: DemoRequestList,
 	},
 	{
 		path: "/custom/view",
@@ -183,22 +190,27 @@ router.beforeEach((to, from, next) => {
 			to.name == "DatabaseAccess" ||
 			to.name == "AssignedListView" ||
 			to.name == "DetailForm" ||
-			to.name == "JaekJayCustomerDashboard"
+			to.name == "JaekJayCustomerDashboard" ||
+			to.name == "DemoRequestList"
 		) {
 			next();
-		} else  {
+		} else {
 			let query = to.query;
-			if(query.database) {
-				let database = query.database?query.database:''
-				if(database == '')
-					database = JSON.parse(localStorage.getItem("currentDatabase")).value
+			if (query.database) {
+				let database = query.database ? query.database : "";
+				if (database == "")
+					database = JSON.parse(
+						localStorage.getItem("currentDatabase")
+					).value;
+				document.title = `${document.title} | ${_.startCase(
+					to.name
+				)} | ${_.startCase(database)}`;
 				next();
+			} else {
+				document.title += ` | ${to.name}`;
+				next({ name: "Home" });
 			}
-			else {
-				next({name:'Home'})
-			}
-		
-		} 
+		}
 	} else {
 		localStorage.setItem("nextRouteName", to.name);
 		next({ name: "Login" });

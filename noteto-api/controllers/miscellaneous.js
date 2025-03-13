@@ -13,7 +13,7 @@ function setDb(conn) {
 app.use(express.json());
 app.use(helper.verifyToken);
 app.post("/add/headers", helper.verifyAdminToken, (req, res) => {
-	console.log(req.body)
+	console.log(req.body);
 	let headers = req.body;
 	if (headers.length == 0) {
 		return res.sendStatus(200);
@@ -38,7 +38,6 @@ app.get("/get/navigation/options", (req, res) => {
 		});
 });
 app.get("/get/dropdowns", (req, res) => {
-	
 	miscellService
 		.getDropdowns()
 		.then((response) => {
@@ -80,6 +79,33 @@ app.get(
 				res.sendStatus(response.code);
 			})
 			.catch((response) => {
+				res.status(response.code).send(response.message);
+			});
+	}
+);
+app.get("/get/demo/requests", helper.verifyAdminToken, (req, res) => {
+	miscellService
+		.getDemoRequests()
+		.then((response) => {
+			res.status(response.code).send(response.data);
+		})
+		.catch((response) => {
+			res.status(response.code).send(response.message);
+		});
+});
+app.get(
+	"/delete/demo/request/by/id/:id",
+	helper.verifyAdminToken,
+	(req, res) => {
+		console.log(req.params);
+		miscellService
+			.deleteDemoRequestById(req.params.id)
+			.then((response) => {
+				console.log(response);
+				res.sendStatus(response.code);
+			})
+			.catch((response) => {
+				console.log(response);
 				res.status(response.code).send(response.message);
 			});
 	}

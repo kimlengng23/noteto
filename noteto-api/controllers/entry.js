@@ -1,5 +1,5 @@
 const express = require("express");
-const converter = require('json-2-csv')
+const converter = require("json-2-csv");
 const helper = require("../js/helper.js");
 const entryService = require("../services/entry.js");
 const app = express();
@@ -39,7 +39,6 @@ app.post("/add", helper.verifyToken, (req, res) => {
 		});
 });
 app.get("/delete/by/id/:id", helper.verifyToken, (req, res) => {
-	console.log('askldfj;asldfjlk')
 	entryService
 		.deleteEntryById(req.params.id)
 		.then((response) => {
@@ -59,14 +58,16 @@ app.get("/get/assigned", helper.verifyToken, (req, res) => {
 			res.status(response.code).send(response.message);
 		});
 });
-app.get("/get/dashboard/data",helper.verifyToken,(req,res) => {
-	entryService.getDashboardData().then((response) => {
-		res.status(response.code).send(response.data);
-	})
-	.catch((response) => {
-		res.status(response.code).send(response.message);
-	})
-})
+app.get("/get/dashboard/data", helper.verifyToken, (req, res) => {
+	entryService
+		.getDashboardData()
+		.then((response) => {
+			res.status(response.code).send(response.data);
+		})
+		.catch((response) => {
+			res.status(response.code).send(response.message);
+		});
+});
 app.get("/get/by/database/:database", helper.verifyToken, (req, res) => {
 	entryService
 		.getEntriesByDatabase(req.params.database)
@@ -150,42 +151,39 @@ app.get("/get/cvs/report/:database", (req, res) => {
 	}
 	entryService.getReportList(filter).then((response) => {
 		let results = response.data;
-		let rows = []
-		for(let i=0;i<results.length;i++) {
-			let row = {}
+		let rows = [];
+		for (let i = 0; i < results.length; i++) {
+			let row = {};
 			if (results[i]._data.database == "jaekJayCargo") {
-				let year = new Date(results[i]["_data"]["dateCreated"]).getFullYear();
-				if(year != 2024) continue;
+				let year = new Date(
+					results[i]["_data"]["dateCreated"]
+				).getFullYear();
+				if (year != 2024) continue;
 				row.idx = i + 1;
 				row._id = results[i]._id.toString();
 				row.type = "Shipment";
 				row.tracking = results[i]["mtlTracking#"]
 					? results[i]["mtlTracking#"]
 					: "N/A";
-				row.dateCreated = year
-				row.amount = 0;	
-				row.paymentStatus = results[i][
-					"customerPaymentStatus"
-				]
-					? results[i]["customerPaymentStatus"][
-							"displayName"
-						]
+				row.dateCreated = year;
+				row.amount = 0;
+				row.paymentStatus = results[i]["customerPaymentStatus"]
+					? results[i]["customerPaymentStatus"]["displayName"]
 					: "N/A";
 				if (results[i]["chargeList"]) {
 					let sum = 0;
 					let list = results[i]["chargeList"];
 					for (let j = 0; j < list.length; j++) {
-						sum +=
-							list[j]["quantity"] *
-							list[j]["unitPrice"];
+						sum += list[j]["quantity"] * list[j]["unitPrice"];
 					}
-					if(isNaN(sum))
-						continue;
-					row.amount = sum ;
+					if (isNaN(sum)) continue;
+					row.amount = sum;
 				}
-			} else if(results[i]._data.database == "jaekJayCustomOrder") {
-				let year = new Date(results[i]["_data"]["dateCreated"]).getFullYear();
-				if(year != 2024) continue;
+			} else if (results[i]._data.database == "jaekJayCustomOrder") {
+				let year = new Date(
+					results[i]["_data"]["dateCreated"]
+				).getFullYear();
+				if (year != 2024) continue;
 				row.idx = i + 1;
 				row._id = results[i]._id.toString();
 				row.type = results[i]["invoiceType"]
@@ -194,43 +192,46 @@ app.get("/get/cvs/report/:database", (req, res) => {
 				row.tracking = results[i]["mtlTracking"]
 					? results[i]["mtlTracking"]
 					: "N/A";
-				row.dateCreated =year;
+				row.dateCreated = year;
 				row.paymentStatus = results[i]["paymentStatus"]
 					? results[i]["paymentStatus"]["displayName"]
 					: "N/A";
 				row.amount = 0;
-				if(results[i]["itemList"]) {
+				if (results[i]["itemList"]) {
 					let sum = 0;
 					let list = results[i]["itemList"];
 					for (let j = 0; j < list.length; j++) {
-						let sub =
-							list[j]["itemQty"] *
-							list[j]["itemUnitPrice"];
-						
+						let sub = list[j]["itemQty"] * list[j]["itemUnitPrice"];
+
 						let tax = list[j]["itemTax"]
 							? (list[j]["itemTax"] * sub) / 100
 							: 0;
 						sum += sub + tax;
 					}
-					if(isNaN(sum))
-						continue;
-					if(results[i]["collectingFee"]) {
-						sum = ((results[i]["collectingFee"] + 100) * sum) /100
+					if (isNaN(sum)) continue;
+					if (results[i]["collectingFee"]) {
+						sum = ((results[i]["collectingFee"] + 100) * sum) / 100;
 					}
 					row.amount = sum;
 				}
-				
 			}
 			rows.push(row);
 		}
 		let options = {
-			delimiter:{field:';'},
-			keys:['idx',"_id","type","tracking","dateCreated","paymentStatus","amount"]
-		}
+			delimiter: { field: ";" },
+			keys: [
+				"idx",
+				"_id",
+				"type",
+				"tracking",
+				"dateCreated",
+				"paymentStatus",
+				"amount",
+			],
+		};
 		//res.status(response.code).send(rows)
-		res.status(response.code).send(converter.json2csv(rows,options));
+		res.status(response.code).send(converter.json2csv(rows, options));
 	});
-	
 });
 
 module.exports = {

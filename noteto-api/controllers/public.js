@@ -94,6 +94,12 @@ app.get("/send/email", (req, res) => {
 			res.sendStatus(response.code);
 		});
 });
+app.post("/api/add/demo/request", (req, res) => {
+	let demoRequest = req.body;
+	publicService.addDemoRequest(demoRequest).then((response) => {
+		res.sendStatus(response.code);
+	});
+});
 module.exports = {
 	app,
 	setDb,

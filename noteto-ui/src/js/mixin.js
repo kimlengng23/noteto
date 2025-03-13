@@ -300,5 +300,13 @@ export default {
 			this.entry[field.value] = value;
 			this.automate(field);
 		},
+		timer(seconds) {
+			let promise = new Promise((resolve) => {
+				setTimeout(() => {
+					resolve();
+				}, seconds);
+			});
+			return promise;
+		},
 	},
 };

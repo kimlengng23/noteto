@@ -64,7 +64,11 @@ export default {
 		let headers = getHeaders();
 		return axios.get(url, { headers: headers });
 	},
-
+	deleteDemoRequestById(id) {
+		let url = domain + `/miscellaneous/delete/demo/request/by/id/${id}`;
+		let headers = getHeaders();
+		return axios.get(url, { headers: headers });
+	},
 	getAutomationsByDatabase(database) {
 		let url = domain + `/automation/get/by/database/${database}`;
 		let headers = getHeaders();
@@ -182,6 +186,11 @@ export default {
 	},
 	getHistoryByEntryId(entryId) {
 		let url = domain + `/history/get/by/entry/id/${entryId}`;
+		let headers = getHeaders();
+		return axios.get(url, { headers: headers });
+	},
+	getDemoRequests() {
+		let url = domain + `/miscellaneous/get/demo/requests/`;
 		let headers = getHeaders();
 		return axios.get(url, { headers: headers });
 	},
