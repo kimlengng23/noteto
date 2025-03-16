@@ -1,6 +1,25 @@
 <template>
 	<div>
-		<v-app-bar color="blue darken-1" elevation="0" dark>
+		<v-app-bar
+			v-if="routeName == 'Home' && !isLoggedIn"
+			style="position: absolute; z-index: 2; width: 100%"
+			color="transparent"
+			elevation="0"
+			dark>
+			<v-toolbar-title
+				class="text-h4"
+				@click="$router.push({ name: 'Home' }).catch(() => {})">
+				<span style="font-family: 'Dangrek', cursive">នូតតូក</span>
+				-
+				<span style="font-family: 'Sora', sans-serif">Noteto</span>
+			</v-toolbar-title>
+		</v-app-bar>
+		<v-app-bar
+			v-if="isLoggedIn"
+			style="position: relative; z-index: 3"
+			color="primary	"
+			elevation="0"
+			dark>
 			<v-app-bar-nav-icon
 				@click="drawer = !drawer"
 				v-if="isLoggedIn"></v-app-bar-nav-icon>
@@ -138,7 +157,11 @@
 				</v-list>
 			</v-menu>
 		</v-app-bar>
-		<v-navigation-drawer v-model="drawer" absolute temporary>
+		<v-navigation-drawer
+			v-if="isLoggedIn"
+			v-model="drawer"
+			absolute
+			temporary>
 			<v-list-item>
 				<v-list-item-avatar>
 					<i class="fas fa-user-circle fa-3x"></i>
@@ -168,6 +191,10 @@
 			</v-list>
 			<template v-slot:append></template>
 		</v-navigation-drawer>
+		<v-container
+			v-if="routeName == 'Home'"
+			fluid
+			class="tmp pa-0"></v-container>
 	</div>
 </template>
 <script>
@@ -262,4 +289,60 @@ export default {
 	},
 };
 </script>
-<style></style>
+<style>
+.tmp {
+	background-image: linear-gradient(
+		to bottom,
+		#0060f0,
+		#009fff,
+		#00cae4,
+		#00eaa8,
+		#dbff8c
+	);
+	height: 50%;
+	z-index: 1 !important;
+	position: absolute;
+	top: 0;
+	left: 0;
+	border-bottom-left-radius: 500px;
+	border-bottom-right-radius: 500px;
+}
+@media only screen and (max-width: 999px) {
+	.tmp {
+		background-image: linear-gradient(
+			to bottom,
+			#0060f0,
+			#009fff,
+			#00cae4,
+			#00eaa8,
+			#dbff8c
+		);
+		height: 50%;
+		z-index: 1 !important;
+		position: absolute;
+		top: 0;
+		left: 0;
+		border-bottom-left-radius: 500px;
+		border-bottom-right-radius: 500px;
+	}
+}
+@media only screen and (min-width: 1000px) {
+	.tmp {
+		background-image: linear-gradient(
+			to bottom,
+			#0060f0,
+			#009fff,
+			#00cae4,
+			#00eaa8,
+			#dbff8c
+		);
+		height: 600px;
+		z-index: 1 !important;
+		position: absolute;
+		top: 0;
+		left: 0;
+		border-bottom-left-radius: 100%;
+		border-bottom-right-radius: 100%;
+	}
+}
+</style>

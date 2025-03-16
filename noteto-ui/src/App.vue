@@ -1,21 +1,11 @@
 <template>
 	<v-app>
-		<v-img
-			v-if="$route.name == 'Home'"
-			style="
-				z-index: 0;
-				position: absolute;
-				top: 0px;
-				width: 100%;
-				opacity: 0.5;
-			"
-			src="@/assets/home-page-bg.jpg"></v-img>
 		<main-navbar v-if="parentName != 'CustomView'"></main-navbar>
 		<second-navbar
 			v-if="
 				isMobile && isLoggedIn && parentName != 'CustomView'
 			"></second-navbar>
-		<v-main class="grey lighten-3">
+		<v-main>
 			<router-view></router-view>
 		</v-main>
 		<general-dialog></general-dialog>

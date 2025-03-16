@@ -1,30 +1,79 @@
 <template>
-	<v-container style="width: 70%">
-		<div style="font-size: 100px" class="text-center">
+	<v-container fluid style="margin-top: 10%">
+		<v-container
+			class="text-center text-h3 font-weight-bold white--text montserrat">
+			<span>Discover a Flexible Entry Tracking Application</span>
+		</v-container>
+		<v-container class="text-center text-h4 white--text">
 			<span style="font-family: 'Dangrek', cursive">នូតតូក</span>
 			-
 			<span style="font-family: 'Sora', sans-serif">Noteto</span>
-		</div>
-
-		<div style="font-family: 'Noto Sans', serif">
-			<p>
-				An intuitive and versatile record-keeping app that allows users
-				to easily track and manage their data
-			</p>
-			<p>
-				Whether tracking sales, inventory, or customer data, Noteto
-				offers a simple and efficient way to organize and store
-				important information. Users can easily search, view, and update
-				their records at any time, making it easy to stay on top of
-				changes and updates.
-			</p>
-			<p>
-				With a user-friendly interface and flexible customization
-				options, Noteto is the perfect solution for anyone looking to
-				streamline their record-keeping process and stay organized in
-				today's fast-paced world.
-			</p>
-		</div>
+		</v-container>
+		<v-container class="d-flex justify-center montserrat v-card-div">
+			<v-card elevation="0" class="rounded-xl" outlined>
+				<v-card-title class="d-flex justify-center">
+					<div class="text-lg-h5 text-sm-h2">Meet the team</div>
+				</v-card-title>
+				<v-card-text>
+					<div class="d-flex justify-center flex-wrap">
+						<div style="height: 50%; width: 50%">
+							<v-img
+								style="
+									image-rendering: auto;
+									border-radius: 100%;
+								"
+								src="@/assets/team-1.jpg"></v-img>
+						</div>
+					</div>
+					<div
+						class="text-center text-lg-h4 text-sm-h2 font-weight-bold my-2">
+						Tee K. Nguov
+					</div>
+					<div class="text-sm-h4 text-lg-subtitle-1">
+						As the lead developer and founder of Noteto, Tee brings
+						a passion for creating innovative and intuitive digital
+						experiences. With more than 5 years of experience in
+						software development, Tee is dedicated to pushing the
+						boundaries of what's possible and turning creative ideas
+						into functional, user-friendly tech solutions for
+						businesses.
+					</div>
+				</v-card-text>
+			</v-card>
+		</v-container>
+		<v-divider></v-divider>
+		<v-container
+			fluid
+			class="d-flex my-2 align-center flex-wrap flex-lg-nowrap">
+			<div class="image-div">
+				<v-img
+					style="image-rendering: auto"
+					src="@/assets/show-case-1.jpg"></v-img>
+			</div>
+			<div>
+				<!-- <p>
+					An intuitive and versatile record-keeping app that allows
+					users to easily track and manage their data
+				</p> -->
+				<p
+					class="text-center text-h3 font-italic font-weight-bold montserrat">
+					Empowering Your Team
+				</p>
+				<p class="text-h5 grey--text text--darken-1 montserrat">
+					Whether tracking sales, inventory, or customer data, Noteto
+					offers a simple and efficient way to organize and store
+					important information. Users can easily search, view, and
+					update their records at any time, making it easy to stay on
+					top of changes and updates.
+				</p>
+				<!-- <p>
+					With a user-friendly interface and flexible customization
+					options, Noteto is the perfect solution for anyone looking
+					to streamline their record-keeping process and stay
+					organized in today's fast-paced world.
+				</p> -->
+			</div>
+		</v-container>
 		<v-container class="d-flex justify-center">
 			<v-btn
 				color="primary"
@@ -146,3 +195,28 @@ export default {
 	},
 };
 </script>
+<style scoped>
+div > div {
+	z-index: 3;
+	position: relative;
+}
+.montserrat {
+	font-family: "Montserrat", sans-serif !important;
+}
+@media only screen and (max-width: 999px) {
+	.v-card-div {
+		width: 100%;
+	}
+	.image-div {
+		width: 100%;
+	}
+}
+@media only screen and (min-width: 1000px) {
+	.v-card-div {
+		width: 30%;
+	}
+	.image-div {
+		width: 50%;
+	}
+}
+</style>
