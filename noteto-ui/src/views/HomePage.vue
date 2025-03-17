@@ -1,18 +1,21 @@
 <template>
-	<v-container fluid style="margin-top: 10%">
+	<v-container style="margin-top: 10%">
 		<v-container
-			class="text-center text-h3 font-weight-bold white--text montserrat">
-			<span>Discover a Flexible Entry Tracking Application</span>
+			class="text-center text-h5 text-lg-h2 font-weight-bold white--text montserrat">
+			<span>Discover the Flexible Entry Tracking Application</span>
 		</v-container>
-		<v-container class="text-center text-h4 white--text">
+		<!-- <v-container class="text-center text-h4 text-lg-h3 white--text">
 			<span style="font-family: 'Dangrek', cursive">នូតតូក</span>
 			-
 			<span style="font-family: 'Sora', sans-serif">Noteto</span>
-		</v-container>
+		</v-container> -->
 		<v-container class="d-flex justify-center montserrat v-card-div">
 			<v-card elevation="0" class="rounded-xl" outlined>
 				<v-card-title class="d-flex justify-center">
-					<div class="text-lg-h5 text-sm-h2">Meet the team</div>
+					<div
+						class="text-lg-h5 text-h5 font-weight-semibold montserrat">
+						Meet the team
+					</div>
 				</v-card-title>
 				<v-card-text>
 					<div class="d-flex justify-center flex-wrap">
@@ -26,10 +29,10 @@
 						</div>
 					</div>
 					<div
-						class="text-center text-lg-h4 text-sm-h2 font-weight-bold my-2">
+						class="text-center text-lg-h4 text-h5 font-weight-bold my-2 montserrat">
 						Tee K. Nguov
 					</div>
-					<div class="text-sm-h4 text-lg-subtitle-1">
+					<div class="text-h6 text-lg-subtitle-1 montserrat">
 						As the lead developer and founder of Noteto, Tee brings
 						a passion for creating innovative and intuitive digital
 						experiences. With more than 5 years of experience in
@@ -56,11 +59,12 @@
 					users to easily track and manage their data
 				</p> -->
 				<p
-					class="text-center text-h3 font-italic font-weight-bold montserrat">
+					class="text-center text-h4 font-italic font-weight-bold montserrat">
 					Empowering Your Team
 				</p>
-				<p class="text-h5 grey--text text--darken-1 montserrat">
-					Whether tracking sales, inventory, or customer data, Noteto
+				<p
+					class="text-h6 text-lg-h5 grey--text text--darken-1 montserrat">
+					Whether tracking sales, requests, or customer data, Noteto
 					offers a simple and efficient way to organize and store
 					important information. Users can easily search, view, and
 					update their records at any time, making it easy to stay on
@@ -202,6 +206,7 @@ div > div {
 }
 .montserrat {
 	font-family: "Montserrat", sans-serif !important;
+	line-height: 1.5;
 }
 @media only screen and (max-width: 999px) {
 	.v-card-div {
