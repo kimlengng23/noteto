@@ -1,6 +1,6 @@
 import axios from "axios";
 let host = window.location.hostname;
-//let domain = "/entrytracker/api";
+//	let domain = "/entrytracker/api";
 //let storeApi = `https://${host}:3000/store/api`;
 //let entryTrackerApi = `https://${host}:3000/entryTracker/api`;
 //let domain = `https://${host}:3000/entryTracker/api`;
@@ -40,10 +40,10 @@ export default {
 		let headers = getHeaders();
 		return axios.post(url, field, { headers: headers });
 	},
-	addSelectedHeaders(selectedHeaders) {
-		let url = domain + `/miscellaneous/add/headers`;
+	addHeaderSet(headerSet) {
+		let url = domain + `/header/set/add/`;
 		let headers = getHeaders();
-		return axios.post(url, selectedHeaders, { headers: headers });
+		return axios.post(url, headerSet, { headers: headers });
 	},
 	addLayout(rows) {
 		let url = domain + "/layout/add";
@@ -118,8 +118,8 @@ export default {
 		let headers = getHeaders();
 		return axios.get(url, { headers: headers });
 	},
-	getDatabaseToHeaders() {
-		let url = domain + `/miscellaneous/get/database/to/headers`;
+	getDatabaseToHeaderSets() {
+		let url = domain + `/header/set/get/database/to/header/sets`;
 		let headers = getHeaders();
 		return axios.get(url, { headers: headers });
 	},
@@ -133,14 +133,13 @@ export default {
 		let headers = getHeaders();
 		return axios.get(url, { headers: headers });
 	},
-	getHeadersByDatabase(database) {
-		let url = domain + `/miscellaneous/get/headers/database/${database}`;
+	getHeaderSetsByDatabase(database) {
+		let url = domain + `/header/set/get/by/database/${database}`;
 		let headers = getHeaders();
 		return axios.get(url, { headers: headers });
 	},
-
-	removeHeadersByDatabase(database) {
-		let url = domain + `/miscellaneous/remove/headers/database/${database}`;
+	removeHeaderSetsByDatabase(database) {
+		let url = domain + `/header/set/remove/by/database/${database}`;
 		let headers = getHeaders();
 		return axios.get(url, { headers: headers });
 	},
@@ -275,4 +274,9 @@ export default {
 		let headers = getHeaders();
 		return axios.get(url, { headers: headers });
 	},
+	setFavoriteHeaderSetById(id) {
+		let url = domain +`/header/set/set/favorite/by/id/${id}`;
+		let headers = getHeaders();
+		return axios.get(url,{headers:headers})
+	}
 };

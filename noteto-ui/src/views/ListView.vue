@@ -9,6 +9,7 @@
       >
         Dashboard
       </v-tab>
+      <v-tab> List Settings </v-tab>
     </v-tabs>
 
     <v-tabs-items v-model="tab">
@@ -68,16 +69,23 @@
       <v-tab-item>
         <jaek-jay-dashboard></jaek-jay-dashboard>
       </v-tab-item>
+      <v-tab-item>
+        <list-settings></list-settings>
+      </v-tab-item>
     </v-tabs-items>
   </v-container>
 </template>
 <script>
 import JaekJayDashboard from "@/components/JaekJayDashboard.vue";
+import ListSettings from "@/components/ListSettings.vue";
 import eventBus from "@/js/event-bus";
 //import backendService from "../services/backend-service.js";
 export default {
   name: "ListView",
-  components: { "jaek-jay-dashboard": JaekJayDashboard },
+  components: {
+    "jaek-jay-dashboard": JaekJayDashboard,
+    "list-settings": ListSettings,
+  },
   data() {
     return {
       tab: 0,
@@ -118,11 +126,24 @@ export default {
     currentDatabase() {
       return this.$store.getters["currentDatabase"];
     },
+    databaseToHeaderSets() {
+      return this.$store.getters["databaseToHeaderSets"];
+    },
     databaseName() {
       return this.currentDatabase.value;
     },
     entries() {
       return this.$store.getters["entries"];
+    },
+    favoriteHeaderSet() {
+      if (this.currentDatabase && this.currentDatabase.value) {
+        const headerSet = this.databaseToHeaderSets[
+          this.currentDatabase.value
+        ].find((e) => e.isFavorite);
+        if (headerSet) return headerSet.fields;
+        return [];
+      }
+      return [];
     },
     filteredEntries() {
       let entries = this.entries;
@@ -154,7 +175,7 @@ export default {
       return entries;
     },
     headers() {
-      let rawHeaders = this.$store.getters["headers"];
+      let rawHeaders = this.favoriteHeaderSet;
       let processedHeaders = [...this.defaultHeaders];
       if (!rawHeaders) return processedHeaders;
       for (let i = 0; i < rawHeaders.length; i++) {

@@ -18,13 +18,13 @@ export default new Vuex.Store({
 		databaseToFields: {},
 		databaseToChoices: {},
 		databaseToLayoutMappings: {},
-		databaseToHeaders: {},
+		databaseToHeaderSets: {},
 		dropdowns: {},
 		emptyEntry: {},
 		entries: [],
 		fieldToChoices: {},
 		fieldToField: {},
-		headers: [],
+		headerSets: [],
 		isAdmin: false,
 		isLoggedIn: false,
 		itemsPerPage: 15,
@@ -62,11 +62,14 @@ export default new Vuex.Store({
 		entries: (state) => {
 			return state.entries;
 		},
+		favoriteHeaderSets:(state) => {
+			return state.favoriteHeaderSets;
+		},
 		fieldToChoices: (state) => {
 			return state.fieldToChoices;
 		},
-		headers: (state) => {
-			return state.headers;
+		headerSets: (state) => {
+			return state.headerSets;
 		},
 		isAdmin: (state) => {
 			return state.isAdmin;
@@ -95,8 +98,8 @@ export default new Vuex.Store({
 		databaseToChoices: (state) => {
 			return state.databaseToChoices;
 		},
-		databaseToHeaders: (state) => {
-			return state.databaseToHeaders;
+		databaseToHeaderSets: (state) => {
+			return state.databaseToHeaderSets;
 		},
 		databaseToLayoutMappings: (state) => {
 			return state.databaseToLayoutMappings;
@@ -180,7 +183,7 @@ export default new Vuex.Store({
 		replaceHeadersInDatabaseToHeaders(state, payload) {
 			let database = payload[0].database;
 			console.log(database)
-			state.databaseToHeaders[database] = payload;
+			state.databaseToHeaderSets[database] = payload;
 		},
 		setAllDatabases(state, payload) {
 			state.allDatabases = payload;
@@ -247,8 +250,8 @@ export default new Vuex.Store({
 		setDatabaseToChoices(state, payload) {
 			state.databaseToChoices = payload;
 		},
-		setDatabaseToHeaders(state, payload) {
-			state.databaseToHeaders = payload;
+		setDatabaseToHeaderSets(state, payload) {
+			state.databaseToHeaderSets = payload;
 		},
 		setDatabaseToLayoutMappings(state, payload) {
 			state.databaseToLayoutMappings = payload;
@@ -299,8 +302,8 @@ export default new Vuex.Store({
 		setEntries(state, payload) {
 			state.entries = payload;
 		},
-		setHeaders(state, payload) {
-			state.headers = payload;
+		setHeaderSets(state, payload) {
+			state.headerSets = payload;
 		},
 		setUsers(state, payload) {
 			state.users = payload;
@@ -395,9 +398,9 @@ export default new Vuex.Store({
 				})
 				.catch(() => {});
 		},
-		getDatabaseToHeaders(context) {
-			backendService.getDatabaseToHeaders().then((response) => {
-				context.commit("setDatabaseToHeaders", response.data);
+		getDatabaseToHeaderSets(context) {
+			backendService.getDatabaseToHeaderSets().then((response) => {
+				context.commit("setDatabaseToHeaderSets", response.data);
 			});
 		},
 		getDatabaseToLayoutMappings(context) {
@@ -450,11 +453,11 @@ export default new Vuex.Store({
 					});
 			}
 		},
-		getHeadersByDatabase(context) {
+		getHeaderSetsByDatabase(context) {
 			backendService
-				.getHeadersByDatabase(context.state.currentDatabase.value)
+				.getHeaderSetsByDatabase(context.state.currentDatabase.value)
 				.then((response) => {
-					context.commit("setHeaders", response.data);
+					context.commit("setHeaderSets", response.data);
 				});
 		},
 

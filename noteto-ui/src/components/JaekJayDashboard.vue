@@ -8,36 +8,42 @@
               class="mx-2 rounded-xl"
               elevation="0"
               outlined
-              height="100%">
+              height="100%"
+            >
               <v-card-text>
                 <h3>Total Expense</h3>
                 <animated-number
                   :value="totalExpense"
-                  :formatValue="formatToPrice"></animated-number>
+                  :formatValue="formatToPrice"
+                ></animated-number>
               </v-card-text>
               <v-card-text>
                 <h3>Amount Pending</h3>
                 <animated-number
                   :value="totalDue"
-                  :formatValue="formatToPrice"></animated-number>
+                  :formatValue="formatToPrice"
+                ></animated-number>
               </v-card-text>
               <v-card-text>
                 <h3>Total Profit</h3>
                 <animated-number
                   :value="totalProfit"
-                  :formatValue="formatToPrice"></animated-number>
+                  :formatValue="formatToPrice"
+                ></animated-number>
               </v-card-text>
               <v-card-text>
                 <h3>Total Revenue</h3>
                 <animated-number
                   :value="totalRevenue"
-                  :formatValue="formatToPrice"></animated-number>
+                  :formatValue="formatToPrice"
+                ></animated-number>
               </v-card-text>
               <v-card-text>
                 <h3>Total Paid - Total Expense</h3>
                 <animated-number
                   :value="totalPaid - totalExpense"
-                  :formatValue="formatToPrice"></animated-number>
+                  :formatValue="formatToPrice"
+                ></animated-number>
               </v-card-text>
             </v-card>
           </v-col>
@@ -51,7 +57,8 @@
                       style="height: 100%"
                       ref="amountDueData"
                       :data="amountDueData"
-                      :options="chartOptions"></Doughnut>
+                      :options="chartOptions"
+                    ></Doughnut>
                   </v-card-text>
                 </v-card>
               </v-col>
@@ -63,7 +70,8 @@
                       style="height: 100%"
                       ref="expenseChart"
                       :data="expenseData"
-                      :options="chartOptions"></Doughnut>
+                      :options="chartOptions"
+                    ></Doughnut>
                   </v-card-text>
                 </v-card>
               </v-col>
@@ -77,7 +85,8 @@
                       style="height: 100%"
                       ref="revenueData"
                       :data="revenueData"
-                      :options="chartOptions"></Doughnut>
+                      :options="chartOptions"
+                    ></Doughnut>
                   </v-card-text>
                 </v-card>
               </v-col>
@@ -89,7 +98,8 @@
                       style="height: 100%"
                       ref="profitData"
                       :data="profitData"
-                      :options="chartOptions"></Doughnut>
+                      :options="chartOptions"
+                    ></Doughnut>
                   </v-card-text>
                 </v-card> </v-col
             ></v-row>
@@ -100,33 +110,38 @@
 
     <v-data-table
       v-if="!isMobile"
-      :headers="headers"
+      :headers="headerSets"
       :items="items"
-      :items-per-page="-1">
+      :items-per-page="-1"
+    >
       <template v-slot:item="{ item, index }">
         <tr :class="[index % 2 == 0 ? 'bg-grey' : '']" :key="`item-${index}`">
           <td
             class="text-right"
-            v-for="(header, idx) in headers"
-            :key="`header-${index}-${idx}`">
+            v-for="(header, idx) in headerSets"
+            :key="`header-${index}-${idx}`"
+          >
             <span v-if="header.value == 'idx'">
               <a
                 v-if="item.type == 'Shipment'"
                 :href="`https://noteto.jaekjay.com/#/custom/view/jaekjaycargoreceipt/${item._id}`"
-                target="_blank">
+                target="_blank"
+              >
                 {{ item.idx }}
               </a>
               <a
                 v-else
                 :href="`https://noteto.jaekjay.com/#/custom/view/jaekjaycustomorderreceipt/${item._id}`"
-                target="_blank">
+                target="_blank"
+              >
                 {{ item.idx }}
               </a>
             </span>
             <span v-else-if="header.value == 'paymentStatus'">
               <span
                 class="green--text font-weight-bold"
-                v-if="item.paymentStatus == 'Paid'">
+                v-if="item.paymentStatus == 'Paid'"
+              >
                 {{ item.paymentStatus }}
               </span>
               <span class="red--text font-weight-bold" v-else>
@@ -149,16 +164,23 @@
         </tr>
       </template>
     </v-data-table>
-    <v-data-table v-else :headers="headers" :items="items" :items-per-page="-1">
+    <v-data-table
+      v-else
+      :headerSets="headerSets"
+      :items="items"
+      :items-per-page="-1"
+    >
       <template v-slot:item="{ item, index }">
         <tr
           class="d-flex flex-column"
           style="border-bottom: gray solid 1px"
-          :key="`item-${index}`">
+          :key="`item-${index}`"
+        >
           <td
             style="border: none"
-            v-for="(header, idx) in headers"
-            :key="`header-${index}-${idx}`">
+            v-for="(header, idx) in headerSets"
+            :key="`header-${index}-${idx}`"
+          >
             <v-container fluid class="d-flex justify-space-between">
               <span>
                 {{ header.text }}
@@ -167,20 +189,23 @@
                 <a
                   v-if="item.type == 'Shipment'"
                   :href="`https://noteto.jaekjay.com/#/custom/view/jaekjaycargoreceipt/${item._id}`"
-                  target="_blank">
+                  target="_blank"
+                >
                   {{ item.idx }}
                 </a>
                 <a
                   v-else
                   :href="`https://noteto.jaekjay.com/#/custom/view/jaekjaycustomorderreceipt/${item._id}`"
-                  target="_blank">
+                  target="_blank"
+                >
                   {{ item.idx }}
                 </a>
               </span>
               <span v-else-if="header.value == 'paymentStatus'">
                 <span
                   class="green--text font-weight-bold"
-                  v-if="item.paymentStatus == 'Paid'">
+                  v-if="item.paymentStatus == 'Paid'"
+                >
                   {{ item.paymentStatus }}
                 </span>
                 <span class="red--text font-weight-bold" v-else>
@@ -331,7 +356,7 @@ export default {
         ],
       },
       items: [],
-      headers: [
+      headerSets: [
         {
           text: "#",
           align: "end",

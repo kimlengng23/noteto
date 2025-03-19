@@ -23,8 +23,7 @@ const choiceController = require("./controllers/choice.js");
 const layoutController = require("./controllers/layout.js");
 const entryController = require("./controllers/entry.js");
 const publicController = require("./controllers/public.js");
-const { fstat } = require("fs");
-
+const headerSetController = require("./controllers/header-set.js");
 app.use(cors());
 app.use(express.json());
 app.use("/", express.static(path.join(__dirname, "..", "dist")));
@@ -45,6 +44,7 @@ app.use("/api/field/", fieldController.app);
 app.use("/api/choice/", choiceController.app);
 app.use("/api/layout/", layoutController.app);
 app.use("/api/entry/", entryController.app);
+app.use("/api/header/set/", headerSetController.app);
 const httpServer = http.createServer(app);
 const httpsServer = https.createServer(
 	{
@@ -73,4 +73,5 @@ database.createDbConn().then((dbConn) => {
 	choiceController.setDb(dbConn);
 	layoutController.setDb(dbConn);
 	entryController.setDb(dbConn);
+	headerSetController.setDb(dbConn)
 });

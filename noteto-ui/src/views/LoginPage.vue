@@ -50,13 +50,13 @@
   </v-container>
 </template>
 <script>
-import eventBus from "../js/event-bus.js";
 import backendService from "../services/backend-service.js";
 import FormMixin from "../js/form-mixin.js";
+import generalMixin from "@/js/general-mixin.js";
 export default {
   name: "LoginPage",
 
-  mixins: [FormMixin],
+  mixins: [FormMixin, generalMixin],
   data() {
     return {};
   },
@@ -101,7 +101,7 @@ export default {
             this.$store.dispatch("getAllGroups");
             this.$store.dispatch("getAllUsers");
             this.$store.dispatch("getDatabaseToFields");
-            this.$store.dispatch("getDatabaseToHeaders");
+            this.$store.dispatch("getDatabaseToHeaderSets");
             this.$store.dispatch("getDatabaseToLayoutMappings");
             this.$store.dispatch("getDatabaseToChoices");
           }
@@ -116,14 +116,10 @@ export default {
           }, 1000);
         })
         .catch(() => {
-          setTimeout(() => {
-            eventBus.$emit(
-              "setSnackbar",
-              "Incorrect username or password",
-              "red darken-1 white--text"
-            );
+          this.timer(1000).then(() => {
+            this.errorSnackbar("Incorrect username or password");
             this.isLoading = false;
-          }, 1000);
+          });
         });
     },
   },
