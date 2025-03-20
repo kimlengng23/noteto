@@ -137,11 +137,13 @@ export default {
     },
     favoriteHeaderSet() {
       if (this.currentDatabase && this.currentDatabase.value) {
-        const headerSet = this.databaseToHeaderSets[
-          this.currentDatabase.value
-        ].find((e) => e.isFavorite);
-        if (headerSet) return headerSet.fields;
-        return [];
+        const headerSets =
+          this.databaseToHeaderSets[this.currentDatabase.value];
+        if (headerSets && headerSets.length > 0) {
+          const headerSet = headerSets.find((e) => e.isFavorite);
+          if (headerSet) return headerSet.fields;
+          return headerSets[0].fields;
+        }
       }
       return [];
     },

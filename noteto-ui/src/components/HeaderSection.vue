@@ -1,39 +1,38 @@
 <template>
-  <v-container>
-    <v-container class="py-0">
-      <div class="d-flex">
-        <v-autocomplete
-          rounded
-          dense
-          outlined
-          label="Header Set"
-          :items="headerSets"
-          :item-text="getHeaderSetText"
-          item-value="_id"
-          v-model="headerSetId"
-        ></v-autocomplete
-        ><v-btn
-          rounded
-          class="warning ml-2 mr-2"
-          @click="setFavoriteHeaderSet"
-          depressed
-          :loading="isUpdateLoading"
-          :disabled="!headerSetId"
-        >
-          <i class="far fa-star mr-2"></i>
-          Favorite
-        </v-btn>
-        <v-btn
-          depressed
-          rounded
-          color="primary"
-          @click="addingHeader = !addingHeader"
-          >Add Header Set</v-btn
-        >
-      </div>
-    </v-container>
+  <v-container class="px-0">
+    <div class="d-flex">
+      <v-autocomplete
+        rounded
+        dense
+        outlined
+        label="Header Set"
+        :items="headerSets"
+        :item-text="getHeaderSetText"
+        item-value="_id"
+        v-model="headerSetId"
+      ></v-autocomplete
+      ><v-btn
+        rounded
+        class="warning ml-2 mr-2"
+        @click="setFavoriteHeaderSet"
+        depressed
+        :loading="isUpdateLoading"
+        :disabled="!headerSetId"
+      >
+        <i class="far fa-star mr-2"></i>
+        Favorite
+      </v-btn>
+      <v-btn
+        depressed
+        rounded
+        color="primary"
+        @click="addingHeader = !addingHeader"
+        >Add Header Set</v-btn
+      >
+    </div>
+
     <v-expand-transition>
-      <v-container v-if="addingHeader" class="py-0">
+      <div v-if="addingHeader">
         <div class="d-flex">
           <v-text-field
             class="mr-2"
@@ -82,7 +81,7 @@
             Confirm Header
           </v-btn>
         </div>
-      </v-container>
+      </div>
     </v-expand-transition>
   </v-container>
 </template>
@@ -92,7 +91,14 @@ import backendService from "@/services/backend-service";
 export default {
   name: "HeaderSection",
   mixins: [generalMixin],
-  props: {},
+  props: {
+    database: {
+      type: Object,
+      default: () => {
+        return {};
+      },
+    },
+  },
   data() {
     return {
       isUpdateLoading: false,
@@ -106,7 +112,13 @@ export default {
   },
   computed: {
     currentDatabase() {
-      return this.$store.getters["currentDatabase"];
+      if (this.database && this.database.value) {
+        return this.database;
+      } else {
+        let database = this.$store.getters["currentDatabse"];
+        if (database && database.value) return database;
+      }
+      return {};
     },
     databaseToFields() {
       return this.$store.getters["databaseToFields"];
@@ -116,9 +128,15 @@ export default {
     },
     headerSets: {
       get() {
-        return this.$store.getters["databaseToHeaderSets"][
-          this.currentDatabase.value
-        ];
+        if (this.currentDatabase && this.currentDatabase.value) {
+          const headerSets =
+            this.$store.getters["databaseToHeaderSets"][
+              this.currentDatabase.value
+            ];
+          if (headerSets && headerSets.length > 0) return headerSets;
+          return [];
+        }
+        return [];
       },
       set(val) {
         return this.$store.commit("setDatabaseToHeaderSets", val);

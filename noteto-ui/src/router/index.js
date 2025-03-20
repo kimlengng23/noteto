@@ -4,7 +4,7 @@ import CustomView from "../views/CustomView.vue";
 import ListView from "../views/ListView.vue";
 import EntryForm from "../views/EntryForm.vue";
 import DatabaseAccess from "../views/DatabaseAccess.vue";
-import FormSetting from "../views/FormSetting.vue";
+import DatabaseSetting from "../views/DatabaseSetting.vue";
 import LayoutMapping from "@/views/LayoutMapping.vue";
 import LoginPage from "../views/LoginPage.vue";
 import LogoutPage from "../views/LogoutPage.vue";
@@ -45,9 +45,9 @@ const routes = [
 		component: EntryForm,
 	},
 	{
-		path: "/form/setting",
-		name: "FormSetting",
-		component: FormSetting,
+		path: "/database/setting",
+		name: "DatabaseSetting",
+		component: DatabaseSetting,
 	},
 	{
 		path: "/layout",
@@ -183,7 +183,7 @@ router.beforeEach((to, from, next) => {
 	} else if (store.getters.isLoggedIn || localStorage.getItem("sessionId")) {
 		if (
 			to.name == "Layout" ||
-			to.name == "FormSetting" ||
+			to.name == "DatabaseSetting" ||
 			to.name == "NewDatabase" ||
 			to.name == "GroupRegister" ||
 			to.name == "Logout" ||

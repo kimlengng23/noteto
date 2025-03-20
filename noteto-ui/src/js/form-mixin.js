@@ -16,7 +16,6 @@ export default {
       fieldValue: "",
       fieldType: "",
       autoType: "",
-      databaseValue: "",
       description: "",
       strRules: [(v) => !!v || "Required"],
 

@@ -17,33 +17,10 @@
           item-value="value"
           filled
           label="Database"
-          v-model="databaseValue"
+          v-model="selectedDatabase"
+          return-object
         ></v-autocomplete>
-        <h2 class="mb-1">Update Headers</h2>
-        <div class="d-flex">
-          <v-autocomplete
-            rounded
-            outlined
-            v-model="selectedHeaders"
-            label="Headers"
-            :items="fields"
-            return-object
-            item-text="displayName"
-            chips
-            deletable-chips
-            multiple
-          ></v-autocomplete
-          ><v-btn
-            rounded
-            class="warning ml-2"
-            @click="updateHeaders"
-            depressed
-            :loading="isUpdatingLoading"
-          >
-            <i class="fas fa-heading mr-2"></i>
-            Update Header
-          </v-btn>
-        </div>
+        <header-section :database="selectedDatabase"></header-section>
 
         <h2 class="mb-1">Add/Update Field</h2>
         <v-autocomplete
@@ -220,6 +197,7 @@
 <script>
 import eventBus from "../js/event-bus.js";
 import backendService from "../services/backend-service.js";
+import HeaderSection from "@/components/HeaderSection.vue";
 import formMixin from "@/js/form-mixin";
 export default {
   name: "FieldSection",
@@ -230,7 +208,7 @@ export default {
       types: [],
       headerSets: [],
       listFields: [],
-
+      selectedDatabase: {},
       dollarOptions: {
         locale: "en-US",
         prefix: "$",
@@ -256,7 +234,7 @@ export default {
     };
   },
   mixins: [formMixin],
-  components: {},
+  components: { "header-section": HeaderSection },
   mounted: function () {},
   computed: {
     databases() {
@@ -268,8 +246,14 @@ export default {
     databaseToChoices() {
       return this.$store.getters["databaseToChoices"];
     },
-    databaseToHeaders() {
-      return this.$store.getters["databaseToHeaders"];
+    databaseToHeaderSets() {
+      return this.$store.getters["databaseToHeaderSets"];
+    },
+    databaseValue() {
+      if (this.selectedDatabase && this.selectedDatabase.value) {
+        return this.selectedDatabase.value;
+      }
+      return null;
     },
     fields() {
       return this.databaseToFields[this.databaseValue];
@@ -291,8 +275,7 @@ export default {
     },
     selectedHeaders: {
       get() {
-        let headerSets = this.databaseToHeaders[this.databaseValue];
-        console.log(headerSets);
+        let headerSets = this.databaseToHeaderSets[this.databaseValue];
         if (!headerSets) headerSets = [];
         return headerSets;
       },
@@ -394,10 +377,6 @@ export default {
         }
       }
     },
-    // getSelectedHeadersByDatabase() {
-
-    // 	if (!this.selectedHeaders) this.selectedHeaders = [];
-    // },
 
     removeChoice(idx) {
       if (this.isUpdating) this.choices[idx].isActive = false;
