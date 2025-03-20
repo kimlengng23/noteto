@@ -62,7 +62,7 @@ export default new Vuex.Store({
 		entries: (state) => {
 			return state.entries;
 		},
-		favoriteHeaderSets:(state) => {
+		favoriteHeaderSets: (state) => {
 			return state.favoriteHeaderSets;
 		},
 		fieldToChoices: (state) => {
@@ -159,6 +159,9 @@ export default new Vuex.Store({
 				state.databaseToFields[databaseValue] = payload;
 			}
 		},
+		addHeaderSet(state, payload) {
+			state.databaseToHeaderSets[payload.database].push(payload);
+		},
 		addLayoutToDict(state, payload) {
 			if (payload && payload.length > 0) {
 				let databaseValue = payload[0].database;
@@ -182,7 +185,7 @@ export default new Vuex.Store({
 		},
 		replaceHeadersInDatabaseToHeaders(state, payload) {
 			let database = payload[0].database;
-			console.log(database)
+			console.log(database);
 			state.databaseToHeaderSets[database] = payload;
 		},
 		setAllDatabases(state, payload) {
@@ -218,8 +221,7 @@ export default new Vuex.Store({
 			}
 			if (payload.options && payload.options.isAdmin) {
 				state.isAdmin = true;
-			}
-			else {
+			} else {
 				state.isAdmin = false;
 			}
 		},
@@ -303,7 +305,15 @@ export default new Vuex.Store({
 			state.entries = payload;
 		},
 		setHeaderSets(state, payload) {
-			state.headerSets = payload;
+			if (payload && payload.length > 0)
+				Vue.set(
+					state.databaseToHeaderSets,
+					payload[0].database,
+					payload
+				);
+		},
+		setEmptyHeaderSets(state, payload) {
+			Vue.set(state.databaseToHeaderSets, payload, []);
 		},
 		setUsers(state, payload) {
 			state.users = payload;
@@ -454,10 +464,15 @@ export default new Vuex.Store({
 			}
 		},
 		getHeaderSetsByDatabase(context) {
+			let databaseValue = context.state.currentDatabase.value;
 			backendService
-				.getHeaderSetsByDatabase(context.state.currentDatabase.value)
+				.getHeaderSetsByDatabase(databaseValue)
 				.then((response) => {
-					context.commit("setHeaderSets", response.data);
+					if (response.data.length > 0)
+						context.commit("setHeaderSets", response.data);
+					else {
+						context.commit("setEmptyHeaderSets", databaseValue);
+					}
 				});
 		},
 
