@@ -23,23 +23,19 @@
 			<v-btn
 				rounded
 				icon
-				dark
-				class="warning mr-1"
-				@click="addingHeader = !addingHeader">
+				color="warning"
+				class="mr-1"
+				:disabled="!headerSetId"
+				@click="openUpdateForm">
 				<i class="fas fa-cog"></i>
 			</v-btn>
-			<v-btn
-				rounded
-				icon
-				dark
-				class="primary"
-				@click="addingHeader = !addingHeader">
+			<v-btn rounded icon color="primary" @click="openForm = !openForm">
 				<i class="fas fa-plus"></i>
 			</v-btn>
 		</div>
 
 		<v-expand-transition>
-			<div v-if="addingHeader">
+			<div v-if="openForm">
 				<div class="d-flex">
 					<v-text-field
 						class="mr-2"
@@ -119,6 +115,8 @@ export default {
 			headerSetId: null,
 			isPublic: false,
 			setName: "",
+			openForm: false,
+			isUpdating: false,
 		};
 	},
 	computed: {
@@ -208,6 +206,16 @@ export default {
 						this.errorSnackbar("Ops! Something is not right");
 					});
 				});
+		},
+		openUpdateForm() {
+			this.openForm = !this.openForm;
+			this.isUpdating = !this.isUpdating;
+			const headerSet = this.headerSets.find(
+				(e) => e._id == this.headerSetId
+			);
+			this.selectedFields = headerSet.fields;
+			this.setName = headerSet.name;
+			this.isPublic = headerSet.isPublic;
 		},
 		updateHeaderSet() {},
 	},
