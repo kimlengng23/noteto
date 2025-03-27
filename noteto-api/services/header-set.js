@@ -82,27 +82,40 @@ function getDatabaseToHeaderSets() {
     });
     return promise;
 }
-function setFavoriteHeaderSetById(id,userId) {
+function setFavoriteHeaderSet(favorite) {
     let promise = new Promise((resolve,reject) => {
-        dbConn.collection("HeaderSetCollection").updateMany(
-            { "createdBy._id": userId },
+        dbConn.collection("HeaderSetCollection").updateOne(
+            { "createdBy._id": favorite.createdById,"database":favorite.database },
             { $set: { "isFavorite": false } }
         ).then(() => {
             dbConn.collection("HeaderSetCollection").updateOne(
-                {_id:ObjectId(id),"createdBy._id":userId},
+                {_id:ObjectId(favorite.id),"createdBy._id":favorite.createdById},
                 {$set:{'isFavorite':true}}
             ).then(() => {
                 resolve({code:200})
             })
             .catch((err) => {
-                console.log('HeaderSetSevice - setFavoriteHeaderSetById');
+                console.log('HeaderSetSevice - setFavoriteHeaderSetById',err);
                 reject({code:500,message:err})
             })
         }).catch((err) => {
-            console.log('HeaderSetSevice - setFavoriteHeaderSetById');
+            console.log('HeaderSetSevice - setFavoriteHeaderSetById',err);
             reject({code:500,message:err})
         })
         
+    })
+    return promise;
+}
+function updateHeaderSet(headerSet) {
+    let _id = headerSet._id
+    delete headerSet._id;
+    let promise = new Promise((resolve,reject) => {
+        dbConn.collection("HeaderSetCollection").updateOne({_id:ObjectId(_id)},{$set:headerSet}).then(() => {
+            resolve({code:200})
+        }).catch((err) => {
+            console.log("HeaderSetService - updateHeaderSet",err);
+            reject({code:500,message:err})
+        })
     })
     return promise;
 }
@@ -112,5 +125,6 @@ module.exports = {
     getDatabaseToHeaderSets,
     getHeaderSetsByDatabase,
     removeHeaderSetsByDatabase,
-    setFavoriteHeaderSetById
+    setFavoriteHeaderSet,
+    updateHeaderSet
 };

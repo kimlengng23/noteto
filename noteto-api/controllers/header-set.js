@@ -71,14 +71,24 @@ app.get(
             });
     }
 );
-app.get("/set/favorite/by/id/:id",helper.verifyToken,(req,res) => {
+app.post("/set/favorite",helper.verifyToken,(req,res) => {
     let userId = req.decoded.userId;
-    let id = req.params.id;
-    headerSetService.setFavoriteHeaderSetById(id,userId).then(response => {
+    let favorite = req.body;
+    favorite.createdById = userId;
+    headerSetService.setFavoriteHeaderSet(favorite).then(response => {
         res.sendStatus(response.code);
     }).catch((response) => {
         res.status(response.code).send(response.message);
     })
+})
+app.post("/update",helper.verifyToken,(req,res) => {
+    let headerSet = req.body;
+    headerSetService.updateHeaderSet(headerSet).then((response) => {
+        res.sendStatus(response.code);
+    }).catch((response) => {
+        res.status(response.code).send(response.message);
+    })
+    
 })
 
 module.exports = {

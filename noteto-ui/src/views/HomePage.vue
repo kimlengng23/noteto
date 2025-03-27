@@ -37,22 +37,16 @@
         </v-card-text>
       </v-card>
     </v-container>
-    <v-divider></v-divider>
     <v-container
-      fluid
-      class="d-flex my-2 align-center flex-wrap flex-lg-nowrap"
+      class="d-flex justify-space-between align-center flex-wrap flex-lg-nowrap my-2 white rounded-xl"
     >
-      <div class="image-div">
+      <div class="image-div mr-2">
         <v-img
           style="image-rendering: auto"
           src="@/assets/show-case-1.jpg"
         ></v-img>
       </div>
-      <div>
-        <!-- <p>
-					An intuitive and versatile record-keeping app that allows
-					users to easily track and manage their data
-				</p> -->
+      <div class="ml-2">
         <p class="text-center text-h4 font-italic font-weight-bold montserrat">
           Empowering Your Team
         </p>
@@ -70,24 +64,24 @@
 				</p> -->
       </div>
     </v-container>
-    <v-divider></v-divider>
     <v-container class="d-flex justify-center">
       <div class="text-h4 montserrat font-weight-bold">Our Pricing</div>
     </v-container>
     <v-container
       class="d-flex justify-space-around montserrat flex-wrap flex-lg-nowrap"
     >
-      <v-card elevation="0" class="rounded-xl mb-2" outlined>
+      <v-card elevation="0" class="rounded-xl mb-2 v-card-div" outlined>
         <v-card-title class="d-flex justify-center">
           <div class="text-lg-h5 text-h5 font-weight-semibold montserrat">
             Standard
           </div>
         </v-card-title>
         <v-card-text>
-          <div
-            class="text-h3 text-center font-weight-bold grey--text text--darken-3"
-          >
-            $ 100.00
+          <div class="text-center">
+            <span
+              class="text-h3 font-weight-bold grey--text text--darken-3 mr-1"
+              >$ 70.00</span
+            ><span>/month</span>
           </div>
           <div class="text-h6 text-lg-subtitle-1 montserrat">
             <v-list subheader two-line flat
@@ -109,7 +103,7 @@
                 </v-list-item-action>
 
                 <v-list-item-content>
-                  <v-list-item-title>10 accounts</v-list-item-title>
+                  <v-list-item-title>2 accounts</v-list-item-title>
                   <v-list-item-subtitle
                     >Can be active simultaneously</v-list-item-subtitle
                   >
@@ -119,17 +113,18 @@
           </div>
         </v-card-text>
       </v-card>
-      <v-card elevation="0" class="rounded-xl mb-2" outlined>
+      <v-card elevation="0" class="rounded-xl mb-2 v-card-div" outlined>
         <v-card-title class="d-flex justify-center">
           <div class="text-lg-h5 text-h5 font-weight-semibold montserrat">
             Premium
           </div>
         </v-card-title>
         <v-card-text>
-          <div
-            class="text-h3 text-center font-weight-bold grey--text text--darken-3"
-          >
-            $ 200.00
+          <div class="text-center">
+            <span
+              class="text-h3 font-weight-bold grey--text text--darken-3 mr-1"
+              >$ 150.00</span
+            ><span>/month</span>
           </div>
           <div class="text-h6 text-lg-subtitle-1 montserrat">
             <v-list subheader two-line flat
@@ -151,7 +146,7 @@
                 </v-list-item-action>
 
                 <v-list-item-content>
-                  <v-list-item-title>30 accounts</v-list-item-title>
+                  <v-list-item-title>5 accounts</v-list-item-title>
                   <v-list-item-subtitle
                     >Can be active simultaneously</v-list-item-subtitle
                   >
@@ -172,7 +167,7 @@
           </div>
         </v-card-text>
       </v-card>
-      <v-card elevation="0" class="rounded-xl mb-2" outlined>
+      <v-card elevation="0" class="rounded-xl mb-2 v-card-div" outlined>
         <v-card-title class="d-flex justify-center">
           <div class="text-lg-h5 text-h5 font-weight-semibold montserrat">
             Enterprise

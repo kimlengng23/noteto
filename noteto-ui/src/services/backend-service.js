@@ -6,6 +6,7 @@ let host = window.location.hostname;
 //let domain = `https://${host}:3000/entryTracker/api`;
 //
 let domain = `https://localhost:3000/api`;
+//let domain = `https://noteto.jaekjay.com/api`;
 if (host.toLowerCase().includes("jaekjay")) {
 	domain = `https://noteto.jaekjay.com/api`;
 }
@@ -274,9 +275,14 @@ export default {
 		let headers = getHeaders();
 		return axios.get(url, { headers: headers });
 	},
-	setFavoriteHeaderSetById(id) {
-		let url = domain +`/header/set/set/favorite/by/id/${id}`;
+	setFavoriteHeaderSet(favorite) {
+		let url = domain +`/header/set/set/favorite`;
 		let headers = getHeaders();
-		return axios.get(url,{headers:headers})
+		return axios.post(url,favorite,{headers:headers})
+	},
+	updateHeaderSet(headerSet) {
+		let url = domain +`/header/set/update`;
+		let headers = getHeaders();
+		return axios.post(url,headerSet,{headers:headers})
 	}
 };

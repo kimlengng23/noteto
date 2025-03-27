@@ -126,6 +126,9 @@ export default {
     currentDatabase() {
       return this.$store.getters["currentDatabase"];
     },
+    currentHeaderSet() {
+      return this.$store.getters["currentHeaderSet"];
+    },
     databaseToHeaderSets() {
       return this.$store.getters["databaseToHeaderSets"];
     },
@@ -141,8 +144,8 @@ export default {
           this.databaseToHeaderSets[this.currentDatabase.value];
         if (headerSets && headerSets.length > 0) {
           const headerSet = headerSets.find((e) => e.isFavorite);
-          if (headerSet) return headerSet.fields;
-          return headerSets[0].fields;
+          if (headerSet) return headerSet;
+          return headerSets[0];
         }
       }
       return [];
@@ -177,14 +180,15 @@ export default {
       return entries;
     },
     headers() {
-      let rawHeaders = this.favoriteHeaderSet;
       let processedHeaders = [...this.defaultHeaders];
-      if (!rawHeaders) return processedHeaders;
-      for (let i = 0; i < rawHeaders.length; i++) {
-        let processedHeader = { ...rawHeaders[i] };
-        processedHeader.text = rawHeaders[i].displayName;
-        processedHeader.align = "start";
-        processedHeaders.push(processedHeader);
+      if (this.currentHeaderSet && this.currentHeaderSet.fields) {
+        let rawHeaders = this.currentHeaderSet.fields;
+        for (let i = 0; i < rawHeaders.length; i++) {
+          let processedHeader = { ...rawHeaders[i] };
+          processedHeader.text = rawHeaders[i].displayName;
+          processedHeader.align = "start";
+          processedHeaders.push(processedHeader);
+        }
       }
       return processedHeaders;
     },

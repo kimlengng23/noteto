@@ -1,5 +1,5 @@
 <template>
-  <v-container class="rounded-xl white mt-2">
+  <v-container class="rounded-xl white my-2">
     <div class="text-center">
       <v-progress-circular
         indeterminate
@@ -13,7 +13,7 @@
       width="100%"
       v-if="!setTimeoutLoading"
     >
-      <v-card-text class="d-flex">
+      <v-card-text class="d-flex flex-wrap flex-lg-nowrap">
         <v-container class="d-flex aligned-center">
           <h2 v-if="isNew" class="primary--text">New Entry</h2>
           <h2 v-else class="primary--text">
@@ -21,14 +21,17 @@
           </h2>
         </v-container>
 
-        <v-container class="d-flex justify-space-between aligned-center">
-          <v-container class="text-right py-0 my-0" v-if="isNew">
+        <v-container class="d-flex justify-space-between aligned-center px-0">
+          <v-container class="text-right pa-0 my-0" v-if="isNew">
             <span class="font-weight-bold">Today Date:</span>
 
             {{ getTodayDate() }}
           </v-container>
 
-          <v-container v-else class="d-flex justify-end py-0 my-0">
+          <v-container
+            v-else
+            class="d-flex justify-end pa-0 my-0 flex-wrap flex-lg-nowrap"
+          >
             <v-container class="py-0 my-0 d-flex justify-end">
               <v-autocomplete
                 class="mr-3"
@@ -44,8 +47,8 @@
               ></v-autocomplete>
             </v-container>
 
-            <div class="text-right">
-              <div class="d-inline-block">
+            <v-container class="text-right py-0 d-flex flex-lg-column">
+              <div class="d-inline-block mr-2 mr-lg-0">
                 <span class="font-weight-bold">Created Date:</span>
                 {{ convertDateToReadable(entry._data?.dateCreated) }}
               </div>
@@ -53,7 +56,7 @@
                 <span class="font-weight-bold">Created By:</span>
                 {{ getFullName(entry._data?.createdBy) }}
               </div>
-            </div>
+            </v-container>
           </v-container>
         </v-container>
       </v-card-text>
@@ -88,7 +91,7 @@
             </v-slide-item>
           </v-slide-group>
         </v-container>
-        <v-container v-else class="d-flex justify-space-between">
+        <v-container v-else class="d-flex flex-wrap justify-space-between">
           <v-slide-group class="py-1">
             <v-slide-item>
               <div>
@@ -195,29 +198,31 @@
       :history-lst="historyLst"
       :fieldToField="fieldToField"
     ></history-section>
+    <v-container class="px-0"
+      ><v-card elevation="0" v-if="!setTimeoutLoading && !isNew">
+        <v-card-text>
+          <v-textarea
+            rounded
+            outlined
+            dense
+            label="Comment"
+            v-model="commentValue"
+          ></v-textarea>
+          <v-btn
+            class="float-right"
+            depressed
+            rounded
+            color="success"
+            @click="addComment"
+            :loading="isCommentLoading"
+          >
+            <i class="far fa-paper-plane mr-2"></i>
+            Send
+          </v-btn>
+        </v-card-text>
+      </v-card></v-container
+    >
 
-    <v-card elevation="0" v-if="!setTimeoutLoading && !isNew">
-      <v-card-text>
-        <v-textarea
-          rounded
-          outlined
-          dense
-          label="Comment"
-          v-model="commentValue"
-        ></v-textarea>
-        <v-btn
-          class="float-right"
-          depressed
-          rounded
-          color="success"
-          @click="addComment"
-          :loading="isCommentLoading"
-        >
-          <i class="far fa-paper-plane mr-2"></i>
-          Send
-        </v-btn>
-      </v-card-text>
-    </v-card>
     <comment-section
       v-if="!setTimeoutLoading && !isNew"
       :comments="comments"

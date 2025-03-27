@@ -8,6 +8,7 @@
     :suffix="suffix"
     v-model.number="input"
     :readonly="readonly"
+    :hide-details="hideDetails"
   ></v-text-field>
 </template>
 <script>
@@ -40,6 +41,12 @@ export default {
       },
     },
     readonly: {
+      type: Boolean,
+      default: () => {
+        return false;
+      },
+    },
+    hideDetails: {
       type: Boolean,
       default: () => {
         return false;

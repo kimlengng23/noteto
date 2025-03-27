@@ -149,6 +149,11 @@ export default {
 			const [year, month, day] = date.split("-");
 			return `${month}/${day}/${year}`;
 		},
+		getCommentsByEntryId(id) {
+			backendService.getCommentsByEntryId(id).then((response) => {
+				this.comments = response.data;
+			});
+		},
 		getEntryById(id) {
 			this.isNew = false;
 			this.setTimeoutLoading = true;
@@ -157,13 +162,8 @@ export default {
 				.then((response) => {
 					this.original = JSON.stringify(response.data);
 					this.entry = JSON.parse(this.original);
-					backendService.getHistoryByEntryId(id).then((response) => {
-						this.historyLst = response.data;
-					});
-					backendService.getCommentsByEntryId(id).then((response) => {
-						this.comments = response.data;
-					});
-
+					this.getCommentsByEntryId(id);
+					this.getHistoryByEntryId(id);
 					this.$store.dispatch(
 						"getLayoutByDatabase",
 						this.entry._data.database
@@ -178,7 +178,6 @@ export default {
 						"getChoicesByDatabase",
 						this.entry._data.database
 					);
-
 					setTimeout(() => {
 						this.setTimeoutLoading = false;
 					}, 1000);
@@ -213,6 +212,11 @@ export default {
 		getFullName(user) {
 			if (user) return `${user.first} ${user.last}`;
 			else return "";
+		},
+		getHistoryByEntryId(id) {
+			backendService.getHistoryByEntryId(id).then((response) => {
+				this.historyLst = response.data;
+			});
 		},
 		getUserId(user) {
 			if (user) return user._id;

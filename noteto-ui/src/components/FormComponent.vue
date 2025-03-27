@@ -1,13 +1,11 @@
 <template>
   <v-container class="pa-0">
     <v-container
-      class="d-flex"
+      class="d-flex pa-0 flex-wrap flex-lg-nowrap"
       v-for="(row, idxI) in pRows"
-      :key="`row-${idxI}`">
-      <v-container
-        class="py-0"
-        v-for="(col, idxJ) in row.cols"
-        :key="`col-${idxJ}`">
+      :key="`row-${idxI}`"
+    >
+      <v-container v-for="(col, idxJ) in row.cols" :key="`col-${idxJ}`">
         <v-text-field
           rounded
           outlined
@@ -15,25 +13,33 @@
           v-if="fieldToField[col.field]?.type === 'singleLine'"
           :label="fieldToField[col.field]?.displayName"
           v-model="value[col.field]"
-          :readonly="readonly"></v-text-field>
+          :readonly="readonly"
+          hide-details
+        ></v-text-field>
         <decimal-field
           v-else-if="fieldToField[col.field]?.type === 'currencyInDollar'"
           :label="fieldToField[col.field]?.displayName"
           prefix="$"
           v-model="value[col.field]"
-          :readonly="readonly"></decimal-field>
+          :readonly="readonly"
+          hide-details
+        ></decimal-field>
         <decimal-field
           v-else-if="fieldToField[col.field]?.type === 'weightInLb'"
           :label="fieldToField[col.field]?.displayName"
           suffix="Lbs"
           v-model="value[col.field]"
-          :readonly="readonly"></decimal-field>
+          :readonly="readonly"
+          hide-details
+        ></decimal-field>
         <decimal-field
           v-else-if="fieldToField[col.field]?.type === 'weightInKg'"
           :label="fieldToField[col.field]?.displayName"
           suffix="Kg"
           v-model="value[col.field]"
-          :readonly="readonly"></decimal-field>
+          :readonly="readonly"
+          hide-details
+        ></decimal-field>
         <v-text-field
           rounded
           outlined
@@ -41,7 +47,9 @@
           v-else-if="fieldToField[col.field]?.type === 'number'"
           :label="fieldToField[col.field]?.displayName"
           v-model.number="value[col.field]"
-          :readonly="readonly"></v-text-field>
+          :readonly="readonly"
+          hide-details
+        ></v-text-field>
         <v-textarea
           rounded
           outlined
@@ -49,7 +57,9 @@
           v-else-if="fieldToField[col.field]?.type === 'multipleLines'"
           :label="fieldToField[col.field]?.displayName"
           v-model="value[col.field]"
-          :readonly="readonly"></v-textarea>
+          :readonly="readonly"
+          hide-details
+        ></v-textarea>
         <v-autocomplete
           rounded
           outlined
@@ -63,7 +73,9 @@
           return-object
           small-chips
           deletable-chips
-          :readonly="readonly"></v-autocomplete>
+          :readonly="readonly"
+          hide-details
+        ></v-autocomplete>
         <v-autocomplete
           rounded
           outlined
@@ -77,7 +89,9 @@
           multiple
           small-chips
           deletable-chips
-          :readonly="readonly"></v-autocomplete>
+          :readonly="readonly"
+          hide-details
+        ></v-autocomplete>
         <v-autocomplete
           rounded
           outlined
@@ -89,7 +103,9 @@
           return-object
           :items="users"
           :item-text="getFullName"
-          :readonly="readonly"></v-autocomplete>
+          :readonly="readonly"
+          hide-details
+        ></v-autocomplete>
         <v-autocomplete
           rounded
           outlined
@@ -104,7 +120,9 @@
           multiple
           chips
           deletable-chips
-          :readonly="readonly"></v-autocomplete>
+          :readonly="readonly"
+          hide-details
+        ></v-autocomplete>
         <v-menu
           v-else-if="fieldToField[col.field]?.type === 'date'"
           v-model="datePicker[col.field]"
@@ -112,7 +130,8 @@
           transition="scale-transition"
           offset-y
           max-width="290px"
-          min-width="290px">
+          min-width="290px"
+        >
           <template v-slot:activator="{ on, attrs }">
             <v-text-field
               rounded
@@ -124,12 +143,15 @@
               prepend-icon="mdi-calendar"
               v-bind="attrs"
               v-on="on"
-              :readonly="readonly"></v-text-field>
+              :readonly="readonly"
+              hide-details
+            ></v-text-field>
           </template>
           <v-date-picker
             v-model="value[col.field]"
             no-title
-            @input="datePicker[col.field] = false"></v-date-picker>
+            @input="datePicker[col.field] = false"
+          ></v-date-picker>
         </v-menu>
         <div v-else-if="fieldToField[col.field]?.type === 'list'">
           <v-container class="mx-3">
@@ -138,17 +160,21 @@
           <div
             v-for="(lRow, lIdxI) in entry[col.field]"
             :key="`lRow-${lIdxI}`"
-            class="d-flex">
+            class="d-flex align-center flex-wrap flex-lg-nowrap"
+          >
             <form-component
               :entry="value[col.field][lIdxI]"
-              :p-rows="getRowsFromListField(entry, col.field)">
+              :p-rows="getRowsFromListField(entry, col.field)"
+            >
             </form-component>
-            <div class="d-flex justify-end" style="width: 10%">
+            <div class="d-flex justify-end">
               <v-btn
                 rounded
-                color="error mt-2"
+                color="error"
                 depressed
-                @click="removeFromList(lIdxI, col.field)">
+                width="100%"
+                @click="removeFromList(lIdxI, col.field)"
+              >
                 <i class="fas fa-trash-alt"></i>
               </v-btn>
             </div>
@@ -160,7 +186,8 @@
                   rounded
                   color="primary ml-2"
                   depressed
-                  @click="addRowIntoList(col.field)">
+                  @click="addRowIntoList(col.field)"
+                >
                   <i class="fas fa-plus mr-2"></i>
                   Add
                 </v-btn>

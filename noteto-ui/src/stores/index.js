@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import backendService from "../services/backend-service";
-
+import {interactStore} from "./interact-store.js"
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -18,13 +18,11 @@ export default new Vuex.Store({
 		databaseToFields: {},
 		databaseToChoices: {},
 		databaseToLayoutMappings: {},
-		databaseToHeaderSets: {},
 		dropdowns: {},
 		emptyEntry: {},
 		entries: [],
 		fieldToChoices: {},
 		fieldToField: {},
-		headerSets: [],
 		isAdmin: false,
 		isLoggedIn: false,
 		itemsPerPage: 15,
@@ -62,14 +60,9 @@ export default new Vuex.Store({
 		entries: (state) => {
 			return state.entries;
 		},
-		favoriteHeaderSets: (state) => {
-			return state.favoriteHeaderSets;
-		},
+		
 		fieldToChoices: (state) => {
 			return state.fieldToChoices;
-		},
-		headerSets: (state) => {
-			return state.headerSets;
 		},
 		isAdmin: (state) => {
 			return state.isAdmin;
@@ -98,9 +91,7 @@ export default new Vuex.Store({
 		databaseToChoices: (state) => {
 			return state.databaseToChoices;
 		},
-		databaseToHeaderSets: (state) => {
-			return state.databaseToHeaderSets;
-		},
+		
 		databaseToLayoutMappings: (state) => {
 			return state.databaseToLayoutMappings;
 		},
@@ -159,9 +150,7 @@ export default new Vuex.Store({
 				state.databaseToFields[databaseValue] = payload;
 			}
 		},
-		addHeaderSet(state, payload) {
-			state.databaseToHeaderSets[payload.database].push(payload);
-		},
+		
 		addLayoutToDict(state, payload) {
 			if (payload && payload.length > 0) {
 				let databaseValue = payload[0].database;
@@ -183,11 +172,7 @@ export default new Vuex.Store({
 			choices = choices.concat(payload);
 			state.databaseToChoices[database] = choices;
 		},
-		replaceHeadersInDatabaseToHeaders(state, payload) {
-			let database = payload[0].database;
-			console.log(database);
-			state.databaseToHeaderSets[database] = payload;
-		},
+		
 		setAllDatabases(state, payload) {
 			state.allDatabases = payload;
 		},
@@ -252,9 +237,7 @@ export default new Vuex.Store({
 		setDatabaseToChoices(state, payload) {
 			state.databaseToChoices = payload;
 		},
-		setDatabaseToHeaderSets(state, payload) {
-			state.databaseToHeaderSets = payload;
-		},
+		
 		setDatabaseToLayoutMappings(state, payload) {
 			state.databaseToLayoutMappings = payload;
 		},
@@ -304,17 +287,8 @@ export default new Vuex.Store({
 		setEntries(state, payload) {
 			state.entries = payload;
 		},
-		setHeaderSets(state, payload) {
-			if (payload && payload.length > 0)
-				Vue.set(
-					state.databaseToHeaderSets,
-					payload[0].database,
-					payload
-				);
-		},
-		setEmptyHeaderSets(state, payload) {
-			Vue.set(state.databaseToHeaderSets, payload, []);
-		},
+		
+		
 		setUsers(state, payload) {
 			state.users = payload;
 		},
@@ -408,11 +382,6 @@ export default new Vuex.Store({
 				})
 				.catch(() => {});
 		},
-		getDatabaseToHeaderSets(context) {
-			backendService.getDatabaseToHeaderSets().then((response) => {
-				context.commit("setDatabaseToHeaderSets", response.data);
-			});
-		},
 		getDatabaseToLayoutMappings(context) {
 			backendService.getDatabaseToLayoutMappings().then((response) => {
 				context.commit("setDatabaseToLayoutMappings", response.data);
@@ -468,14 +437,23 @@ export default new Vuex.Store({
 			backendService
 				.getHeaderSetsByDatabase(databaseValue)
 				.then((response) => {
-					if (response.data.length > 0)
+					if (response.data.length > 0){
+						let favorite = response.data.find(e => e.isFavorite)
 						context.commit("setHeaderSets", response.data);
+						if(favorite) {
+							context.commit("setFavoriteHeaderSet",favorite)
+							context.commit('setCurrentHeaderSet',favorite)
+						}
+						else {
+							context.commit('setCurrentHeaderSet',response.data[0]);
+						}
+						
+					}
 					else {
 						context.commit("setEmptyHeaderSets", databaseValue);
 					}
 				});
 		},
-
 		getNavigationOptions(context) {
 			backendService.getNavigationOptions().then((response) => {
 				context.commit("setNavigationOptions", response.data);
@@ -508,5 +486,5 @@ export default new Vuex.Store({
 			}
 		},
 	},
-	modules: {},
+	modules: {interactStore},
 });

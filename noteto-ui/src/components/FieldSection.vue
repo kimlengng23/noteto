@@ -346,7 +346,8 @@ export default {
             );
           }, 1000);
         })
-        .catch(() => {
+        .catch((err) => {
+          console.log(err);
           setTimeout(() => {
             this.isLoading = false;
             eventBus.$emit(
