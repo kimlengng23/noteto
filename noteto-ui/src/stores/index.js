@@ -23,6 +23,8 @@ export default new Vuex.Store({
 		entries: [],
 		fieldToChoices: {},
 		fieldToField: {},
+		formValid:{},
+
 		isAdmin: false,
 		isLoggedIn: false,
 		itemsPerPage: 15,
@@ -60,7 +62,9 @@ export default new Vuex.Store({
 		entries: (state) => {
 			return state.entries;
 		},
-		
+		formValid:(state) => {
+			return state.formValid;
+		},
 		fieldToChoices: (state) => {
 			return state.fieldToChoices;
 		},
@@ -260,6 +264,9 @@ export default new Vuex.Store({
 				fieldToField[field.value] = field;
 			}
 			state.fieldToField = fieldToField;
+		},
+		setFormValid(state,payload) {
+			state.formValid = payload;
 		},
 		setGroup(state, payload) {
 			state.allGroups.forEach((group, idx) => {

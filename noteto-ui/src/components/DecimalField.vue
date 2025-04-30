@@ -1,5 +1,6 @@
 <template>
   <v-text-field
+    :rules="rules"
     :label="label"
     rounded
     outlined
@@ -37,13 +38,19 @@ export default {
     value: {
       type: Number,
       default: () => {
-        return 0;
+        return null;
       },
     },
     readonly: {
       type: Boolean,
       default: () => {
         return false;
+      },
+    },
+    rules: {
+      type: Array,
+      default: () => {
+        return [];
       },
     },
     hideDetails: {
@@ -60,10 +67,16 @@ export default {
   computed: {
     input: {
       get() {
-        return new Decimal(this.value);
+        if (this.value != null) return new Decimal(this.value);
+        return null;
       },
       set(val) {
-        this.$emit("input", Number(val));
+        console.log(val);
+        if (val != "") {
+          this.$emit("input", Number(val));
+        } else {
+          this.$emit("input", null);
+        }
       },
     },
     valueStrHolder: {

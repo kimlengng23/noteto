@@ -83,7 +83,7 @@
                 depressed
                 @click="addEntry"
                 :loading="isLoading"
-                :disabled="!isLoggedIn || !isDirty"
+                :disabled="!isLoggedIn || !isDirty || !overallFormValid"
               >
                 <i class="fas fa-save mr-2"></i>
                 Submit
@@ -124,7 +124,7 @@
                   depressed
                   @click="updateEntry"
                   :loading="isLoading"
-                  :disabled="!isLoggedIn || !isDirty"
+                  :disabled="!isLoggedIn || !isDirty || !overallFormValid"
                 >
                   <i class="fa fa-save mr-2"></i>
                   Update
@@ -275,6 +275,18 @@ export default {
   computed: {
     isDirty() {
       return this.original != JSON.stringify(this.entry);
+    },
+    formValid() {
+      return this.$store.getters["formValid"];
+    },
+    overallFormValid() {
+      let overallValue = true;
+      let keys = Object.keys(this.formValid);
+      for (let i = 0; i < keys.length; i++) {
+        let key = keys[i];
+        overallValue = this.formValid[key] && overallValue;
+      }
+      return overallValue;
     },
   },
   methods: {

@@ -189,7 +189,7 @@ function getEmptyEntryByDatabase(database) {
 						field.type == "weightInLb" ||
 						field.type == "currencyInDollar"
 					) {
-						emptyEntry[field.value] = 0.0;
+						emptyEntry[field.value] = null;
 					} else if (
 						field.type == "singleLine" ||
 						field.type == "multipleLines"
