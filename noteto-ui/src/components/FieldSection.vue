@@ -129,7 +129,7 @@
             depressed
             dark
           >
-            <i class="fas fa-save mr-2"></i>
+            <i class="fas fa-save mr-1"></i>
             Reset
           </v-btn>
           <v-btn
@@ -141,7 +141,7 @@
             dark
             :loading="isLoading"
           >
-            <i class="fas fa-save mr-2"></i>
+            <i class="fas fa-save mr-1"></i>
             Add
           </v-btn>
           <v-btn
@@ -153,7 +153,7 @@
             dark
             :loading="isLoading"
           >
-            <i class="fas fa-save mr-2"></i>
+            <i class="fas fa-save mr-1"></i>
             Update
           </v-btn>
         </div>

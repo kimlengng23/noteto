@@ -11,7 +11,7 @@
           :disabled="!isLoggedIn"
           :loading="isLoading"
         >
-          <i class="fas fa-save mr-2"></i>
+          <i class="fas fa-save mr-1"></i>
           Submit
         </v-btn>
       </v-card-title>

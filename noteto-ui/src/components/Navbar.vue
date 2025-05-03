@@ -75,7 +75,7 @@
         filled
         rounded
         outlined
-        class="ma-auto mr-2"
+        class="ma-auto mr-1"
         :items="databases"
         item-text="displayName"
         item-value="value"
@@ -84,7 +84,7 @@
       ></v-autocomplete>
       <v-btn
         v-if="isLoggedIn"
-        class="primary mr-2"
+        class="primary mr-1"
         depressed
         rounded
         outlined
@@ -102,7 +102,7 @@
       </v-btn>
       <v-btn
         v-if="isLoggedIn"
-        class="primary mr-2"
+        class="primary mr-1"
         depressed
         rounded
         outlined
@@ -131,7 +131,7 @@
         elevation="0"
         @click="$router.push({ name: 'UserRegister' }).catch(() => {})"
       >
-        <i class="fas fa-user-plus mr-2"></i>
+        <i class="fas fa-user-plus mr-1"></i>
         Sign Up
       </v-btn>
       <v-btn
@@ -141,7 +141,7 @@
         elevation="0"
         @click="$router.push({ name: 'Login' }).catch(() => {})"
       >
-        <i class="fas fa-sign-in-alt mr-2"></i>
+        <i class="fas fa-sign-in-alt mr-1"></i>
         Login
       </v-btn>
       <v-menu offset-y v-if="isLoggedIn">
@@ -157,7 +157,7 @@
                 plain
                 @click="$router.push({ name: 'Logout' }).catch(() => {})"
               >
-                <i class="fas fa-sign-out-alt mr-2"></i>
+                <i class="fas fa-sign-out-alt mr-1"></i>
                 Log Out
               </v-btn>
             </v-list-item-content>

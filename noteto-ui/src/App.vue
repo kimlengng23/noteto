@@ -47,9 +47,10 @@ export default {
             this.$store.dispatch("getAllGroups");
             this.$store.dispatch("getAllUsers");
             this.$store.dispatch("getDatabaseToFields");
-            this.$store.dispatch("getDatabaseToHeaderSets");
-            this.$store.dispatch("getDatabaseToLayoutMappings");
             this.$store.dispatch("getDatabaseToChoices");
+            this.$store.dispatch("getDatabaseToHeaderSets");
+            this.$store.dispatch("getDatabaseToFilterSets");
+            this.$store.dispatch("getDatabaseToLayoutMappings");
           }
           setTimeout(() => {
             let query = this.$route.query;
@@ -59,12 +60,16 @@ export default {
             );
             if (database) {
               this.$store.commit("setCurrentDatabase", database);
-              this.$store.dispatch("getAutomationsByDatabase");
+              this.$store.dispatch("getFieldsByDatabase");
               this.$store.dispatch("getChoicesByDatabase");
               this.$store.dispatch("getEmptyEntryByDatabase");
-              this.$store.dispatch("getEntriesByDatabase");
-              this.$store.dispatch("getFieldsByDatabase");
-              this.$store.dispatch("getHeaderSetsByDatabase");
+              Promise.all([
+                this.$store.dispatch("getHeaderSetsByDatabase"),
+                this.$store.dispatch("getFilterSetsByDatabase"),
+              ]).then(() => {
+                this.$store.dispatch("getEntriesByDatabase");
+              });
+              this.$store.dispatch("getAutomationsByDatabase");
               this.$store.dispatch("getUsersByDatabase");
               this.$store.dispatch("getLayoutByDatabase");
             }

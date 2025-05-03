@@ -26,7 +26,7 @@
             dark
             :disabled="!databaseValue"
           >
-            <i class="fas fa-arrows-alt-v mr-2"></i>
+            <i class="fas fa-arrows-alt-v mr-1"></i>
             Add Row
           </v-btn>
           <v-btn
@@ -38,7 +38,7 @@
             :loading="isLoading"
             :disabled="!databaseValue"
           >
-            <i class="fas fa-save mr-2"></i>
+            <i class="fas fa-save mr-1"></i>
             Save
           </v-btn>
         </div>

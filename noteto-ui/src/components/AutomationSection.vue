@@ -130,12 +130,12 @@
       </v-card-text>
       <v-card-actions class="d-flex justify-space-between mt-2">
         <v-btn rounded color="warning" depressed>
-          <i class="fas fa-save mr-2"></i>
+          <i class="fas fa-save mr-1"></i>
           Reset
         </v-btn>
 
         <v-btn v-if="isUpdating" rounded class="primary" depressed>
-          <i class="fas fa-save mr-2"></i>
+          <i class="fas fa-save mr-1"></i>
           Update
         </v-btn>
         <v-btn
@@ -147,7 +147,7 @@
           :disabled="!formValid"
           :loading="isLoading"
         >
-          <i class="fas fa-plus mr-2"></i>
+          <i class="fas fa-plus mr-1"></i>
           Add
         </v-btn>
       </v-card-actions>

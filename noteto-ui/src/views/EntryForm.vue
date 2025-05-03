@@ -48,7 +48,7 @@
             </v-container>
 
             <v-container class="text-right py-0 d-flex flex-lg-column">
-              <div class="d-inline-block mr-2 mr-lg-0">
+              <div class="d-inline-block mr-1 mr-lg-0">
                 <span class="font-weight-bold">Created Date:</span>
                 {{ convertDateToReadable(entry._data?.dateCreated) }}
               </div>
@@ -71,7 +71,7 @@
                 depressed
                 @click="clearEntry"
               >
-                <i class="fas fa-eraser mr-2"></i>
+                <i class="fas fa-eraser mr-1"></i>
                 Clear
               </v-btn>
             </v-slide-item>
@@ -85,7 +85,7 @@
                 :loading="isLoading"
                 :disabled="!isLoggedIn || !isDirty || !overallFormValid"
               >
-                <i class="fas fa-save mr-2"></i>
+                <i class="fas fa-save mr-1"></i>
                 Submit
               </v-btn>
             </v-slide-item>
@@ -98,35 +98,35 @@
                 <v-btn
                   v-if="!isEditing"
                   rounded
-                  class="warning mr-2"
+                  class="warning mr-1"
                   depressed
                   @click="isEditing = !isEditing"
                   :disabled="!isLoggedIn"
                 >
-                  <i class="fas fa-pencil-alt mr-2"></i>
+                  <i class="fas fa-pencil-alt mr-1"></i>
                   <span v-if="!isEditing">Edit</span>
                   <span v-else>Stop Editing</span>
                 </v-btn>
                 <v-btn
                   v-else
                   rounded
-                  class="primary mr-2"
+                  class="primary mr-1"
                   depressed
                   @click="isEditing = !isEditing"
                   :disabled="!isLoggedIn"
                 >
-                  <i class="fas fa-pencil-alt mr-2"></i>
+                  <i class="fas fa-pencil-alt mr-1"></i>
                   Stop Editing
                 </v-btn>
                 <v-btn
                   rounded
-                  class="success mr-2"
+                  class="success mr-1"
                   depressed
                   @click="updateEntry"
                   :loading="isLoading"
                   :disabled="!isLoggedIn || !isDirty || !overallFormValid"
                 >
-                  <i class="fa fa-save mr-2"></i>
+                  <i class="fa fa-save mr-1"></i>
                   Update
                 </v-btn>
               </div>
@@ -144,7 +144,7 @@
                     entry._data?.createdBy._id != currentUser.userId
                   "
                 >
-                  <i class="fa fa-trash mr-2"></i>
+                  <i class="fa fa-trash mr-1"></i>
                   Delete
                 </v-btn>
               </div>
@@ -159,7 +159,7 @@
               :key="`auto-btn-${idx}`"
             >
               <v-btn
-                class="primary mr-2"
+                class="primary mr-1"
                 depressed
                 rounded
                 @click="setValue(btn.actField, btn.actValue)"
@@ -172,7 +172,7 @@
               :key="`link-btn-${idx}`"
             >
               <v-btn
-                class="primary mr-2"
+                class="primary mr-1"
                 depressed
                 rounded
                 target="_blank"
@@ -216,7 +216,7 @@
             @click="addComment"
             :loading="isCommentLoading"
           >
-            <i class="far fa-paper-plane mr-2"></i>
+            <i class="far fa-paper-plane mr-1"></i>
             Send
           </v-btn>
         </v-card-text>
@@ -402,6 +402,7 @@ export default {
             this.isLoading = false;
             this.original = JSON.stringify(this.entry);
             this.$store.commit("setEntry", this.entry);
+            this.getHistoryByEntryId(this.entry._id);
             eventBus.$emit(
               "setSnackbar",
               "Successfully updated the entry",

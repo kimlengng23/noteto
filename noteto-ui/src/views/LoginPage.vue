@@ -42,7 +42,7 @@
           :disabled="!isFormValid"
           :loading="isLoading"
         >
-          <i class="fas fa-sign-in-alt mr-2"></i>
+          <i class="fas fa-sign-in-alt mr-1"></i>
           Login
         </v-btn>
       </v-card-text>
@@ -102,6 +102,7 @@ export default {
             this.$store.dispatch("getAllUsers");
             this.$store.dispatch("getDatabaseToFields");
             this.$store.dispatch("getDatabaseToHeaderSets");
+            this.$store.dispatch("getDatabaseToFilterSets");
             this.$store.dispatch("getDatabaseToLayoutMappings");
             this.$store.dispatch("getDatabaseToChoices");
           }

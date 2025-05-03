@@ -5,7 +5,7 @@
         ><v-progress-circular
           indeterminate
           color="primary"
-          class="mr-2"
+          class="mr-1"
         ></v-progress-circular>
         You are being logged out...
       </v-card-title>

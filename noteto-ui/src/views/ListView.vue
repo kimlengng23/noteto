@@ -12,9 +12,10 @@
       <v-tab> List Settings </v-tab>
     </v-tabs>
 
-    <v-tabs-items v-model="tab">
+    <v-tabs-items v-model="tab" touchless>
       <v-tab-item>
         <v-data-table
+          mobile-breakpoint="0"
           :items-per-page="itemsPerPage"
           :headers="headers"
           :items="filteredEntries"
@@ -22,7 +23,11 @@
         >
           <template v-slot:header>
             <tr>
-              <th v-for="(header, idx) in headers" :key="`header-${idx}`">
+              <th
+                v-for="(header, idx) in headers"
+                :key="`header-${idx}`"
+                style="min-width: 100px"
+              >
                 <v-text-field
                   class="ma-2"
                   rounded

@@ -202,7 +202,7 @@
                     depressed
                     @click="addRowIntoList(col.field)"
                   >
-                    <i class="fas fa-plus mr-2"></i>
+                    <i class="fas fa-plus mr-1"></i>
                     Add
                   </v-btn>
                 </v-col>

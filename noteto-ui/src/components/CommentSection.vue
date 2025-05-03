@@ -5,7 +5,7 @@
       <v-card-text class="d-flex flex-column">
         <div>
           <h3 class="text-center" v-if="comments.length == 0">
-            <i class="fas fa-comment-slash mr-2"></i>
+            <i class="fas fa-comment-slash mr-1"></i>
             There are no comments yet
           </h3>
           <v-list three-line>

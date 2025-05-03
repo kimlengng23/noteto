@@ -24,12 +24,13 @@ const layoutController = require("./controllers/layout.js");
 const entryController = require("./controllers/entry.js");
 const publicController = require("./controllers/public.js");
 const headerSetController = require("./controllers/header-set.js");
+const filterSetController = require("./controllers/filter-set.js");
 app.use(cors());
 app.use(express.json());
 app.use("/", express.static(path.join(__dirname, "..", "dist")));
 app.use("/asset", express.static(path.join(__dirname, "assets")));
 app.get("/get/version", (req, res) => {
-	res.status(200).send("version 0.1");
+  res.status(200).send("version 0.1");
 });
 app.use("/public", publicController.app);
 app.use("/api/automation/", automationController.app);
@@ -45,33 +46,35 @@ app.use("/api/choice/", choiceController.app);
 app.use("/api/layout/", layoutController.app);
 app.use("/api/entry/", entryController.app);
 app.use("/api/header/set/", headerSetController.app);
+app.use("/api/filter/set/", filterSetController.app);
 const httpServer = http.createServer(app);
 const httpsServer = https.createServer(
-	{
-		key: key,
-		cert: cert,
-	},
-	app
+  {
+    key: key,
+    cert: cert,
+  },
+  app
 );
 // httpServer.listen(nonSecuredPort, () => {
 //   console.log("App is listening on port ", nonSecuredPort);
 // });
 httpsServer.listen(3000, () => {
-	console.log("App is listening on port ", 3000);
+  console.log("App is listening on port ", 3000);
 });
 database.createDbConn().then((dbConn) => {
-	automationController.setDb(dbConn);
-	backfillController.setDb(dbConn);
-	commentController.setDb(dbConn);
-	historyController.setDb(dbConn);
-	publicController.setDb(dbConn);
-	userController.setDb(dbConn);
-	miscellaneousController.setDb(dbConn);
-	databaseController.setDb(dbConn);
-	groupController.setDb(dbConn);
-	fieldController.setDb(dbConn);
-	choiceController.setDb(dbConn);
-	layoutController.setDb(dbConn);
-	entryController.setDb(dbConn);
-	headerSetController.setDb(dbConn)
+  automationController.setDb(dbConn);
+  backfillController.setDb(dbConn);
+  commentController.setDb(dbConn);
+  historyController.setDb(dbConn);
+  publicController.setDb(dbConn);
+  userController.setDb(dbConn);
+  miscellaneousController.setDb(dbConn);
+  databaseController.setDb(dbConn);
+  groupController.setDb(dbConn);
+  fieldController.setDb(dbConn);
+  choiceController.setDb(dbConn);
+  layoutController.setDb(dbConn);
+  entryController.setDb(dbConn);
+  headerSetController.setDb(dbConn);
+  filterSetController.setDb(dbConn);
 });

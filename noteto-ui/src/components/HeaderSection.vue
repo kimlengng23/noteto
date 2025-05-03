@@ -1,6 +1,6 @@
 <template>
-  <v-container class="px-0">
-    <div class="d-flex">
+  <v-container class="white rounded-xl">
+    <div class="d-flex flex-wrap flex-md-nowrap flex-lg-nowrap mb-2">
       <v-autocomplete
         rounded
         dense
@@ -14,19 +14,20 @@
       ></v-autocomplete>
       <v-btn
         rounded
-        class="warning ml-2 mr-1"
-        @click="setFavoriteHeaderSet"
         depressed
+        color="success"
+        class="ml-2 mr-1"
+        @click="setFavoriteHeaderSet"
         :loading="isUpdateLoading"
         :disabled="!validHeaderSet"
       >
-        <i class="far fa-star mr-2"></i>
+        <i class="far fa-star mr-1"></i>
         Favorite
       </v-btn>
       <v-btn
         rounded
         icon
-        color="warning"
+        color="primary"
         class="mr-1"
         :disabled="!validHeaderSet"
         @click="openForm"
@@ -42,7 +43,7 @@
       <div v-if="isFormOpen">
         <div class="d-flex">
           <v-text-field
-            class="mr-2"
+            class="mr-1"
             dense
             rounded
             outlined
@@ -84,7 +85,7 @@
             depressed
             :loading="isAddLoading"
           >
-            <i class="fas fa-heading mr-2"></i>
+            <i class="fas fa-heading mr-1"></i>
             Add Header Set
           </v-btn>
           <v-btn
@@ -95,7 +96,7 @@
             depressed
             :loading="isUpdateLoading"
           >
-            <i class="fas fa-heading mr-2"></i>
+            <i class="fas fa-heading mr-1"></i>
             Update Header Set
           </v-btn>
         </div>
