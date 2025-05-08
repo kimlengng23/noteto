@@ -43,10 +43,10 @@ export default {
 			return conditionSets;
 		},
 		requiredFields() {
-			let requiredFields = {}
-			for(let i=0;i<this.automations.length;i++) {
+			let requiredFields = {};
+			for (let i = 0; i < this.automations.length; i++) {
 				let automation = this.automations[i];
-				if(automation.type == 'required') {
+				if (automation.type == "required") {
 					requiredFields[automation.actField.value] = true;
 				}
 			}
@@ -124,7 +124,7 @@ export default {
 			}
 
 			this.entry[field].push({});
-			console.log(this.entry[field])
+			console.log(this.entry[field]);
 		},
 		clearEntry() {
 			this.isNew = true;
@@ -133,7 +133,6 @@ export default {
 		},
 		cloneEmptyEntry() {
 			if (Object.keys(this.emptyEntry).length > 0) {
-				
 				this.original = JSON.stringify(this.emptyEntry);
 				this.entry = JSON.parse(JSON.stringify(this.emptyEntry));
 				this.runSetAutomations();
@@ -157,7 +156,9 @@ export default {
 		},
 
 		formatDate(date) {
+			console.log(date);
 			if (!date) return null;
+
 			const [year, month, day] = date.split("-");
 			return `${month}/${day}/${year}`;
 		},
