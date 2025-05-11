@@ -21,13 +21,13 @@ import backendService from "./services/backend-service.js";
 export default {
   name: "App",
   mounted: function () {
-    if (this.$route.name != "Logout" && localStorage.getItem("sessionId")) {
+    if (this.$route.name != "Logout" && localStorage.getItem("token")) {
       backendService
         .verifyToken()
         .then((response) => {
           localStorage.setItem("session", JSON.stringify(response.data));
           localStorage.setItem("userId", response.data.userId);
-          localStorage.setItem("sessionId", response.data.sessionId);
+          //localStorage.setItem("token", response.data.token);
           localStorage.setItem("username", response.data.username);
           localStorage.setItem(
             "fullname",

@@ -27,14 +27,14 @@ export default {
   },
   methods: {
     logout() {
-      if (!localStorage.getItem("sessionId")) {
+      if (!localStorage.getItem("token")) {
         this.$router.push({ name: "Home" }).catch(() => {});
         return;
       }
       backendService.logout().then(() => {
         localStorage.removeItem("fullname");
         localStorage.removeItem("username");
-        localStorage.removeItem("sessionId");
+        localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("session");
         localStorage.removeItem("currentDatabase");

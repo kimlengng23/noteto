@@ -1,85 +1,110 @@
 <template>
-  <v-container class="d-flex justify-center">
-    <v-card class="rounded-xl" elevation="0" min-width="350" width="60%">
-      <v-card-title>Register User</v-card-title>
-      <v-card-text v-if="!isSuccessful">
-        <v-form ref="form" v-model="isFormValid">
-          <v-text-field
-            rounded
-            outlined
-            dense
-            :rules="nameRules"
-            v-model="first"
-            label="First Name"
-            required
-          ></v-text-field>
-          <v-text-field
-            rounded
-            outlined
-            dense
-            :rules="nameRules"
-            v-model="last"
-            label="Last Name"
-            required
-          ></v-text-field>
+  <v-container>
+    <v-container class="text-h4 text-center primary--text">
+      <span style="font-family: 'Dangrek', cursive">នូតតូក</span>
+      -
+      <span style="font-family: 'Sora', sans-serif">Noteto</span>
+    </v-container>
+    <v-container class="d-flex justify-center">
+      <v-card class="rounded-xl" elevation="0" min-width="350" width="60%">
+        <v-card-title>Register User</v-card-title>
+        <v-card-text v-if="!isSuccessful">
+          <v-form ref="form" v-model="isFormValid">
+            <v-text-field
+              class="mb-2"
+              rounded
+              outlined
+              dense
+              hide-details
+              :rules="nameRules"
+              v-model="first"
+              label="First Name"
+            ></v-text-field>
+            <v-text-field
+              class="mb-2"
+              rounded
+              outlined
+              dense
+              hide-details
+              :rules="nameRules"
+              v-model="last"
+              label="Last Name"
+            ></v-text-field>
 
-          <v-text-field
-            rounded
-            outlined
-            dense
-            :rules="emailRules"
-            v-model="email"
-            label="Email"
-            required
-          ></v-text-field>
-          <v-text-field
-            rounded
-            outlined
-            dense
-            :rules="pwRules"
-            type="password"
-            v-model="password"
-            label="Password"
-            required
-          ></v-text-field>
-          <v-text-field
-            rounded
-            outlined
-            dense
-            :rules="confRules"
-            type="password"
-            v-model="confPassword"
-            label="Confirm Password"
-            required
-          ></v-text-field>
-        </v-form>
-      </v-card-text>
-      <v-card-text class="text-center" v-else>
-        <h1 class="mb-5 blue--text">You are almost done</h1>
+            <v-text-field
+              class="mb-2"
+              rounded
+              outlined
+              dense
+              hide-details
+              :rules="emailRules"
+              v-model="email"
+              label="Email"
+            ></v-text-field>
+            <v-text-field
+              class="mb-2"
+              rounded
+              outlined
+              dense
+              hide-details
+              :rules="pwRules"
+              type="password"
+              v-model="password"
+              label="Password"
+            ></v-text-field>
+            <v-text-field
+              class="mb-2"
+              rounded
+              outlined
+              dense
+              hide-details
+              :rules="confRules"
+              type="password"
+              v-model="confPassword"
+              label="Confirm Password"
+            ></v-text-field>
+          </v-form>
+        </v-card-text>
+        <v-card-text class="text-center" v-else>
+          <h1 class="mb-5 blue--text">You are almost done</h1>
 
-        <p>
-          We have sent you an email with a verify link. Check the email to
-          verify your email address.
-        </p>
-      </v-card-text>
-      <v-card-actions class="d-flex justify-end">
-        <v-btn depressed rounded color="warning" @click="clear">
-          <i class="fas fa-times mr-1"></i>
-          Clear
-        </v-btn>
-        <v-btn
-          depressed
-          rounded
-          color="success"
-          @click="register"
-          :disabled="!isFormValid"
-          :loading="isLoading"
-        >
-          <i class="fas fa-cash-register mr-1"></i>
-          Register
-        </v-btn>
-      </v-card-actions>
-    </v-card>
+          <p>
+            We have sent you an email with a verify link. Check the email to
+            verify your email address.
+          </p>
+        </v-card-text>
+        <v-card-text class="d-flex justify-space-between pt-0 align-center">
+          <div>
+            <a @click="$router.push({ name: 'Login' })"
+              >Already have an account?</a
+            >
+          </div>
+          <div>
+            <v-btn
+              depressed
+              rounded
+              color="warning"
+              @click="clear"
+              class="mr-1"
+            >
+              <i class="fas fa-times mr-1"></i>
+              Clear
+            </v-btn>
+            <v-btn
+              depressed
+              rounded
+              color="primary"
+              @click="register"
+              :disabled="!isFormValid"
+              :loading="isLoading"
+            >
+              <i class="fas fa-cash-register mr-1"></i>
+              Register
+            </v-btn>
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-container>
   </v-container>
 </template>
 <script>

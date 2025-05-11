@@ -60,34 +60,40 @@
               v-for="(choice, idx) in choices"
               :key="idx"
             >
-              <div>
+              <v-container class="pt-0">
                 <v-text-field
-                  label="Name"
+                  rounded
                   outlined
+                  dense
+                  hide-details
+                  label="Name"
                   v-model="choice.value"
                 ></v-text-field>
-              </div>
-              <div>
+              </v-container>
+              <v-container class="pt-0">
                 <v-text-field
-                  label="Display Name"
+                  rounded
                   outlined
+                  dense
+                  hide-details
+                  label="Display Name"
                   v-model="choice.displayName"
                 ></v-text-field>
-              </div>
+              </v-container>
               <div class="text-center">
                 <v-btn
-                  class="red mt-2"
-                  dark
+                  color="red"
+                  icon
                   rounded
                   depressed
                   @click="removeChoice(idx)"
                   v-if="choice.isActive == true"
                 >
-                  <i class="fas fa-minus"></i>
+                  <i class="fas fa-times"></i>
                 </v-btn>
                 <v-btn
-                  class="blue mt-2"
-                  dark
+                  color="blue"
+                  icon
                   rounded
                   depressed
                   @click="activateChoice(idx)"
@@ -97,15 +103,17 @@
                 </v-btn>
               </div>
             </div>
-            <v-btn
-              rounded
-              class="primary ml-2 mt-1"
-              depressed
-              dark
-              @click="addChoice"
-            >
-              <i class="fas fa-plus"></i>
-            </v-btn>
+            <v-container class="d-flex justify-end">
+              <v-btn
+                rounded
+                class="primary ml-2 mt-1"
+                depressed
+                dark
+                @click="addChoice"
+              >
+                <i class="fas fa-plus mr-1"></i>Choice
+              </v-btn>
+            </v-container>
           </div>
           <div v-if="fieldType == 'list'">
             <h3>Within Fields</h3>
@@ -389,7 +397,7 @@ export default {
     reset() {
       this.displayName = "";
       this.fieldValue = "";
-      this.fieldtype = "";
+      this.fieldType = "";
       this.isUpdating = false;
       this.choices = [];
       this.listFields = [];

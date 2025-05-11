@@ -1,52 +1,63 @@
 <template>
-  <v-container class="d-flex justify-center">
-    <v-card
-      class="rounded-xl"
-      outlined
-      elevation="0"
-      min-width="350"
-      width="60%"
-    >
-      <v-card-title>Login</v-card-title>
-      <v-card-text class="py-0">
-        <v-form v-model="isFormValid" ref="form">
-          <v-text-field
-            dense
+  <v-container>
+    <v-container class="text-h4 text-center primary--text">
+      <span style="font-family: 'Dangrek', cursive">នូតតូក</span>
+      -
+      <span style="font-family: 'Sora', sans-serif">Noteto</span>
+    </v-container>
+    <v-container class="d-flex justify-center">
+      <v-card
+        class="rounded-xl"
+        outlined
+        elevation="0"
+        min-width="350"
+        width="60%"
+      >
+        <v-card-title>Login</v-card-title>
+        <v-card-text class="py-0">
+          <v-form v-model="isFormValid" ref="form">
+            <v-text-field
+              class="mb-2"
+              dense
+              rounded
+              outlined
+              hide-details
+              :rules="emailRules"
+              label="Email"
+              v-model="email"
+              v-on:keyup.enter="login()"
+            ></v-text-field>
+            <v-text-field
+              dense
+              rounded
+              outlined
+              hide-details
+              :rules="pwRules"
+              type="password"
+              label="Password"
+              v-model="password"
+              v-on:keyup.enter="login()"
+            ></v-text-field>
+          </v-form>
+        </v-card-text>
+        <v-card-text class="d-flex justify-space-between align-center">
+          <a @click="$router.push({ name: 'UserRegister' })"
+            >Don't have an account?</a
+          >
+          <v-btn
+            color="primary"
+            depressed
             rounded
-            outlined
-            :rules="emailRules"
-            label="Email"
-            v-model="email"
-            v-on:keyup.enter="login()"
-            required
-          ></v-text-field>
-          <v-text-field
-            dense
-            rounded
-            outlined
-            :rules="pwRules"
-            type="password"
-            label="Password"
-            v-model="password"
-            v-on:keyup.enter="login()"
-            required
-          ></v-text-field>
-        </v-form>
-      </v-card-text>
-      <v-card-text class="d-flex justify-end pt-0">
-        <v-btn
-          class="warning"
-          depressed
-          rounded
-          @click="login"
-          :disabled="!isFormValid"
-          :loading="isLoading"
-        >
-          <i class="fas fa-sign-in-alt mr-1"></i>
-          Login
-        </v-btn>
-      </v-card-text>
-    </v-card>
+            @click="login"
+            :disabled="!isFormValid"
+            :loading="isLoading"
+          >
+            <i class="fas fa-sign-in-alt mr-1"></i>
+            Login
+          </v-btn>
+        </v-card-text>
+      </v-card>
+    </v-container>
   </v-container>
 </template>
 <script>
@@ -80,9 +91,10 @@ export default {
       backendService
         .login(account)
         .then((response) => {
+          console.log(response);
           localStorage.setItem("session", JSON.stringify(response.data));
           localStorage.setItem("userId", response.data.userId);
-          localStorage.setItem("sessionId", response.data.sessionId);
+          localStorage.setItem("token", response.data.token);
           localStorage.setItem("username", response.data.username);
           localStorage.setItem(
             "fullname",

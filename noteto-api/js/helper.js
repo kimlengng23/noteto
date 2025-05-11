@@ -68,13 +68,13 @@ function createVerifySession(sessionInfo) {
   return promise;
 }
 
-function getTokenBySessionId(id) {
+function getSessionByToken(token) {
   let promise = new Promise((resolve, reject) => {
     dbConn
       .collection("SessionCollection")
-      .findOne({ _id: ObjectId(id) }, (err, session) => {
+      .findOne({ token: token }, (err, session) => {
         if (err) {
-          console.log("helper - getTokenBySessionId", err);
+          console.log("helper - getSessionByToken", err);
           reject({ code: 500, message: err });
         } else {
           resolve({ code: 200, data: session });
@@ -168,26 +168,33 @@ function verifyAccess(req, res, next) {
     );
 }
 function verifyAdminToken(req, res, next) {
-  let authorization = req.headers["authorization"];
+  let authorization = req.headers["authorization"].split(" ")[1];
   if (authorization) {
-    let sessionId = authorization;
-    getTokenBySessionId(sessionId).then((response) => {
-      let session = response.data;
-      jwt.verify(session.token, secret, (err, decoded) => {
-        if (err) {
-          console.log("helper - verifyToken", err);
-          res.sendStatus(401);
+    let token = authorization;
+    getSessionByToken(token)
+      .then((response) => {
+        if (response.data) {
+          jwt.verify(token, secret, (err, decoded) => {
+            if (err) {
+              console.log("helper - verifyToken", err);
+              res.sendStatus(401);
+            } else {
+              if (decoded.options && decoded.options.isAdmin) {
+                req.decoded = decoded;
+                next();
+              } else {
+                res.sendStatus(401);
+              }
+            }
+          });
         } else {
-          if (decoded.options && decoded.options.isAdmin) {
-            req.decoded = decoded;
-            req.decoded.sessionId = sessionId;
-            next();
-          } else {
-            res.sendStatus(401);
-          }
+          res.sendStatus(401);
         }
+      })
+      .catch((err) => {
+        console.log("helper - verifyToken", err);
+        res.sendStatus(401);
       });
-    });
   } else {
     return res.sendStatus(401);
   }
@@ -212,25 +219,31 @@ function verifyEmailToken(req, res, next) {
     });
 }
 function verifyToken(req, res, next) {
-  let authorization = req.headers["authorization"];
+  let authorization = req.headers["authorization"].split(" ")[1];
   let url = req.originalUrl.split("?")[0];
   //console.log(url, authorization);
-
   if (authorization) {
-    let sessionId = authorization;
-    getTokenBySessionId(sessionId).then((response) => {
-      let session = response.data;
-      jwt.verify(session.token, secret, (err, decoded) => {
-        if (err) {
-          console.log("helper - verifyToken", err);
-          res.sendStatus(401);
+    let token = authorization;
+    getSessionByToken(token)
+      .then((response) => {
+        if (response.data) {
+          jwt.verify(token, secret, (err, decoded) => {
+            if (err) {
+              console.log("helper - verifyToken", err);
+              res.sendStatus(401);
+            } else {
+              req.decoded = decoded;
+              next();
+            }
+          });
         } else {
-          req.decoded = decoded;
-          req.decoded.sessionId = sessionId;
-          next();
+          res.sendStatus(401);
         }
+      })
+      .catch((err) => {
+        console.log("helper - verifyToken", err);
+        res.sendStatus(401);
       });
-    });
   } else {
     return res.sendStatus(401);
   }
@@ -357,7 +370,7 @@ module.exports = {
   getEntryText,
   createSession,
   createVerifySession,
-  getTokenBySessionId,
+  getSessionByToken,
   isDiff,
   removeTokenBySessionId,
   verifyAdminToken,

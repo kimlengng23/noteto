@@ -12,7 +12,7 @@ if (host.toLowerCase().includes("jaekjay")) {
 }
 function getHeaders() {
   let headers = {};
-  headers.authorization = `${localStorage.getItem("sessionId")}`;
+  headers.authorization = `bearer ${localStorage.getItem("token")}`;
   return headers;
 }
 export default {
@@ -30,6 +30,11 @@ export default {
     let url = domain + "/comment/add";
     let headers = getHeaders();
     return axios.post(url, comment, { headers: headers });
+  },
+  addDatabaseRequest(request) {
+    let url = domain + "/database/add/request";
+    let headers = getHeaders();
+    return axios.post(url, request, { headers: headers });
   },
   addEntry(entry) {
     let url = domain + "/entry/add";
@@ -287,6 +292,11 @@ export default {
   },
   getAccessesByDatabase(database) {
     let url = domain + `/database/get/accesses/by/database/${database}`;
+    let headers = getHeaders();
+    return axios.get(url, { headers: headers });
+  },
+  getDatabaseRequests() {
+    let url = domain + "/database/get/requests";
     let headers = getHeaders();
     return axios.get(url, { headers: headers });
   },
