@@ -3,15 +3,11 @@ import VueRouter from "vue-router";
 import CustomView from "../views/CustomView.vue";
 import ListView from "../views/ListView.vue";
 import EntryForm from "../views/EntryForm.vue";
-import DatabaseAccess from "../views/DatabaseAccess.vue";
 import DatabaseSetting from "../views/DatabaseSetting.vue";
-import LayoutMapping from "@/views/LayoutMapping.vue";
 import LoginPage from "../views/LoginPage.vue";
 import LogoutPage from "../views/LogoutPage.vue";
 import HomePage from "../views/HomePage.vue";
-import NewDatabase from "../views/NewDatabase.vue";
 import UserRegister from "../views/UserRegister.vue";
-import GroupRegister from "../views/GroupRegister.vue";
 import EmailVerify from "../views/EmailVerify.vue";
 import CustomViewList from "../views/CustomViewList.vue";
 import AssignedListView from "../views/AssignedListView.vue";
@@ -50,11 +46,7 @@ const routes = [
     name: "DatabaseSetting",
     component: DatabaseSetting,
   },
-  {
-    path: "/layout",
-    name: "Layout",
-    component: LayoutMapping,
-  },
+
   {
     path: "/login",
     name: "Login",
@@ -71,26 +63,13 @@ const routes = [
     name: "Home",
     component: HomePage,
   },
-  {
-    path: "/new/database",
-    name: "NewDatabase",
-    component: NewDatabase,
-  },
-  {
-    path: "/database/access",
-    name: "DatabaseAccess",
-    component: DatabaseAccess,
-  },
+
   {
     path: "/register/user",
     name: "UserRegister",
     component: UserRegister,
   },
-  {
-    path: "/register/group",
-    name: "GroupRegister",
-    component: GroupRegister,
-  },
+
   {
     path: "/verify/email/:sessionId",
     name: "EmailVerify",

@@ -17,7 +17,17 @@ app.post("/add", helper.verifyAdminToken, (req, res) => {
   fieldService
     .addField(field)
     .then((response) => {
-      //console.log(response);
+      res.sendStatus(response.code);
+    })
+    .catch((response) => {
+      res.status(response.code).send(response.message);
+    });
+});
+app.post("/add/list", helper.verifyAdminToken, (req, res) => {
+  let fields = req.body;
+  fieldService
+    .addFields(fields)
+    .then((response) => {
       res.status(response.code).send(response.data);
     })
     .catch((response) => {

@@ -4,12 +4,12 @@
     <v-tab>Update Group Members</v-tab>
     <v-tab>Link Group to Database</v-tab>
 
-    <v-tabs-items v-model="tab" class="d-flex justify-center grey lighten-3">
+    <v-tabs-items v-model="tab">
       <v-tab-item>
-        <v-container>
-          <v-card elevation="0" class="rounded-xl">
+        <v-container fluid>
+          <v-card elevation="0" class="rounded-xl" outlined>
             <v-card-title class="d-flex justify-space-between">
-              <h3>New Group</h3>
+              <div>New Group</div>
               <v-btn
                 rounded
                 color="primary ml-2"
@@ -50,10 +50,10 @@
         </v-container>
       </v-tab-item>
       <v-tab-item>
-        <v-container>
-          <v-card elevation="0" class="rounded-xl">
+        <v-container fluid>
+          <v-card elevation="0" class="rounded-xl" outlined>
             <v-card-title class="d-flex justify-space-between">
-              <h3>Update Group</h3>
+              <div>Update Group</div>
               <v-btn
                 rounded
                 color="primary ml-2"
@@ -91,10 +91,10 @@
         </v-container>
       </v-tab-item>
       <v-tab-item>
-        <v-container>
-          <v-card class="rounded-xl" elevation="0">
+        <v-container fluid>
+          <v-card class="rounded-xl" elevation="0" outlined>
             <v-card-title class="d-flex justify-space-between">
-              <h3>Link Group to Database</h3>
+              <div>Link Group to Database</div>
               <v-btn
                 rounded
                 color="primary ml-2"
@@ -131,9 +131,6 @@
           </v-card>
         </v-container>
       </v-tab-item>
-      <v-tab-item>
-        <database-access></database-access>
-      </v-tab-item>
     </v-tabs-items>
   </v-tabs>
 </template>
@@ -143,7 +140,7 @@ import mixin from "@/js/mixin";
 import formMixin from "@/js/form-mixin";
 import eventBus from "@/js/event-bus";
 export default {
-  Name: "GroupRegister",
+  Name: "UserGroup",
   data() {
     return {
       tab: null,

@@ -13,7 +13,11 @@
           outlined
           dense
           :items="databases"
-          item-text="displayName"
+          :item-text="
+            (item) => {
+              return `${item.displayName} - ${item.value}`;
+            }
+          "
           item-value="value"
           filled
           label="Database"

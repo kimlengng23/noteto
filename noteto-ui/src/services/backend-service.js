@@ -46,6 +46,11 @@ export default {
     let headers = getHeaders();
     return axios.post(url, field, { headers: headers });
   },
+  addFields(fields) {
+    let url = domain + "/field/add/list";
+    let headers = getHeaders();
+    return axios.post(url, fields, { headers: headers });
+  },
   addHeaderSet(headerSet) {
     let url = domain + `/header/set/add/`;
     let headers = getHeaders();

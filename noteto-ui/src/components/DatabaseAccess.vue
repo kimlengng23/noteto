@@ -1,8 +1,8 @@
 <template>
-  <v-container>
-    <v-card class="rounded-xl" elevation="0">
+  <v-container fluid>
+    <v-card class="rounded-xl" elevation="0" outlined>
       <v-card-title class="d-flex justify-space-between">
-        <h3>Database Access</h3>
+        <div>Database Access</div>
         <v-btn
           rounded
           color="primary ml-2"

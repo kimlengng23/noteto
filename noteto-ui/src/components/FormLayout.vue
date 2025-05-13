@@ -1,29 +1,33 @@
 <template>
-  <div>
-    <v-card elevation="0">
-      <v-card-title>
-        <h3 class="mb-5">Add Layout</h3>
-        <v-spacer></v-spacer>
-        <v-autocomplete
-          rounded
-          outlined
-          dense
-          label="Database"
-          @change="getLayoutByDatabase"
-          :items="databases"
-          item-text="displayName"
-          item-value="value"
-          v-model="databaseValue"
-        ></v-autocomplete>
-
-        <v-spacer></v-spacer>
-        <div class="mb-5">
+  <v-container fluid>
+    <v-card elevation="0" class="rounded-xl" outlined>
+      <v-card-title class="d-flex justify-space-between align-center">
+        <div>Add Layout</div>
+        <div style="width: 40%">
+          <v-autocomplete
+            rounded
+            outlined
+            dense
+            hide-details
+            label="Database"
+            @change="getLayoutByDatabase"
+            :items="databases"
+            :item-text="
+              (item) => {
+                return `${item.displayName} - ${item.value}`;
+              }
+            "
+            item-value="value"
+            v-model="databaseValue"
+          ></v-autocomplete>
+        </div>
+        <div style="width: 40%" class="d-flex justify-end">
           <v-btn
             rounded
-            class="primary ml-2"
-            @click="addRow"
             depressed
-            dark
+            color="primary"
+            class="ml-2"
+            @click="addRow"
             :disabled="!databaseValue"
           >
             <i class="fas fa-arrows-alt-v mr-1"></i>
@@ -31,10 +35,10 @@
           </v-btn>
           <v-btn
             rounded
-            class="success ml-2"
-            @click="saveLayout"
             depressed
-            dark
+            color="success"
+            class="ml-2"
+            @click="saveLayout"
             :loading="isLoading"
             :disabled="!databaseValue"
           >
@@ -103,14 +107,14 @@
         </v-row>
       </v-card-text>
     </v-card>
-  </div>
+  </v-container>
 </template>
 <script>
-import eventBus from "../js/event-bus.js";
-import backendService from "../services/backend-service.js";
+import eventBus from "@/js/event-bus.js";
+import backendService from "@/services/backend-service.js";
 import formMixin from "@/js/form-mixin";
 export default {
-  name: "LayoutSetting",
+  name: "FormLayout",
   mixins: [formMixin],
 
   computed: {
