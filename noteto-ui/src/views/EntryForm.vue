@@ -187,9 +187,9 @@
       <v-card-text>
         <form-component
           :p-rows="rows"
-          :entry="entry"
-          v-model="entry"
+          :root="entry"
           :readonly="!isNew && !isEditing"
+          v-model="entry"
         ></form-component>
       </v-card-text>
     </v-card>
@@ -287,6 +287,9 @@ export default {
         overallValue = this.formValid[key] && overallValue;
       }
       return overallValue;
+    },
+    testValue() {
+      return eval("this.entry['saleType'].value");
     },
   },
   methods: {

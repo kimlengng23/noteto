@@ -10,6 +10,7 @@
     v-model.number="input"
     :readonly="readonly"
     :hide-details="hideDetails"
+    @change="$emit('change')"
   ></v-text-field>
 </template>
 <script>

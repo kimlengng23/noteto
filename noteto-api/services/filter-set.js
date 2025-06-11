@@ -6,7 +6,6 @@ function setDb(conn) {
   helper.setDb(conn);
 }
 function addFilterSet(filterSet) {
-  console.log(filterSet);
   let promise = new Promise((resolve, reject) => {
     dbConn
       .collection("FilterSetCollection")

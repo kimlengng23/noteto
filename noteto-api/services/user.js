@@ -47,9 +47,7 @@ function login(account) {
     dbConn
       .collection("UserCollection")
       .findOne({ username: account.username }, (err, result) => {
-        console.log("check");
         if (err) {
-          console.log("check");
           console.log("UserService - login", err);
           reject({ code: 500, message: err });
         } else if (result) {
@@ -58,7 +56,6 @@ function login(account) {
             result.salt
           );
           if (inputSaltedPassword == result.password) {
-            console.log("check");
             let sessionInfo = {
               last: result["last"],
               first: result["first"],
@@ -70,18 +67,15 @@ function login(account) {
             };
             helper.createSession(sessionInfo).then((response) => {
               sessionInfo["token"] = response.data.token;
-              console.log(sessionInfo);
               resolve({ code: 200, data: sessionInfo });
             });
           } else {
-            console.log("check");
             reject({
               code: 401,
               message: "Incorrect username or password",
             });
           }
         } else {
-          console.log("check");
           reject({
             code: 401,
             message: "Incorrect username or password",

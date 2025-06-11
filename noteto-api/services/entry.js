@@ -274,7 +274,7 @@ function updateEntry2(oldEntry, newEntry, createdBy) {
 function updateEntry1(entry) {
   let promise = new Promise((resolve, reject) => {
     let id = entry._id;
-    let todayDate = new Date();
+    let todayDate = new Date().getTime();
     entry._data.dateLastModified = todayDate;
     delete entry._id;
     dbConn
@@ -291,7 +291,6 @@ function updateEntry1(entry) {
   return promise;
 }
 function deleteEntryById(id) {
-  console.log(id);
   let promise = new Promise((resolve, reject) => {
     dbConn
       .collection("EntryCollection")

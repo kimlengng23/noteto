@@ -13,7 +13,7 @@ function setDb(conn) {
 app.use(express.json());
 app.post("/add", helper.verifyToken, (req, res) => {
   let wrappedEntry = req.body;
-  let todayDate = new Date();
+  let todayDate = new Date().getTime();
   let createdBy = {
     _id: req.decoded.userId,
     first: req.decoded.first,

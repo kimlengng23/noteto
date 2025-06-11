@@ -49,9 +49,10 @@
       </v-btn>
     </div>
     <v-expand-transition>
-      <div v-if="isFormOpen">
+      <v-form v-if="isFormOpen" ref="form" v-model="formValid">
         <div class="d-flex">
           <v-text-field
+            :rules="[(v) => !!v || '']"
             class="mr-1"
             rounded
             dense
@@ -61,6 +62,7 @@
             v-model="filterSet.name"
           ></v-text-field
           ><v-autocomplete
+            :rules="[(v) => (v != undefined && v != null) || '']"
             rounded
             dense
             outlined
@@ -79,8 +81,9 @@
           class="d-flex justify-space-between"
           style="gap: 5px"
         >
-          <v-container class="pl-0">
+          <v-container class="px-0">
             <v-autocomplete
+              :rules="[(v) => !!v || '']"
               rounded
               dense
               outlined
@@ -93,28 +96,30 @@
               @change="condition.value = null"
             ></v-autocomplete>
           </v-container>
-          <v-container>
+          <v-container class="px-0">
             <v-autocomplete
+              :rules="[(v) => !!v || '']"
               rounded
               dense
               outlined
               hide-details
               return-object
               label="Operator"
-              :items="operators"
+              :items="getOperatorsByFieldType(condition.field?.type)"
               item-text="displayName"
               v-model="condition.operator"
             >
             </v-autocomplete>
           </v-container>
           <v-container
+            class="px-0"
             v-if="
               condition.field?.type == 'singleSelect' ||
               condition.field?.type == 'multipleSelect'
             "
-            class="pr-0"
           >
             <v-autocomplete
+              :rules="[(v) => !!v || '']"
               rounded
               dense
               outlined
@@ -127,10 +132,27 @@
             ></v-autocomplete>
           </v-container>
 
-          <v-container v-if="condition.field?.type == 'date'" class="pr-0">
-            <date-picker v-model="condition.value"></date-picker>
+          <v-container v-else-if="condition.field?.type == 'date'" class="px-0">
+            <date-picker
+              :rules="[(v) => !!v || '']"
+              v-model="condition.value"
+            ></date-picker>
           </v-container>
-          <v-container style="width: 25%"
+          <v-container
+            v-else-if="condition.field?.type == 'number'"
+            class="px-0"
+          >
+            <v-text-field
+              :rules="[(v) => !!v || '']"
+              rounded
+              outlined
+              dense
+              hide-details
+              label="Value"
+              v-model.number="condition.value"
+            ></v-text-field>
+          </v-container>
+          <v-container style="width: 25%" class="px-0"
             ><v-btn
               rounded
               depressed
@@ -150,8 +172,9 @@
             rounded
             depressed
             color="warning"
-            @click="updateFilterSet"
             :loading="isUpdateLoading"
+            :disabled="!formValid"
+            @click="updateFilterSet"
           >
             <i class="fa fa-save mr-1"></i>
             <span>Update Filter Set</span>
@@ -161,8 +184,9 @@
             rounded
             depressed
             color="primary"
-            @click="addFilterSet"
             :loading="isAddLoading"
+            :disabled="!formValid"
+            @click="addFilterSet"
           >
             <i class="fas fa-plus mr-1"></i>
             <span>Add Filter Set</span>
@@ -171,7 +195,7 @@
         <v-container class="bg-grey lighten-4 rounded-xl">
           <pre>{{ filter }}</pre>
         </v-container>
-      </div>
+      </v-form>
     </v-expand-transition>
   </v-container>
 </template>
@@ -249,16 +273,49 @@ export default {
   data() {
     return {
       conditions: [],
-      operators: [
-        { value: "$eq", displayName: "Equal to" },
-        { value: "$ne", displayName: "Not Equal to" },
-        { value: "$gt", displayName: "Greater than" },
-        { value: "$gte", displayName: "Greater than or Equal to" },
-        { value: "$lt", displayName: "Less than" },
-        { value: "$lte", displayName: "Less than or Equal to" },
-        { value: "$in", displayName: "In" },
-        { value: "$nin", displayName: "Not in" },
-      ],
+      operatorDict: {
+        singleSelect: [
+          { value: "$in", displayName: "In" },
+          { value: "$nin", displayName: "Not in" },
+        ],
+        multipleSelect: [
+          { value: "$in", displayName: "In" },
+          { value: "$nin", displayName: "Not in" },
+        ],
+        date: [
+          { value: "$eq", displayName: "Equal to" },
+          { value: "$gt", displayName: "Greater than" },
+          { value: "$gte", displayName: "Greater than or Equal to" },
+          { value: "$lt", displayName: "Less than" },
+          { value: "$lte", displayName: "Less than or Equal to" },
+        ],
+        number: [
+          { value: "$eq", displayName: "Equal to" },
+          { value: "$ne", displayName: "Not Equal to" },
+          { value: "$gt", displayName: "Greater than" },
+          { value: "$gte", displayName: "Greater than or Equal to" },
+          { value: "$lt", displayName: "Less than" },
+          { value: "$lte", displayName: "Less than or Equal to" },
+        ],
+        currencyInDollar: [
+          { value: "$eq", displayName: "Equal to" },
+          { value: "$ne", displayName: "Not Equal to" },
+          { value: "$gt", displayName: "Greater than" },
+          { value: "$gte", displayName: "Greater than or Equal to" },
+          { value: "$lt", displayName: "Less than" },
+          { value: "$lte", displayName: "Less than or Equal to" },
+        ],
+      },
+      // operators: [
+      //   { value: "$eq", displayName: "Equal to" },
+      //   { value: "$ne", displayName: "Not Equal to" },
+      //   { value: "$gt", displayName: "Greater than" },
+      //   { value: "$gte", displayName: "Greater than or Equal to" },
+      //   { value: "$lt", displayName: "Less than" },
+      //   { value: "$lte", displayName: "Less than or Equal to" },
+      //   { value: "$in", displayName: "In" },
+      //   { value: "$nin", displayName: "Not in" },
+      // ],
       defaultFields: [
         {
           value: "_data.id",
@@ -281,10 +338,14 @@ export default {
       filterSet: null,
       isAddLoading: false,
       isUpdateLoading: false,
+      formValid: false,
     };
   },
   methods: {
     addFilterSet() {
+      if (!this.$refs.form.validate()) {
+        return;
+      }
       this.isAddLoading = true;
       this.filterSet.database = this.currentDatabase.value;
       this.filterSet.conditions = this.filter;
@@ -306,6 +367,12 @@ export default {
     },
     getFieldText(field) {
       return `${field.displayName} - ${field.type}`;
+    },
+    getOperatorsByFieldType(fieldType) {
+      if (fieldType && this.operatorDict[fieldType]) {
+        return this.operatorDict[fieldType];
+      }
+      return [];
     },
     handleChange() {
       this.$store.commit("setCurrentFilterSet", this.filterSet);
@@ -376,6 +443,9 @@ export default {
         });
     },
     updateFilterSet() {
+      if (!this.$refs.form.validate()) {
+        return;
+      }
       this.isUpdateLoading = true;
       this.filterSet.conditions = this.filter;
       backendService
