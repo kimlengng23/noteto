@@ -5,7 +5,7 @@ let host = window.location.hostname;
 //let entryTrackerApi = `https://${host}:3000/entryTracker/api`;
 //let domain = `https://${host}:3000/entryTracker/api`;
 //
-let domain = `https://localhost:3000/api`;
+let domain = `https://127.0.0.1:443/api`;
 //let domain = `https://noteto.jaekjay.com/api`;
 if (host.toLowerCase().includes("jaekjay")) {
   domain = `https://noteto.jaekjay.com/api`;
@@ -220,7 +220,8 @@ export default {
     return axios.get(url, { headers: headers });
   },
   registerUser(account) {
-    let url = domain + `/user/register`;
+    console.log(account)
+    let url = domain + `/user/add`;
     return axios.post(url, account);
   },
   removeLayoutByDatabase(database) {
@@ -251,14 +252,15 @@ export default {
     let headers = getHeaders();
     return axios.post(url, choices, { headers: headers });
   },
-  login(account) {
+  login(login) {
     let url = domain + `/user/login`;
-    return axios.post(url, account);
+    login.browser_id = crypto.randomUUID()
+    return axios.post(url, login, { withCredentials: true });
   },
   logout() {
     let url = domain + `/user/logout`;
     let headers = getHeaders();
-    return axios.get(url, { headers: headers });
+    return axios.get(url, { headers: headers, withCredentials:true });
   },
   verifyToken() {
     let url = domain + `/user/verify/token`;

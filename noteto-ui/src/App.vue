@@ -17,68 +17,68 @@ import GeneralDialog from "./components/GeneralDialog.vue";
 import GeneralSnackbar from "./components/GeneralSnackbar.vue";
 import MainNavbar from "./components/Navbar.vue";
 import SecondNavbar from "./components/SecondNavbar.vue";
-import backendService from "./services/backend-service.js";
+//import backendService from "./services/backend-service.js";
 export default {
   name: "App",
   mounted: function () {
-    if (this.$route.name != "Logout" && localStorage.getItem("token")) {
-      backendService
-        .verifyToken()
-        .then((response) => {
-          localStorage.setItem("session", JSON.stringify(response.data));
-          localStorage.setItem("userId", response.data.userId);
-          //localStorage.setItem("token", response.data.token);
-          localStorage.setItem("username", response.data.username);
-          localStorage.setItem(
-            "fullname",
-            response.data.first + " " + response.data.last
-          );
-          localStorage.setItem(
-            "options",
-            JSON.stringify(response.data.options)
-          );
+    // if (this.$route.name != "Logout" && localStorage.getItem("token")) {
+    //   backendService
+    //     .verifyToken()
+    //     .then((response) => {
+    //       localStorage.setItem("session", JSON.stringify(response.data));
+    //       localStorage.setItem("userId", response.data.userId);
+    //       //localStorage.setItem("token", response.data.token);
+    //       localStorage.setItem("username", response.data.username);
+    //       localStorage.setItem(
+    //         "fullname",
+    //         response.data.first + " " + response.data.last
+    //       );
+    //       localStorage.setItem(
+    //         "options",
+    //         JSON.stringify(response.data.options)
+    //       );
 
-          this.$store.commit("setCurrentUser", response.data);
-          this.$store.dispatch("getDatabasesByUserId");
-          this.$store.dispatch("getNavigationOptions");
-          this.$store.dispatch("getDropdowns");
-          if (this.isAdmin) {
-            this.$store.dispatch("getAllDatabases");
-            this.$store.dispatch("getAllGroups");
-            this.$store.dispatch("getAllUsers");
-            this.$store.dispatch("getDatabaseToFields");
-            this.$store.dispatch("getDatabaseToChoices");
-            this.$store.dispatch("getDatabaseToHeaderSets");
-            this.$store.dispatch("getDatabaseToFilterSets");
-            this.$store.dispatch("getDatabaseToLayoutMappings");
-          }
-          setTimeout(() => {
-            let query = this.$route.query;
-            let databaseValue = query.database ? query.database : null;
-            let database = this.$store.getters["availableDatabases"].find(
-              (e) => e.value == databaseValue
-            );
-            if (database) {
-              this.$store.commit("setCurrentDatabase", database);
-              this.$store.dispatch("getFieldsByDatabase");
-              this.$store.dispatch("getChoicesByDatabase");
-              this.$store.dispatch("getEmptyEntryByDatabase");
-              Promise.all([
-                this.$store.dispatch("getHeaderSetsByDatabase"),
-                this.$store.dispatch("getFilterSetsByDatabase"),
-              ]).then(() => {
-                this.$store.dispatch("getEntriesByDatabase");
-              });
-              this.$store.dispatch("getAutomationsByDatabase");
-              this.$store.dispatch("getUsersByDatabase");
-              this.$store.dispatch("getLayoutByDatabase");
-            }
-          }, 1000);
-        })
-        .catch(() => {
-          localStorage.clear();
-        });
-    }
+    //       this.$store.commit("setCurrentUser", response.data);
+    //       this.$store.dispatch("getDatabasesByUserId");
+    //       this.$store.dispatch("getNavigationOptions");
+    //       this.$store.dispatch("getDropdowns");
+    //       if (this.isAdmin) {
+    //         this.$store.dispatch("getAllDatabases");
+    //         this.$store.dispatch("getAllGroups");
+    //         this.$store.dispatch("getAllUsers");
+    //         this.$store.dispatch("getDatabaseToFields");
+    //         this.$store.dispatch("getDatabaseToChoices");
+    //         this.$store.dispatch("getDatabaseToHeaderSets");
+    //         this.$store.dispatch("getDatabaseToFilterSets");
+    //         this.$store.dispatch("getDatabaseToLayoutMappings");
+    //       }
+    //       setTimeout(() => {
+    //         let query = this.$route.query;
+    //         let databaseValue = query.database ? query.database : null;
+    //         let database = this.$store.getters["availableDatabases"].find(
+    //           (e) => e.value == databaseValue
+    //         );
+    //         if (database) {
+    //           this.$store.commit("setCurrentDatabase", database);
+    //           this.$store.dispatch("getFieldsByDatabase");
+    //           this.$store.dispatch("getChoicesByDatabase");
+    //           this.$store.dispatch("getEmptyEntryByDatabase");
+    //           Promise.all([
+    //             this.$store.dispatch("getHeaderSetsByDatabase"),
+    //             this.$store.dispatch("getFilterSetsByDatabase"),
+    //           ]).then(() => {
+    //             this.$store.dispatch("getEntriesByDatabase");
+    //           });
+    //           this.$store.dispatch("getAutomationsByDatabase");
+    //           this.$store.dispatch("getUsersByDatabase");
+    //           this.$store.dispatch("getLayoutByDatabase");
+    //         }
+    //       }, 1000);
+    //     })
+    //     .catch(() => {
+    //       localStorage.clear();
+    //     });
+    // }
   },
   components: {
     GeneralDialog,

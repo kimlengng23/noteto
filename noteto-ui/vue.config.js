@@ -1,6 +1,14 @@
-module.exports = {
+const { defineConfig } = require("@vue/cli-service");
+const fs = require("fs");
+
+module.exports = defineConfig({
+  transpileDependencies: ["vuetify"],
   devServer: {
-    host: "0.0.0.0",
+    https: {
+      key: fs.readFileSync("./certs/server.key"),
+      cert: fs.readFileSync("./certs/server.crt"),
+    },
     port: 8080,
+    allowedHosts: "all",
   },
-};
+});

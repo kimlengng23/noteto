@@ -39,13 +39,13 @@ export default {
         localStorage.removeItem("session");
         localStorage.removeItem("currentDatabase");
         localStorage.removeItem("options");
-        this.$store.commit("setCurrentDatabase", {});
-        this.$store.commit("setAutomations", []);
-        this.$store.commit("setCurrentUser", {});
-        this.$store.commit("setNavigationOptions", []);
-        this.$store.commit("setAllGroups", []);
-        this.$store.commit("setAllDatabases", []);
-        this.$store.commit("setAvailableDatabases", []);
+        // this.$store.commit("setCurrentDatabase", {});
+        // this.$store.commit("setAutomations", []);
+        // this.$store.commit("setCurrentUser", {});
+        // this.$store.commit("setNavigationOptions", []);
+        // this.$store.commit("setAllGroups", []);
+        // this.$store.commit("setAllDatabases", []);
+        // this.$store.commit("setAvailableDatabases", []);
         setTimeout(() => {
           this.$router.push({ name: "Home" }).catch(() => {});
         }, 1000);

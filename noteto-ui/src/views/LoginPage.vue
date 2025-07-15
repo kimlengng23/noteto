@@ -84,14 +84,13 @@ export default {
       if (!this.$refs.form.validate()) {
         return;
       }
-      let account = {};
-      account.email = this.email;
-      account.password = this.password;
+      let login = {};
+      login.email = this.email;
+      login.password = this.password;
       this.isLoading = true;
       backendService
-        .login(account)
+        .login(login)
         .then((response) => {
-          console.log(response);
           localStorage.setItem("session", JSON.stringify(response.data));
           localStorage.setItem("userId", response.data.userId);
           localStorage.setItem("token", response.data.token);
@@ -104,29 +103,29 @@ export default {
             "options",
             JSON.stringify(response.data.options)
           );
-          this.$store.commit("setCurrentUser", response.data);
-          this.$store.dispatch("getDatabasesByUserId");
-          this.$store.dispatch("getDropdowns");
-          this.$store.dispatch("getNavigationOptions");
-          if (this.isAdmin) {
-            this.$store.dispatch("getAllDatabases");
-            this.$store.dispatch("getAllGroups");
-            this.$store.dispatch("getAllUsers");
-            this.$store.dispatch("getDatabaseToFields");
-            this.$store.dispatch("getDatabaseToHeaderSets");
-            this.$store.dispatch("getDatabaseToFilterSets");
-            this.$store.dispatch("getDatabaseToLayoutMappings");
-            this.$store.dispatch("getDatabaseToChoices");
-          }
-          setTimeout(() => {
-            let nextRouteName = "Home";
-            if (localStorage.getItem("nextRouteName")) {
-              nextRouteName = localStorage.getItem("nextRouteName");
-              localStorage.removeItem("nextRouteName");
-            }
-            this.$router.push({ name: nextRouteName });
-            this.isLoading = false;
-          }, 1000);
+          // this.$store.commit("setCurrentUser", response.data);
+          // this.$store.dispatch("getDatabasesByUserId");
+          // this.$store.dispatch("getDropdowns");
+          // this.$store.dispatch("getNavigationOptions");
+          // if (this.isAdmin) {
+          //   this.$store.dispatch("getAllDatabases");
+          //   this.$store.dispatch("getAllGroups");
+          //   this.$store.dispatch("getAllUsers");
+          //   this.$store.dispatch("getDatabaseToFields");
+          //   this.$store.dispatch("getDatabaseToHeaderSets");
+          //   this.$store.dispatch("getDatabaseToFilterSets");
+          //   this.$store.dispatch("getDatabaseToLayoutMappings");
+          //   this.$store.dispatch("getDatabaseToChoices");
+          // }
+          // setTimeout(() => {
+          //   let nextRouteName = "Home";
+          //   if (localStorage.getItem("nextRouteName")) {
+          //     nextRouteName = localStorage.getItem("nextRouteName");
+          //     localStorage.removeItem("nextRouteName");
+          //   }
+          //   this.$router.push({ name: nextRouteName });
+          //   this.isLoading = false;
+          // }, 1000);
         })
         .catch(() => {
           this.timer(1000).then(() => {
