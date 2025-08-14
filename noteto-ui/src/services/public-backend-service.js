@@ -3,7 +3,7 @@ let host = window.location.hostname;
 let domain = `https://localhost:3000/public`;
 //let domain = `https://noteto.jaekjay.com/public`;
 if (host.toLowerCase().includes("jaekjay")) {
-	domain = `https://noteto.jaekjay.com/public`;
+	domain = `https://noteto2.jaekjay.com/public`;
 }
 function getHeaders() {
 	let headers = {};

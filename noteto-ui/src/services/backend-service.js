@@ -8,7 +8,7 @@ let host = window.location.hostname;
 let domain = `https://127.0.0.1:443/api`;
 //let domain = `https://noteto.jaekjay.com/api`;
 if (host.toLowerCase().includes("jaekjay")) {
-  domain = `https://noteto.jaekjay.com/api`;
+  domain = `https://noteto2.jaekjay.com/api`;
 }
 function getHeaders() {
   let headers = {};
