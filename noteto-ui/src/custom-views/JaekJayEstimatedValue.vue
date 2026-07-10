@@ -4,7 +4,7 @@
 			<v-card-title><h2>Item List</h2></v-card-title>
 			<v-card-text>
 				<div v-for="entry in entries" :key="entry._id">
-					<v-card elevation="0" outlined class="rounded-xl">
+					<v-card elevation="0" outlined class="">
 						<div class="ma-2">
 							<h4>{{ entry.title }}</h4>
 						</div>

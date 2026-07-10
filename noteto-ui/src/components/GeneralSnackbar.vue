@@ -3,12 +3,11 @@
 		:color="colorClass"
 		:timeout="2000"
 		v-model="snackbar"
-		rounded="pill"
 		elevation="0">
 		{{ message }}
 		<template v-slot:action="{}">
 			<v-btn icon text @click="snackbar = false">
-				<i class="fas fa-times"></i>
+				<v-icon>mdi-close</v-icon>
 			</v-btn>
 		</template>
 	</v-snackbar>

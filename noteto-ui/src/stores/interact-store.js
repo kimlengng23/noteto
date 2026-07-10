@@ -37,9 +37,15 @@ const interactStore = {
   },
   mutations: {
     addFilterSet(state, payload) {
+      if (!state.databaseToFilterSets[payload.database]) {
+        Vue.set(state.databaseToFilterSets, payload.database, []);
+      }
       state.databaseToFilterSets[payload.database].push(payload);
     },
     addHeaderSet(state, payload) {
+      if (!state.databaseToHeaderSets[payload.database]) {
+        Vue.set(state.databaseToHeaderSets, payload.database, []);
+      }
       state.databaseToHeaderSets[payload.database].push(payload);
     },
     replaceHeadersInDatabaseToHeaders(state, payload) {
@@ -74,6 +80,23 @@ const interactStore = {
     setFilterSets(state, payload) {
       if (payload && payload.length > 0)
         Vue.set(state.databaseToFilterSets, payload[0].database, payload);
+    },
+    setEmptyFilterSets(state, payload) {
+      Vue.set(state.databaseToFilterSets, payload, []);
+    },
+    removeDatabase(state, payload) {
+      const databaseValue = payload.value || payload;
+      Vue.delete(state.databaseToHeaderSets, databaseValue);
+      Vue.delete(state.databaseToFilterSets, databaseValue);
+      state.headerSets = [];
+      if (state.currentHeaderSet.database == databaseValue) {
+        state.currentHeaderSet = {};
+        state.favoriteHeaderSet = {};
+      }
+      if (state.currentFilterSet.database == databaseValue) {
+        state.currentFilterSet = {};
+        state.favoriteFilterSet = {};
+      }
     },
   },
   actions: {

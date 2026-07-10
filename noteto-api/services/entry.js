@@ -156,7 +156,8 @@ function getEmptyEntryByDatabase(database) {
   let promise = new Promise((resolve, reject) => {
     dbConn
       .collection("FieldCollection")
-      .find({ database: database })
+      .find({ database: database, isActive: { $ne: false } })
+      .sort({ displayName: 1, value: 1 })
       .toArray((err, fields) => {
         if (err) {
           console.log("EntryService - getEmptyEntryByDatabase", err);

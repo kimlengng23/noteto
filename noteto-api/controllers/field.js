@@ -65,6 +65,17 @@ app.post("/update", helper.verifyAdminToken, (req, res) => {
       res.status(response.code).send(response.message);
     });
 });
+app.post("/delete", helper.verifyAdminToken, (req, res) => {
+  let field = req.body;
+  fieldService
+    .deleteField(field)
+    .then((response) => {
+      res.sendStatus(response.code);
+    })
+    .catch((response) => {
+      res.status(response.code).send(response.message);
+    });
+});
 module.exports = {
   app,
   setDb,

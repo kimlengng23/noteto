@@ -1,8 +1,18 @@
 <template>
-  <v-container class="white rounded-xl">
-    <div class="d-flex flex-wrap flex-md-nowrap flex-lg-nowrap mb-2">
+  <v-card class="rounded-lg" elevation="0" outlined>
+    <v-card-title class="list-panel-title">
+      <div>
+        <div>Filters</div>
+        <small>Create saved filter sets for this records table.</small>
+      </div>
+      <v-spacer></v-spacer>
+      <v-btn icon @click="$emit('close')">
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
+    </v-card-title>
+    <v-card-text>
+      <div class="list-toolbar">
       <v-autocomplete
-        rounded
         dense
         outlined
         return-object
@@ -13,57 +23,48 @@
         @change="handleChange"
       ></v-autocomplete>
       <v-btn
-        rounded
         depressed
         color="success"
-        class="ml-2 mr-1"
         @click="setFavoriteFilterSet"
         :loading="isUpdateLoading"
         :disabled="!validFilterSet"
       >
-        <i class="far fa-star mr-1"></i>
+        <v-icon left>mdi-star-outline</v-icon>
         Favorite
       </v-btn>
       <v-btn
-        rounded
         icon
         color="primary"
-        class="mr-1"
         :disabled="!validFilterSet"
         @click="$store.dispatch('getEntriesByDatabase')"
       >
-        <i class="fas fa-sync"></i>
+        <v-icon>mdi-refresh</v-icon>
       </v-btn>
       <v-btn
-        rounded
         icon
         color="primary"
-        class="mr-1"
         :disabled="!validFilterSet"
         @click="openForm"
       >
-        <i class="fas fa-cog"></i>
+        <v-icon>mdi-cog</v-icon>
       </v-btn>
-      <v-btn rounded icon color="primary" @click="openForm(false)">
-        <i class="fas fa-plus"></i>
+      <v-btn icon color="primary" @click="openForm(false)">
+        <v-icon>mdi-plus</v-icon>
       </v-btn>
     </div>
     <v-expand-transition>
       <v-form v-if="isFormOpen" ref="form" v-model="formValid">
-        <div class="d-flex">
+        <div class="filter-form-grid">
           <v-text-field
             :rules="[(v) => !!v || '']"
-            class="mr-1"
-            rounded
             dense
             outlined
             hide-details
-            label="Fitler Name"
+            label="Filter Name"
             v-model="filterSet.name"
           ></v-text-field
           ><v-autocomplete
             :rules="[(v) => (v != undefined && v != null) || '']"
-            rounded
             dense
             outlined
             hide-details
@@ -78,13 +79,11 @@
         <div
           v-for="(condition, idx) in conditions"
           :key="`condition-${idx}`"
-          class="d-flex justify-space-between"
-          style="gap: 5px"
+          class="condition-row"
         >
-          <v-container class="px-0">
+          <div>
             <v-autocomplete
               :rules="[(v) => !!v || '']"
-              rounded
               dense
               outlined
               return-object
@@ -95,11 +94,10 @@
               v-model="condition.field"
               @change="condition.value = null"
             ></v-autocomplete>
-          </v-container>
-          <v-container class="px-0">
+          </div>
+          <div>
             <v-autocomplete
               :rules="[(v) => !!v || '']"
-              rounded
               dense
               outlined
               hide-details
@@ -110,9 +108,8 @@
               v-model="condition.operator"
             >
             </v-autocomplete>
-          </v-container>
-          <v-container
-            class="px-0"
+          </div>
+          <div
             v-if="
               condition.field?.type == 'singleSelect' ||
               condition.field?.type == 'multipleSelect'
@@ -120,7 +117,6 @@
           >
             <v-autocomplete
               :rules="[(v) => !!v || '']"
-              rounded
               dense
               outlined
               :items="getChoicesByField(condition.field?.value)"
@@ -130,74 +126,66 @@
               hide-details
               v-model="condition.value"
             ></v-autocomplete>
-          </v-container>
+          </div>
 
-          <v-container v-else-if="condition.field?.type == 'date'" class="px-0">
+          <div v-else-if="condition.field?.type == 'date'">
             <date-picker
               :rules="[(v) => !!v || '']"
               v-model="condition.value"
             ></date-picker>
-          </v-container>
-          <v-container
-            v-else-if="condition.field?.type == 'number'"
-            class="px-0"
-          >
+          </div>
+          <div v-else-if="condition.field?.type == 'number'">
             <v-text-field
               :rules="[(v) => !!v || '']"
-              rounded
               outlined
               dense
               hide-details
               label="Value"
               v-model.number="condition.value"
             ></v-text-field>
-          </v-container>
-          <v-container style="width: 25%" class="px-0"
-            ><v-btn
-              rounded
-              depressed
-              icon
-              color="red"
-              @click="removeCondition(idx)"
-            >
-              <i class="fas fa-times"></i></v-btn
-          ></v-container>
+          </div>
+          <div v-else></div>
+          <div class="condition-actions">
+            <v-btn depressed icon color="red" @click="removeCondition(idx)">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </div>
         </div>
-        <v-container class="d-flex justify-space-between">
-          <v-btn rounded depressed color="primary" @click="addCondition">
-            <i class="fas fa-plus mr-1"></i>
-            <span>Condition</span> </v-btn
-          ><v-btn
+        <div class="filter-actions">
+          <v-btn depressed color="primary" @click="addCondition">
+            <v-icon left>mdi-plus</v-icon>
+            <span>Condition</span>
+          </v-btn>
+          <v-btn
             v-if="isUpdating"
-            rounded
             depressed
             color="warning"
             :loading="isUpdateLoading"
             :disabled="!formValid"
             @click="updateFilterSet"
           >
-            <i class="fa fa-save mr-1"></i>
+            <v-icon left>mdi-content-save</v-icon>
             <span>Update Filter Set</span>
           </v-btn>
           <v-btn
             v-else
-            rounded
             depressed
             color="primary"
             :loading="isAddLoading"
             :disabled="!formValid"
             @click="addFilterSet"
           >
-            <i class="fas fa-plus mr-1"></i>
+            <v-icon left>mdi-plus</v-icon>
             <span>Add Filter Set</span>
           </v-btn>
-        </v-container>
-        <v-container class="bg-grey lighten-4 rounded-xl">
+        </div>
+        <v-container class="bg-grey lighten-4 rounded-lg">
           <pre>{{ filter }}</pre>
         </v-container>
       </v-form>
-    </v-expand-transition>
-  </v-container>
+      </v-expand-transition>
+    </v-card-text>
+  </v-card>
 </template>
 <script>
 import backendService from "@/services/backend-service.js";
@@ -216,17 +204,19 @@ export default {
       return this.$store.getters["currentFilterSet"];
     },
     choices() {
-      return this.$store.getters["databaseToChoices"][
-        this.currentDatabase.value
-      ];
+      return (
+        this.$store.getters["databaseToChoices"][this.currentDatabase.value] ||
+        []
+      );
     },
     databaseToFilterSets() {
       return this.$store.getters["databaseToFilterSets"];
     },
     fields() {
-      let fields = this.$store.getters["databaseToFields"][
-        this.currentDatabase.value
-      ].filter(
+      let fields = (
+        this.$store.getters["databaseToFields"][this.currentDatabase.value] ||
+        []
+      ).filter(
         (e) =>
           e.type == "singleSelect" ||
           e.type == "multipleSelect" ||
@@ -261,7 +251,9 @@ export default {
           this.databaseToFilterSets[this.currentDatabase.value];
         if (filterSets && filterSets.length > 0)
           return filterSets.filter(
-            (e) => e.createdBy._id == this.currentUser.userId
+            (e) =>
+              e.isPublic ||
+              (e.createdBy && e.createdBy._id == this.currentUser.userId)
           );
       }
       return [];
@@ -468,3 +460,62 @@ export default {
   },
 };
 </script>
+<style scoped>
+.list-panel-title {
+  align-items: flex-start;
+}
+
+.list-panel-title small {
+  color: #627d98;
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 400;
+  margin-top: 4px;
+}
+
+.list-toolbar {
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) max-content max-content max-content max-content;
+  gap: 10px;
+  align-items: start;
+}
+
+.filter-form-grid {
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) minmax(160px, 240px);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.condition-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(180px, 1fr) minmax(180px, 1fr) max-content;
+  gap: 10px;
+  align-items: start;
+}
+
+.condition-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.filter-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+@media only screen and (max-width: 960px) {
+  .list-toolbar,
+  .filter-form-grid,
+  .condition-row {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-actions {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+</style>

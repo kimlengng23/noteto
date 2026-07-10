@@ -5,7 +5,7 @@
       <v-card-text class="d-flex flex-column">
         <div>
           <h3 class="text-center" v-if="comments.length == 0">
-            <i class="fas fa-comment-slash mr-1"></i>
+            <v-icon left>mdi-comment-off-outline</v-icon>
             There are no comments yet
           </h3>
           <v-list three-line>
@@ -13,7 +13,7 @@
               <v-list-item>
                 <v-list-item-avatar>
                   <v-btn icon>
-                    <i class="fas fa-user fa-lg"></i>
+                    <v-icon>mdi-account</v-icon>
                   </v-btn>
                 </v-list-item-avatar>
                 <v-list-item-content>

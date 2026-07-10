@@ -183,6 +183,96 @@ function getDatabaseRequests() {
   });
   return promise;
 }
+function deleteByCollection(collection, query) {
+  return dbConn.collection(collection).deleteMany(query).then((result) => {
+    return {
+      collection: collection,
+      deletedCount: result.deletedCount || 0,
+    };
+  });
+}
+function dropDatabase(databaseValue) {
+  let promise = new Promise((resolve, reject) => {
+    if (!databaseValue || !String(databaseValue).trim()) {
+      reject({ code: 400, message: "Database name is required" });
+      return;
+    }
+    const database = String(databaseValue).trim();
+    dbConn
+      .collection("DatabaseCollection")
+      .findOne({ value: database })
+      .then((databaseRecord) => {
+        if (!databaseRecord) {
+          reject({ code: 404, message: "Database not found" });
+          return;
+        }
+        dbConn
+          .collection("EntryCollection")
+          .find({ "_data.database": database }, { fields: { _id: 1 } })
+          .toArray()
+          .then((entries) => {
+            const entryIds = entries.map((entry) => entry._id.toString());
+            const entryObjectIds = entries.map((entry) => entry._id);
+            const deleteTasks = [
+              deleteByCollection("DatabaseCollection", { value: database }),
+              deleteByCollection("DatabaseAccessCollection", {
+                $or: [{ "database.value": database }, { database: database }],
+              }),
+              deleteByCollection("DatabaseRequestCollection", {
+                $or: [
+                  { value: database },
+                  { "database.value": database },
+                  { database: database },
+                ],
+              }),
+              deleteByCollection("SequenceCollection", { database: database }),
+              deleteByCollection("FieldCollection", { database: database }),
+              deleteByCollection("ChoiceCollection", { database: database }),
+              deleteByCollection("LayoutCollection", { database: database }),
+              deleteByCollection("HeaderSetCollection", { database: database }),
+              deleteByCollection("FilterSetCollection", { database: database }),
+              deleteByCollection("AutomationCollection", { database: database }),
+              deleteByCollection("EntryCollection", {
+                "_data.database": database,
+              }),
+            ];
+            if (entryIds.length > 0) {
+              deleteTasks.push(
+                deleteByCollection("CommentCollection", {
+                  entryId: { $in: entryIds },
+                })
+              );
+              deleteTasks.push(
+                deleteByCollection("HistoryCollection", {
+                  entryId: { $in: entryIds.concat(entryObjectIds) },
+                })
+              );
+            }
+            Promise.all(deleteTasks)
+              .then((results) => {
+                const summary = {};
+                results.forEach((result) => {
+                  summary[result.collection] = result.deletedCount;
+                });
+                resolve({ code: 200, data: summary });
+              })
+              .catch((err) => {
+                console.log("DatabaseService - dropDatabase", err);
+                reject({ code: 500, message: err });
+              });
+          })
+          .catch((err) => {
+            console.log("DatabaseService - dropDatabase", err);
+            reject({ code: 500, message: err });
+          });
+      })
+      .catch((err) => {
+        console.log("DatabaseService - dropDatabase", err);
+        reject({ code: 500, message: err });
+      });
+  });
+  return promise;
+}
 function updateDatabaseAccess(wrappedAccess, createdBy) {
   let today = new Date();
   let database = wrappedAccess.database;
@@ -273,6 +363,7 @@ module.exports = {
   setDb,
   addDatabase,
   addRequest,
+  dropDatabase,
   getAccessesByDatabase,
   getAllDatabases,
   getDatabaseToAccesses,

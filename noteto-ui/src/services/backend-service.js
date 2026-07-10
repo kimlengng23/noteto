@@ -1,21 +1,23 @@
 import axios from "axios";
-let host = window.location.hostname;
-//	let domain = "/entrytracker/api";
-//let storeApi = `https://${host}:3000/store/api`;
-//let entryTrackerApi = `https://${host}:3000/entryTracker/api`;
-//let domain = `https://${host}:3000/entryTracker/api`;
-//
-let domain = `https://127.0.0.1:443/api`;
-//let domain = `https://noteto.jaekjay.com/api`;
-if (host.toLowerCase().includes("jaekjay")) {
-  domain = `https://noteto2.jaekjay.com/api`;
-}
+let domain = process.env.VUE_APP_API_DOMAIN || "/api";
 function getHeaders() {
   let headers = {};
   headers.authorization = `bearer ${localStorage.getItem("token")}`;
   return headers;
 }
 export default {
+  getDatabaseStatus() {
+    let url = domain + "/system/database/status";
+    return axios.get(url);
+  },
+  testDatabaseConnection(config) {
+    let url = domain + "/system/database/test";
+    return axios.post(url, config);
+  },
+  saveDatabaseConnection(config) {
+    let url = domain + "/system/database/save";
+    return axios.post(url, config);
+  },
   addAutomation(automation) {
     let url = domain + "/automation/add";
     let headers = getHeaders();
@@ -84,6 +86,16 @@ export default {
     let url = domain + `/miscellaneous/delete/demo/request/by/id/${id}`;
     let headers = getHeaders();
     return axios.get(url, { headers: headers });
+  },
+  deleteField(field) {
+    let url = domain + `/field/delete`;
+    let headers = getHeaders();
+    return axios.post(url, field, { headers: headers });
+  },
+  dropDatabase(database) {
+    let url = domain + `/database/drop`;
+    let headers = getHeaders();
+    return axios.post(url, { database: database }, { headers: headers });
   },
   getAutomationsByDatabase(database) {
     let url = domain + `/automation/get/by/database/${database}`;
@@ -221,7 +233,7 @@ export default {
   },
   registerUser(account) {
     console.log(account)
-    let url = domain + `/user/add`;
+    let url = domain + `/user/register`;
     return axios.post(url, account);
   },
   removeLayoutByDatabase(database) {
@@ -254,13 +266,13 @@ export default {
   },
   login(login) {
     let url = domain + `/user/login`;
-    login.browser_id = crypto.randomUUID()
-    return axios.post(url, login, { withCredentials: true });
+    login.browser_id = crypto.randomUUID();
+    return axios.post(url, login);
   },
   logout() {
     let url = domain + `/user/logout`;
     let headers = getHeaders();
-    return axios.get(url, { headers: headers, withCredentials:true });
+    return axios.get(url, { headers: headers });
   },
   verifyToken() {
     let url = domain + `/user/verify/token`;

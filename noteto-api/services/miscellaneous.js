@@ -50,6 +50,7 @@ function getDropdowns() {
 		dbConn
 			.collection("DropdownCollection")
 			.find({})
+			.sort({ dropdown: 1, order: 1, displayName: 1 })
 			.toArray((err, results) => {
 				if (err) {
 					console.log("DropdownService - getDropdowns", err);

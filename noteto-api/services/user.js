@@ -39,10 +39,15 @@ function addAccount(userAccount) {
   return promise;
 }
 function login(account) {
-  account.email = account.email.toLowerCase().trim();
-  if (!account.username) {
-    account.username = account.email;
+  const username = (account.email || account.username || "").toLowerCase().trim();
+  if (!username) {
+    return Promise.reject({
+      code: 400,
+      message: "Email is required",
+    });
   }
+  account.email = username;
+  account.username = username;
   let promise = new Promise((resolve, reject) => {
     dbConn
       .collection("UserCollection")

@@ -5,7 +5,7 @@
 			<v-card-text>
 				<div v-for="entry in entries" :key="entry._id">
 					<v-container v-if="entry.inStock == 'Yes'">
-						<v-card elevation="0" outlined class="rounded-xl">
+						<v-card elevation="0" outlined class="">
 							<v-card-title>{{ entry.item }}</v-card-title>
 							<v-card-text class="d-flex justify-space-between">
 								<h1 class="primary--text">{{ entry.id }}</h1>

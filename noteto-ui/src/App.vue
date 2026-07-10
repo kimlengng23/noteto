@@ -7,6 +7,7 @@
     <v-main class="grey lighten-4">
       <router-view></router-view>
     </v-main>
+    <mongo-connection-dialog></mongo-connection-dialog>
     <general-dialog></general-dialog>
     <general-snackbar></general-snackbar>
   </v-app>
@@ -16,6 +17,7 @@
 import GeneralDialog from "./components/GeneralDialog.vue";
 import GeneralSnackbar from "./components/GeneralSnackbar.vue";
 import MainNavbar from "./components/Navbar.vue";
+import MongoConnectionDialog from "./components/MongoConnectionDialog.vue";
 import SecondNavbar from "./components/SecondNavbar.vue";
 import backendService from "./services/backend-service.js";
 export default {
@@ -42,16 +44,14 @@ export default {
           this.$store.dispatch("getDatabasesByUserId");
           this.$store.dispatch("getNavigationOptions");
           this.$store.dispatch("getDropdowns");
-          if (this.isAdmin) {
-            this.$store.dispatch("getAllDatabases");
-            this.$store.dispatch("getAllGroups");
-            this.$store.dispatch("getAllUsers");
-            this.$store.dispatch("getDatabaseToFields");
-            this.$store.dispatch("getDatabaseToChoices");
-            this.$store.dispatch("getDatabaseToHeaderSets");
-            this.$store.dispatch("getDatabaseToFilterSets");
-            this.$store.dispatch("getDatabaseToLayoutMappings");
-          }
+          this.$store.dispatch("getAllDatabases");
+          this.$store.dispatch("getAllGroups");
+          this.$store.dispatch("getAllUsers");
+          this.$store.dispatch("getDatabaseToFields");
+          this.$store.dispatch("getDatabaseToChoices");
+          this.$store.dispatch("getDatabaseToHeaderSets");
+          this.$store.dispatch("getDatabaseToFilterSets");
+          this.$store.dispatch("getDatabaseToLayoutMappings");
           setTimeout(() => {
             let query = this.$route.query;
             let databaseValue = query.database ? query.database : null;
@@ -84,6 +84,7 @@ export default {
     GeneralDialog,
     GeneralSnackbar,
     MainNavbar,
+    MongoConnectionDialog,
     SecondNavbar,
   },
   computed: {
@@ -128,5 +129,13 @@ body {
 }
 .kh {
   font-family: "Battambang", cursive;
+}
+
+.v-input:not(.v-input--selection-controls) .v-input__slot {
+  border-radius: 4px !important;
+}
+
+.v-text-field--rounded > .v-input__control > .v-input__slot {
+  padding: 0 12px !important;
 }
 </style>

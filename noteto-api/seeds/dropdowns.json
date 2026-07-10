@@ -1,0 +1,146 @@
+[
+  {
+    "dropdown": "fieldType",
+    "displayName": "Single Line Text",
+    "optionText": "Single Line Text",
+    "value": "singleLine",
+    "order": 10,
+    "isActive": true
+  },
+  {
+    "dropdown": "fieldType",
+    "displayName": "Multiple Lines Text",
+    "optionText": "Multiple Lines Text",
+    "value": "multipleLines",
+    "order": 20,
+    "isActive": true
+  },
+  {
+    "dropdown": "fieldType",
+    "displayName": "Number",
+    "optionText": "Number",
+    "value": "number",
+    "order": 30,
+    "isActive": true
+  },
+  {
+    "dropdown": "fieldType",
+    "displayName": "Date",
+    "optionText": "Date",
+    "value": "date",
+    "order": 40,
+    "isActive": true
+  },
+  {
+    "dropdown": "fieldType",
+    "displayName": "Single Select",
+    "optionText": "Single Select",
+    "value": "singleSelect",
+    "order": 50,
+    "isActive": true
+  },
+  {
+    "dropdown": "fieldType",
+    "displayName": "Multiple Select",
+    "optionText": "Multiple Select",
+    "value": "multipleSelect",
+    "order": 60,
+    "isActive": true
+  },
+  {
+    "dropdown": "fieldType",
+    "displayName": "Single User",
+    "optionText": "Single User",
+    "value": "singleUser",
+    "order": 70,
+    "isActive": true
+  },
+  {
+    "dropdown": "fieldType",
+    "displayName": "Multiple Users",
+    "optionText": "Multiple Users",
+    "value": "multipleUsers",
+    "order": 80,
+    "isActive": true
+  },
+  {
+    "dropdown": "fieldType",
+    "displayName": "Currency in Dollar",
+    "optionText": "Currency in Dollar",
+    "value": "currencyInDollar",
+    "order": 90,
+    "isActive": true
+  },
+  {
+    "dropdown": "fieldType",
+    "displayName": "Weight in Kilograms",
+    "optionText": "Weight in Kilograms",
+    "value": "weightInKg",
+    "order": 100,
+    "isActive": true
+  },
+  {
+    "dropdown": "fieldType",
+    "displayName": "Weight in Pounds",
+    "optionText": "Weight in Pounds",
+    "value": "weightInLb",
+    "order": 110,
+    "isActive": true
+  },
+  {
+    "dropdown": "fieldType",
+    "displayName": "List",
+    "optionText": "List",
+    "value": "list",
+    "order": 120,
+    "isActive": true
+  },
+  {
+    "dropdown": "rowType",
+    "displayName": "Row",
+    "optionText": "Row",
+    "value": "row",
+    "order": 10,
+    "isActive": true
+  },
+  {
+    "dropdown": "rowType",
+    "displayName": "Label",
+    "optionText": "Label",
+    "value": "label",
+    "order": 20,
+    "isActive": true
+  },
+  {
+    "dropdown": "autoType",
+    "displayName": "Condition Set",
+    "optionText": "Condition Set",
+    "value": "conditionSet",
+    "order": 10,
+    "isActive": true
+  },
+  {
+    "dropdown": "autoType",
+    "displayName": "Required Field",
+    "optionText": "Required Field",
+    "value": "required",
+    "order": 20,
+    "isActive": true
+  },
+  {
+    "dropdown": "autoType",
+    "displayName": "Set Value Button",
+    "optionText": "Set Value Button",
+    "value": "buttonSet",
+    "order": 30,
+    "isActive": true
+  },
+  {
+    "dropdown": "autoType",
+    "displayName": "Link Button",
+    "optionText": "Link Button",
+    "value": "link",
+    "order": 40,
+    "isActive": true
+  }
+]

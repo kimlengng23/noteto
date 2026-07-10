@@ -4,9 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./server.js",
+    "test": "node --check server.js",
+    "seed:dropdowns": "node ./scripts/seed-dropdowns.js",
     "dev": "nodemon --env-file=.env.development ./server.js",
-    "prod": "NODE_ENV=production node ./server-prod.js"
+    "prod": "NODE_ENV=production node ./server.js"
   },
   "keywords": [],
   "author": "",
@@ -16,7 +18,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.17.1",
     "json-2-csv": "^5.5.7",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.3",
     "mongodb": "^3.5.6",
     "multer": "^1.4.2",
     "nodemailer": "^6.7.2",

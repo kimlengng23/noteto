@@ -3,7 +3,9 @@ import VueRouter from "vue-router";
 import CustomView from "../views/CustomView.vue";
 import ListView from "../views/ListView.vue";
 import EntryForm from "../views/EntryForm.vue";
+import DashboardView from "../views/DashboardView.vue";
 import DatabaseSetting from "../views/DatabaseSetting.vue";
+import NewDatabase from "../views/NewDatabase.vue";
 import LoginPage from "../views/LoginPage.vue";
 import LogoutPage from "../views/LogoutPage.vue";
 import HomePage from "../views/HomePage.vue";
@@ -42,9 +44,19 @@ const routes = [
     component: EntryForm,
   },
   {
+    path: "/dashboard",
+    name: "Dashboard",
+    component: DashboardView,
+  },
+  {
     path: "/database/setting",
     name: "DatabaseSetting",
     component: DatabaseSetting,
+  },
+  {
+    path: "/database/new",
+    name: "NewDatabase",
+    component: NewDatabase,
   },
 
   {
@@ -174,6 +186,7 @@ router.beforeEach((to, from, next) => {
       to.name == "Logout" ||
       to.name == "DatabaseAccess" ||
       to.name == "AssignedListView" ||
+      to.name == "Dashboard" ||
       to.name == "DetailForm" ||
       to.name == "JaekJayCustomerDashboard" ||
       to.name == "DemoRequestList" ||

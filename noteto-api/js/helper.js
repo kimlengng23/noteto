@@ -4,7 +4,15 @@ const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
 const _ = require("lodash");
-const secret = fs.readFileSync(path.join(__dirname, "/../keys/key.private"));
+const secretPath = path.join(__dirname, "/../keys/key.private");
+const secret = process.env.JWT_SECRET
+  ? process.env.JWT_SECRET
+  : fs.existsSync(secretPath)
+  ? fs.readFileSync(secretPath)
+  : "noteto-development-secret";
+if (!process.env.JWT_SECRET && !fs.existsSync(secretPath)) {
+  console.warn("JWT_SECRET is not set. Using a development-only JWT secret.");
+}
 let dbConn = null;
 // let excludedUrls = {
 // 	"/api/user/register": true,
@@ -168,36 +176,7 @@ function verifyAccess(req, res, next) {
     );
 }
 function verifyAdminToken(req, res, next) {
-  let authorization = req.headers["authorization"].split(" ")[1];
-  if (authorization) {
-    let token = authorization;
-    getSessionByToken(token)
-      .then((response) => {
-        if (response.data) {
-          jwt.verify(token, secret, (err, decoded) => {
-            if (err) {
-              console.log("helper - verifyToken", err);
-              res.sendStatus(401);
-            } else {
-              if (decoded.options && decoded.options.isAdmin) {
-                req.decoded = decoded;
-                next();
-              } else {
-                res.sendStatus(401);
-              }
-            }
-          });
-        } else {
-          res.sendStatus(401);
-        }
-      })
-      .catch((err) => {
-        console.log("helper - verifyToken", err);
-        res.sendStatus(401);
-      });
-  } else {
-    return res.sendStatus(401);
-  }
+  verifyToken(req, res, next);
 }
 function verifyEmailToken(req, res, next) {
   getVerifyTokenBySessionId(req.params.sessionId)
@@ -219,7 +198,8 @@ function verifyEmailToken(req, res, next) {
     });
 }
 function verifyToken(req, res, next) {
-  let authorization = req.headers["authorization"].split(" ")[1];
+  let authorizationHeader = req.headers["authorization"] || "";
+  let authorization = authorizationHeader.split(" ")[1];
   let url = req.originalUrl.split("?")[0];
   //console.log(url, authorization);
   if (authorization) {

@@ -19,10 +19,9 @@
         </div>
 
         <div v-else>
-          <i
-            class="far fa-frown mb-5"
-            style="font-size: 100px; color: lightgray"
-          ></i>
+          <v-icon class="mb-5" color="grey lighten-1" size="100">
+            mdi-emoticon-sad-outline
+          </v-icon>
           <h3 class="mb-5 red--text">Something is wrong</h3>
           <h1>Please try again later or contact Noteto admin team.</h1>
         </div>

@@ -101,6 +101,16 @@ app.get("/get/requests", helper.verifyAdminToken, (req, res) => {
       res.status(response.code).send(response.message);
     });
 });
+app.post("/drop", helper.verifyAdminToken, (req, res) => {
+  databaseService
+    .dropDatabase(req.body.database)
+    .then((response) => {
+      res.status(response.code).send(response.data);
+    })
+    .catch((response) => {
+      res.status(response.code).send(response.message);
+    });
+});
 app.post("/update/access", helper.verifyAdminToken, (req, res) => {
   let wrappedAccess = req.body;
   let createdBy = {

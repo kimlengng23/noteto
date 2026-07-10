@@ -1,100 +1,111 @@
 <template>
-  <v-container fluid class="pa-0">
-    <v-tabs v-model="tab">
-      <v-tab>List View</v-tab>
-      <v-tab
-        :disabled="
-          databaseName != 'jaekJayCargo' && databaseName != 'jaekJayCustomOrder'
-        "
-      >
-        Dashboard
-      </v-tab>
-      <v-tab> List Settings </v-tab>
-    </v-tabs>
-
-    <v-tabs-items v-model="tab" touchless>
-      <v-tab-item>
-        <v-data-table
-          mobile-breakpoint="0"
-          :items-per-page="itemsPerPage"
-          :headers="headers"
-          :items="filteredEntries"
-          @update:items-per-page="setItemsPerPage"
+  <v-container fluid class="list-view-page">
+    <div class="list-toolbar">
+      <div>
+        <div class="overline primary--text">Records</div>
+        <h1>{{ currentDatabase.displayName || "Records" }}</h1>
+      </div>
+      <div class="list-actions">
+        <v-btn depressed outlined color="primary" @click="columnDialog = true">
+          <v-icon left>mdi-table-column</v-icon>
+          Column Sets
+        </v-btn>
+        <v-btn depressed outlined color="primary" @click="filterDialog = true">
+          <v-icon left>mdi-filter-variant</v-icon>
+          Filter Sets
+        </v-btn>
+        <v-btn
+          depressed
+          color="primary"
+          :to="{ name: 'NewEntry', query: { database: currentDatabase.value } }"
         >
-          <template v-slot:header>
-            <tr>
-              <th
-                v-for="(header, idx) in headers"
-                :key="`header-${idx}`"
-                style="min-width: 100px"
-              >
-                <v-text-field
-                  class="ma-2"
-                  rounded
-                  v-model="search[header.value]"
-                  placeholder="filter"
-                  solo-inverted
-                  hide-details
-                  flat
-                ></v-text-field>
-              </th>
-            </tr>
-          </template>
+          <v-icon left>mdi-plus</v-icon>
+          New
+        </v-btn>
+      </div>
+    </div>
 
-          <template v-slot:item="{ item, index }">
-            <tr
-              :class="[
-                index % 2 == 0 ? 'bg-grey entry' : 'entry',
-                selected == item._data.id ? 'selected-row' : '',
-              ]"
-              :key="`item-${index}`"
-              @click="highlightRow(item._data.id)"
-              @dblclick="goToDetailForm(item._id)"
-            >
-              <td
-                v-for="(header, idx) in headers"
-                :key="`header-${index}-${idx}`"
-              >
-                <span v-if="header.isDefault && header.value == '_data.id'">
-                  <a @click="goToDetailForm(item._id)">
-                    {{ item._data.id }}
-                  </a>
-                </span>
-                <span v-else-if="header.isDefault">
-                  {{ getDataText(header, item) }}
-                </span>
-                <span v-else>
-                  {{ getEntryText(header, item) }}
-                </span>
-              </td>
-            </tr>
-          </template>
-        </v-data-table>
-      </v-tab-item>
-      <v-tab-item>
-        <jaek-jay-dashboard></jaek-jay-dashboard>
-      </v-tab-item>
-      <v-tab-item>
-        <list-settings></list-settings>
-      </v-tab-item>
-    </v-tabs-items>
+    <v-data-table
+      mobile-breakpoint="0"
+      :items-per-page="itemsPerPage"
+      :headers="headers"
+      :items="filteredEntries"
+      @update:items-per-page="setItemsPerPage"
+    >
+      <template v-slot:header>
+        <tr>
+          <th
+            v-for="(header, idx) in headers"
+            :key="`header-${idx}`"
+            style="min-width: 100px"
+          >
+            <v-text-field
+              class="ma-2"
+              v-model="search[header.value]"
+              placeholder="filter"
+              solo-inverted
+              hide-details
+              flat
+            ></v-text-field>
+          </th>
+        </tr>
+      </template>
+
+      <template v-slot:item="{ item, index }">
+        <tr
+          :class="[
+            index % 2 == 0 ? 'bg-grey entry' : 'entry',
+            selected == item._data.id ? 'selected-row' : '',
+          ]"
+          :key="`item-${index}`"
+          @click="highlightRow(item._data.id)"
+          @dblclick="goToDetailForm(item._id)"
+        >
+          <td
+            v-for="(header, idx) in headers"
+            :key="`header-${index}-${idx}`"
+          >
+            <span v-if="header.isDefault && header.value == '_data.id'">
+              <a @click="goToDetailForm(item._id)">
+                {{ item._data.id }}
+              </a>
+            </span>
+            <span v-else-if="header.isDefault">
+              {{ getDataText(header, item) }}
+            </span>
+            <span v-else>
+              {{ getEntryText(header, item) }}
+            </span>
+          </td>
+        </tr>
+      </template>
+    </v-data-table>
+
+    <v-dialog v-model="columnDialog" max-width="960">
+      <header-section @close="columnDialog = false"></header-section>
+    </v-dialog>
+
+    <v-dialog v-model="filterDialog" max-width="1080">
+      <list-filter @close="filterDialog = false"></list-filter>
+    </v-dialog>
   </v-container>
 </template>
 <script>
-import JaekJayDashboard from "@/components/JaekJayDashboard.vue";
-import ListSettings from "@/components/ListSettings.vue";
+import HeaderSection from "@/components/HeaderSection.vue";
+import ListFilter from "@/components/ListFilter.vue";
 import eventBus from "@/js/event-bus";
 //import backendService from "../services/backend-service.js";
 export default {
   name: "ListView",
   components: {
-    "jaek-jay-dashboard": JaekJayDashboard,
-    "list-settings": ListSettings,
+    "header-section": HeaderSection,
+    "list-filter": ListFilter,
   },
   data() {
     return {
-      tab: 0,
+      columnDialog: false,
       datePicker: {},
+      filterDialog: false,
       filter: {},
       defaultHeaders: [
         {
@@ -126,6 +137,7 @@ export default {
   },
   mounted: function () {
     eventBus.$on("generateCsv", this.generateCsv);
+    this.loadListSettings();
   },
   computed: {
     currentDatabase() {
@@ -342,6 +354,13 @@ export default {
     setItemsPerPage(val) {
       this.$store.commit("setItemsPerPage", val);
     },
+    loadListSettings() {
+      if (!this.currentDatabase || !this.currentDatabase.value) return;
+      this.$store.dispatch("getFieldsByDatabase", this.currentDatabase.value);
+      this.$store.dispatch("getChoicesByDatabase", this.currentDatabase.value);
+      this.$store.dispatch("getHeaderSetsByDatabase");
+      this.$store.dispatch("getFilterSetsByDatabase");
+    },
     timer(seconds) {
       let promise = new Promise((resolve) => {
         setTimeout(() => {
@@ -352,7 +371,9 @@ export default {
     },
   },
   watch: {
-    currentDatabase: function () {},
+    currentDatabase: function () {
+      this.loadListSettings();
+    },
   },
   destroyed: function () {
     eventBus.$off("generateCsv");
@@ -360,6 +381,33 @@ export default {
 };
 </script>
 <style scoped>
+.list-view-page {
+  padding: 18px;
+}
+
+.list-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.list-toolbar h1 {
+  margin: 0;
+  color: #1f2933;
+  font-size: 1.8rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.list-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 tbody tr.entry:hover {
   background-color: #ff8521 !important;
   color: white;
@@ -382,5 +430,21 @@ tbody tr.entry:hover a {
 .filter {
   border-radius: 15px !important;
   min-height: 10px;
+}
+
+@media only screen and (max-width: 600px) {
+  .list-view-page {
+    padding: 12px;
+  }
+
+  .list-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .list-actions {
+    justify-content: flex-start;
+    width: 100%;
+  }
 }
 </style>

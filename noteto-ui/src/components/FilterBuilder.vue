@@ -71,7 +71,9 @@ const generatedFilter = computed(() => {
       } else if (!isNaN(Number(value))) {
         parsedValue = Number(value);
       }
-    } catch {}
+    } catch {
+      parsedValue = value;
+    }
 
     if (!filter[field]) filter[field] = {};
     filter[field][operator] = parsedValue;

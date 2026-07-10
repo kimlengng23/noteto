@@ -1,5 +1,5 @@
 <template>
-	<v-container class="white rounded-xl mt-2">
+	<v-container class="white mt-2">
 		<v-card elevation="0">
 			<v-card-text>
 				<v-row>
@@ -40,7 +40,7 @@
 						<v-card
 							elevation="0"
 							outlined
-							class="rounded-xl"
+							class=""
 							v-for="(item, idx) in itemList"
 							:key="idx">
 							<v-card-title>{{ item.itemTitle }}</v-card-title>
