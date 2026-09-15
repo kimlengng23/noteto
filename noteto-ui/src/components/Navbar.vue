@@ -8,8 +8,6 @@
 			<v-toolbar-title
 				class="text-h4"
 				@click="$router.push({ name: 'Home' }).catch(() => {})">
-				<span style="font-family: 'Dangrek', cursive">នូតតូក</span>
-				-
 				<span style="font-family: 'Sora', sans-serif">Noteto</span>
 			</v-toolbar-title>
 		</v-app-bar>
@@ -23,8 +21,6 @@
 				@click="drawer = !drawer"
 				v-if="isLoggedIn"></v-app-bar-nav-icon>
 			<v-toolbar-title v-if="isLoggedIn" @click="goToRecords">
-				<span style="font-family: 'Dangrek', cursive">នូតតូក</span>
-				-
 				<span style="font-family: 'Sora', sans-serif">Noteto</span>
 				<span
 					v-if="showDatabaseName"
@@ -38,8 +34,6 @@
 			<v-toolbar-title
 				v-else
 				@click="$router.push({ name: 'Home' }).catch(() => {})">
-				<span style="font-family: 'Dangrek', cursive">នូតតូក</span>
-				-
 				<span style="font-family: 'Sora', sans-serif">Noteto</span>
 			</v-toolbar-title>
 			<v-spacer></v-spacer>

@@ -1,8 +1,6 @@
 <template>
 	<v-container>
 		<v-container class="text-h4 text-center primary--text">
-			<span style="font-family: 'Dangrek', cursive">នូតតូក</span>
-			-
 			<span style="font-family: 'Sora', sans-serif">Noteto</span>
 		</v-container>
 		<v-container class="d-flex justify-center">

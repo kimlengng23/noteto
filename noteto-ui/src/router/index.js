@@ -16,18 +16,14 @@ import CustomViewList from "../views/CustomViewList.vue";
 import AssignedListView from "../views/AssignedListView.vue";
 import DemoRequestList from "../views/DemoRequestList.vue";
 import DatabaseRequest from "@/views/DatabaseRequest.vue";
-import JaekJayCargoReceipt from "../custom-views/JaekJayCargoReceipt.vue";
-import JaekJayCustomOrderReceipt from "../custom-views/JaekJayCustomOrderReceipt.vue";
-import JaekJayCustomOrder from "../custom-views/JaekJayCustomOrder.vue";
-import JaekJayEstimatedValue from "../custom-views/JaekJayEstimatedValue.vue";
-import JaekJayWholesale from "../custom-views/JaekJayWholesale.vue";
-import JaekJayMainWholesale from "../custom-views/JaekJayMainWholesale.vue";
-import JaekJayCustomerDashboard from "../custom-views/JaekJayCustomerDashboard.vue";
-import MtlWholesale from "../custom-views/MtlWholesale.vue";
 import store from "../stores/index.js";
 import _ from "lodash";
 Vue.use(VueRouter);
 //const scrollSection = document.getElementById("SCROLL_SECTION_ID");
+const RemovedCustomView = {
+  name: "RemovedCustomView",
+  render: (h) => h("div"),
+};
 const routes = [
   {
     path: "/list",
@@ -121,42 +117,42 @@ const routes = [
       {
         path: "jaekjaycargoreceipt/:id",
         name: "JaekJayCargoReceipt",
-        component: JaekJayCargoReceipt,
+        component: RemovedCustomView,
       },
       {
         path: "jaekjaycustomorderreceipt/:id",
         name: "JaekJayCustomOrderReceipt",
-        component: JaekJayCustomOrderReceipt,
+        component: RemovedCustomView,
       },
       {
         path: "jaekjaycustomorder/:id",
         name: "JaekJayCustomOrder",
-        component: JaekJayCustomOrder,
+        component: RemovedCustomView,
       },
       {
         path: "jaekjayestimatedvalue",
         name: "JaekJayEstimatedValue",
-        component: JaekJayEstimatedValue,
+        component: RemovedCustomView,
       },
       {
         path: "jaekjaywholesale",
         name: "JaekJayWholesale",
-        component: JaekJayWholesale,
+        component: RemovedCustomView,
       },
       {
         path: "jaekJayMainWholesale",
         name: "JaekJayMainWholesale",
-        component: JaekJayMainWholesale,
+        component: RemovedCustomView,
       },
       {
         path: "jaekJayCustomerDashboard",
         name: "JaekJayCustomerDashboard",
-        component: JaekJayCustomerDashboard,
+        component: RemovedCustomView,
       },
       {
         path: "mtlWholesale",
         name: "MtlWholesale",
-        component: MtlWholesale,
+        component: RemovedCustomView,
       },
     ],
   },
@@ -166,7 +162,7 @@ const router = new VueRouter({
   routes,
 });
 router.beforeEach((to, from, next) => {
-  document.title = "នូតតូក - Noteto";
+  document.title = "Noteto";
   const hasSession = store.getters.isLoggedIn || localStorage.getItem("token");
   if (to.name == "Home" && hasSession) {
     next({ name: "NewDatabase" });
