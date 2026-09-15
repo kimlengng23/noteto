@@ -2,7 +2,7 @@ services:
   api:
     build: ./noteto-api
     ports:
-      - "3001:3000"
+      - "3000:3000"
     environment:
       CONN_STR: mongodb://mongodb:27017
       DB_NAME: Noteto

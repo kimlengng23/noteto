@@ -30,7 +30,7 @@ http://localhost:8080
 
 The Docker setup starts:
 
-- API: `http://localhost:3001`
+- API: `http://localhost:3000`
 - UI: `http://localhost:8080`
 - MongoDB: internal Docker service only
 
