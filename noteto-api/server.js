@@ -1,11 +1,9 @@
 const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : ".env";
 require("dotenv").config({ path: envFile });
-const fs = require("fs");
 const path = require("path");
 const express = require("express");
 const cors = require("cors");
 const http = require("http");
-const https = require("https");
 const app = express();
 const database = require("./database.js");
 const systemController = require("./controllers/system.js");
@@ -86,22 +84,10 @@ function connectDatabase() {
 }
 
 function startServer() {
-	const securedPort = Number(process.env.SECURED_PORT || process.env.PORT || 3000);
-	const useHttps = String(process.env.USE_HTTPS || "").toLowerCase() === "true";
-	const keyPath = path.join(__dirname, "certs", "server.key");
-	const certPath = path.join(__dirname, "certs", "server.crt");
+	const port = Number(process.env.SECURED_PORT || process.env.PORT || 3000);
 
-	if (useHttps && fs.existsSync(keyPath) && fs.existsSync(certPath)) {
-		const key = fs.readFileSync(keyPath);
-		const cert = fs.readFileSync(certPath);
-		https.createServer({ key: key, cert: cert }, app).listen(securedPort, () => {
-			console.log("Noteto API is listening with HTTPS on port ", securedPort);
-		});
-		return;
-	}
-
-	http.createServer(app).listen(securedPort, () => {
-		console.log("Noteto API is listening with HTTP on port ", securedPort);
+	http.createServer(app).listen(port, () => {
+		console.log("Noteto API is listening with HTTP on port ", port);
 	});
 }
 

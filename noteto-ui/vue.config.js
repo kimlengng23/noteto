@@ -1,21 +1,10 @@
 const { defineConfig } = require("@vue/cli-service");
-const fs = require("fs");
-
-const useHttps = String(process.env.USE_HTTPS || "").toLowerCase() === "true";
-
-const httpsConfig =
-  useHttps && fs.existsSync("./certs/server.key") && fs.existsSync("./certs/server.crt")
-    ? {
-        key: fs.readFileSync("./certs/server.key"),
-        cert: fs.readFileSync("./certs/server.crt"),
-      }
-    : false;
 
 module.exports = defineConfig({
   transpileDependencies: ["vuetify"],
   lintOnSave: false,
   devServer: {
-    https: httpsConfig,
+    https: false,
     port: 8080,
     allowedHosts: "all",
     proxy: {
