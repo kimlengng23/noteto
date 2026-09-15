@@ -2,7 +2,7 @@ services:
   api:
     build: ./noteto-api
     ports:
-      - "3000:3000"
+      - "3001:3000"
     environment:
       CONN_STR: mongodb://mongodb:27017
       DB_NAME: Noteto
@@ -24,8 +24,6 @@ services:
 
   mongodb:
     image: mongo:7
-    ports:
-      - "27017:27017"
     volumes:
       - noteto-mongodb-data:/data/db
     healthcheck:
