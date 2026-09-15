@@ -60,7 +60,9 @@
                 <v-text-field
                   v-model="connectionString"
                   label="Connection string"
-                  placeholder="mongodb://127.0.0.1:27017"
+                  placeholder="mongodb+srv://username:password@cluster.example.mongodb.net"
+                  hint="Use your MongoDB URI. Encode special characters in passwords."
+                  persistent-hint
                   :disabled="loading"
                   outlined
                   dense></v-text-field>
@@ -69,15 +71,20 @@
                   v-model="databaseName"
                   label="Database name"
                   placeholder="Noteto"
+                  :class="{ 'locked-field': databaseNameLocked }"
+                  :readonly="databaseNameLocked"
                   :disabled="loading"
+                  :append-icon="
+                    databaseNameLocked ? 'mdi-lock-outline' : 'mdi-lock-open-outline'
+                  "
+                  @click:append="databaseNameLocked = !databaseNameLocked"
                   outlined
                   dense></v-text-field>
 
                 <div class="form-note">
-                  This saves the backend API's active MongoDB connection. Saved
-                  presets below are only shortcuts in this browser; a
-                  SQLite-backed connection library can move presets server-side
-                  later.
+                  This saves the backend API's active MongoDB connection in a
+                  local JSON config. Saved presets below are browser shortcuts
+                  for this device.
                 </div>
               </v-card-text>
               <v-card-actions class="connection-actions">
@@ -123,7 +130,9 @@
                 <span>
                   <strong>{{ connection.name }}</strong>
                   <small>{{ connection.connectionString }}</small>
+                  <em>Click to connect and continue to your database</em>
                 </span>
+                <v-icon color="primary">mdi-chevron-right</v-icon>
               </button>
             </div>
           </v-col>
@@ -165,6 +174,7 @@ export default {
       message: "",
       messageType: "info",
       isConnected: false,
+      databaseNameLocked: true,
       savedConnections: [],
       saving: false,
       testing: false,
@@ -425,6 +435,14 @@ export default {
   font-size: 0.88rem;
 }
 
+.locked-field {
+  opacity: 0.62;
+}
+
+.locked-field ::v-deep .v-input__slot {
+  background: #eef2f6 !important;
+}
+
 .connection-actions {
   flex-wrap: wrap;
   gap: 8px;
@@ -456,20 +474,28 @@ export default {
 .saved-connection {
   width: 100%;
   display: grid;
-  grid-template-columns: 34px 1fr;
+  grid-template-columns: 34px 1fr 28px;
   gap: 10px;
   align-items: center;
-  padding: 12px 0;
+  padding: 12px 8px;
   border: 0;
   border-top: 1px solid rgba(31, 41, 51, 0.08);
+  border-radius: 6px;
   background: transparent;
   color: #243b53;
   cursor: pointer;
   text-align: left;
 }
 
+.saved-connection:hover:not(:disabled),
+.saved-connection:focus-visible:not(:disabled) {
+  background: #eef6ff;
+  outline: none;
+}
+
 .saved-connection strong,
-.saved-connection small {
+.saved-connection small,
+.saved-connection em {
   display: block;
 }
 
@@ -479,6 +505,13 @@ export default {
   font-size: 0.78rem;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.saved-connection em {
+  color: #1565c0;
+  font-size: 0.78rem;
+  font-style: normal;
+  font-weight: 700;
 }
 
 .fade-up {

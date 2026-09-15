@@ -25,7 +25,7 @@ function getEntriesByDatabase(database) {
 }
 function run(database) {
 	let promise = new Promise((resolve, reject) => {
-		getEntriesByDatabase("jaekJayCargo").then((response) => {
+		getEntriesByDatabase("sampleCargo").then((response) => {
 			let mainEntries = response.data;
 			let mainDict = {}
 			const regex = /\d{4}/;
@@ -41,7 +41,7 @@ function run(database) {
 			}
 			//console.log(Object.keys(mainDict))
 			let promises = [];
-			getEntriesByDatabase("jaekJayCustomOrder").then((response) => {
+			getEntriesByDatabase("sampleCustomOrder").then((response) => {
 				let subEntries = response.data;
 				let preDate = null;
 				for(let i=0;i<subEntries.length;i++) {

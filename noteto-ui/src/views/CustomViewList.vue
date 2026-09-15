@@ -20,18 +20,6 @@ export default {
 	data() {
 		return {
 			views: [
-				{
-					name: "JaekJayEstimatedValue",
-					displayName: "Jaek Jay Estimated Value",
-				},
-				{
-					name: "JaekJayMainWholesale",
-					displayName: "Jaek Jay Main Wholesale",
-				},
-				{
-					name: "JaekJayWholesale",
-					displayName: "Jaek Jay Wholesale",
-				},
 			],
 		};
 	},

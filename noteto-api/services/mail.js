@@ -3,7 +3,7 @@ const mail = require("../js/mail.js");
 function sendAccountVerifyEmail(sessionInfo) {
   let promise = new Promise((resolve, reject) => {
     const mailData = {
-      from: "Noteto <tee.nguov@jaekjay.com>", // sender address
+      from: process.env.MAIL_FROM || "Noteto <no-reply@example.com>", // sender address
       to: sessionInfo["email"], // list of receivers
       subject: "No Reply: Verify Your Email",
       html: `
@@ -16,7 +16,7 @@ function sendAccountVerifyEmail(sessionInfo) {
   
       Sincerely,</br></br>
   
-      -Jaek Jay Team
+      -Noteto Team
   
       </p>`,
     };

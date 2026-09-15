@@ -26,19 +26,28 @@ export default {
     this.logout();
   },
   methods: {
+    clearSession() {
+      localStorage.removeItem("fullname");
+      localStorage.removeItem("username");
+      localStorage.removeItem("token");
+      localStorage.removeItem("userId");
+      localStorage.removeItem("session");
+      localStorage.removeItem("currentDatabase");
+      localStorage.removeItem("options");
+      localStorage.removeItem("nextRouteName");
+      this.$store.commit("setCurrentUser", {});
+      this.$store.commit("setCurrentDatabase", {});
+    },
+    goToDatabaseConnection() {
+      this.$router.replace({ name: "Home" }).catch(() => {});
+    },
     logout() {
-      if (!localStorage.getItem("token")) {
-        this.$router.push({ name: "Home" }).catch(() => {});
-        return;
-      }
-      backendService.logout().then(() => {
-        localStorage.removeItem("fullname");
-        localStorage.removeItem("username");
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("session");
-        localStorage.removeItem("currentDatabase");
-        localStorage.removeItem("options");
+      const logoutRequest = localStorage.getItem("token")
+        ? backendService.logout().catch(() => {})
+        : Promise.resolve();
+
+      logoutRequest.finally(() => {
+        this.clearSession();
         // this.$store.commit("setCurrentDatabase", {});
         // this.$store.commit("setAutomations", []);
         // this.$store.commit("setCurrentUser", {});
@@ -47,7 +56,7 @@ export default {
         // this.$store.commit("setAllDatabases", []);
         // this.$store.commit("setAvailableDatabases", []);
         setTimeout(() => {
-          this.$router.push({ name: "Home" }).catch(() => {});
+          this.goToDatabaseConnection();
         }, 1000);
       });
     },

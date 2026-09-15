@@ -27,18 +27,7 @@ app.get("/api/get/entry/:id", (req, res) => {
 		res.status(response.code).send(response.data);
 	});
 });
-app.get("/api/get/entries/by/database/:database", (req, res) => {
-	publicService.getEntriesByDatabase(req.params.database).then((response) => {
-		res.status(response.code).send(response.data);
-	});
-});
-app.get("/dashboard", (req, res) => {
-	res.sendFile(
-		path.join(
-			__dirname + `/dashboards/${req.query.database}-dashboard.html`
-		)
-	);
-});
+
 app.get("/assets/:name", (req, res) => {
 	let options = {
 		root: path.join(__dirname, "receipts/assets"),
@@ -70,30 +59,6 @@ app.get(
 			});
 	}
 );
-app.get("/api/get/customer/dashboard", helper.verifyToken, (req, res) => {
-	let customer = {
-		_id: req.decoded.userId,
-	};
-	publicService
-		.getCustomerDashboard(customer)
-		.then((response) => {
-			res.status(response.code).send(response.data);
-		})
-		.catch((response) => {
-			res.status(response.code).send(response.message);
-		});
-});
-app.get("/send/email", (req, res) => {
-	mailService
-		.sendAccountVerifyEmail({
-			first: "Tee",
-			last: "Nguov",
-			email: "kimlengng23@gmail.com",
-		})
-		.then((response) => {
-			res.sendStatus(response.code);
-		});
-});
 app.post("/api/add/demo/request", (req, res) => {
 	let demoRequest = req.body;
 	publicService.addDemoRequest(demoRequest).then((response) => {

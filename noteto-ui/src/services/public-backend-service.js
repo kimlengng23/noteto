@@ -5,7 +5,6 @@ function getHeaders() {
 	headers.authorization = `${localStorage.getItem("sessionId")}`;
 	return headers;
 }
-//domain = `https://noteto.jaekjay.com/public`;
 export default {
 	getEntriesByDatabase(database) {
 		let url = domain + `/api/get/entries/by/database/${database}`;

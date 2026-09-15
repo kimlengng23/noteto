@@ -64,94 +64,7 @@ function getAssignedEntriesByUserId(userId) {
   });
   return promise;
 }
-function getDashboardData() {
-  let promise = new Promise((resolve, reject) => {
-    dbConn
-      .collection("EntryCollection")
-      .find({
-        "_data.database": {
-          $in: ["jaekJayCargo", "jaekJayCustomOrder"],
-        },
-        "_data.isActive": true,
-        "_data.id": { $gte: 284 },
-      })
-      .sort({ "_data.id": -1 })
-      .toArray((err, results) => {
-        if (err) {
-          console.log("EntryService - getEntriesByDatabase", err);
-          reject({ code: 500, message: err });
-        } else {
-          let rows = [];
 
-          for (let i = 0; i < results.length; i++) {
-            let row = {};
-            if (results[i]._data.database == "jaekJayCargo") {
-              row.idx = i + 1;
-              row._id = results[i]._id;
-              row.type = "Shipment";
-              row.tracking = results[i]["mtlTracking#"]
-                ? results[i]["mtlTracking#"]
-                : "N/A";
-              row.dateCreated = results[i]["_data"]["dateCreated"];
-              row.paymentStatus = results[i]["customerPaymentStatus"]
-                ? results[i]["customerPaymentStatus"]["displayName"]
-                : "N/A";
-              row.amount = 0;
-              row.profit = 0;
-              row.amount = results[i]["mtlBillAmount"];
-              if (results[i]["chargeList"]) {
-                let sum = 0;
-                let list = results[i]["chargeList"];
-                for (let j = 0; j < list.length; j++) {
-                  sum += list[j]["quantity"] * list[j]["unitPrice"];
-                }
-                if (isNaN(sum)) continue;
-                row.profit = sum - row.amount;
-              }
-            } else {
-              row.idx = i + 1;
-              row._id = results[i]._id;
-              row.type = results[i]["invoiceType"]
-                ? results[i]["invoiceType"]["displayName"]
-                : "N/A";
-              row.tracking = results[i]["mtlTracking"]
-                ? results[i]["mtlTracking"]
-                : "N/A";
-              row.dateCreated = results[i]["_data"]["dateCreated"];
-              row.paymentStatus = results[i]["paymentStatus"]
-                ? results[i]["paymentStatus"]["displayName"]
-                : "N/A";
-              row.amount = 0;
-              row.profit = 0;
-              if (results[i]["mtlPaymentAmount"]) {
-                row.amount = results[i]["mtlPaymentAmount"];
-              }
-              if (results[i]["itemList"]) {
-                let sum = 0;
-                let list = results[i]["itemList"];
-                for (let j = 0; j < list.length; j++) {
-                  let sub = list[j]["itemQty"] * list[j]["itemUnitPrice"];
-
-                  let tax = list[j]["itemTax"]
-                    ? (list[j]["itemTax"] * sub) / 100
-                    : 0;
-                  sum += sub + tax;
-                }
-                if (isNaN(sum)) continue;
-                if (results[i]["collectingFee"]) {
-                  sum = ((results[i]["collectingFee"] + 100) * sum) / 100;
-                }
-                row.profit = sum - row.amount;
-              }
-            }
-            rows.push(row);
-          }
-          resolve({ code: 200, data: rows });
-        }
-      });
-  });
-  return promise;
-}
 function getEmptyEntryByDatabase(database) {
   let promise = new Promise((resolve, reject) => {
     dbConn
@@ -316,7 +229,6 @@ module.exports = {
   addEntry2,
   deleteEntryById,
   getAssignedEntriesByUserId,
-  getDashboardData,
   getEntryById,
   getEmptyEntryByDatabase,
   getEntriesByDatabase,

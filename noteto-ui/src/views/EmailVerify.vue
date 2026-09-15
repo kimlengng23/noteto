@@ -10,7 +10,7 @@
         </div>
         <div v-else-if="isSuccessful">
           <img
-            src="https://noteto.jaekjay.com/asset/party-popper.png"
+            src="@/assets/party-popper.png"
             width="200"
             height="200"
           />

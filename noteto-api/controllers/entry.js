@@ -58,16 +58,6 @@ app.get("/get/assigned", helper.verifyToken, (req, res) => {
       res.status(response.code).send(response.message);
     });
 });
-app.get("/get/dashboard/data", helper.verifyToken, (req, res) => {
-  entryService
-    .getDashboardData()
-    .then((response) => {
-      res.status(response.code).send(response.data);
-    })
-    .catch((response) => {
-      res.status(response.code).send(response.message);
-    });
-});
 app.post("/get/by/database/:database", helper.verifyToken, (req, res) => {
   let filter = req.body;
   entryService
@@ -133,13 +123,13 @@ app.get("/backfill/:database", helper.verifyToken, (req, res) => {
 app.get("/get/cvs/report/:database", (req, res) => {
   let database = req.params.database;
   let filter = {};
-  if (database == "jaekJayCargo") {
+  if (database == "sampleCargo") {
     filter = {
       "_data.database": database,
       "_data.isActive": true,
       dateShipped: { $gt: "2024-01-01" },
     };
-  } else if (database == "jaekJayCustomOrder") {
+  } else if (database == "sampleCustomOrder") {
     filter = {
       "_data.database": database,
       "_data.isActive": true,
@@ -151,7 +141,7 @@ app.get("/get/cvs/report/:database", (req, res) => {
     let rows = [];
     for (let i = 0; i < results.length; i++) {
       let row = {};
-      if (results[i]._data.database == "jaekJayCargo") {
+      if (results[i]._data.database == "sampleCargo") {
         let year = new Date(results[i]["_data"]["dateCreated"]).getFullYear();
         if (year != 2024) continue;
         row.idx = i + 1;
@@ -174,7 +164,7 @@ app.get("/get/cvs/report/:database", (req, res) => {
           if (isNaN(sum)) continue;
           row.amount = sum;
         }
-      } else if (results[i]._data.database == "jaekJayCustomOrder") {
+      } else if (results[i]._data.database == "sampleCustomOrder") {
         let year = new Date(results[i]["_data"]["dateCreated"]).getFullYear();
         if (year != 2024) continue;
         row.idx = i + 1;

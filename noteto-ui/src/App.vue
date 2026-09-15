@@ -83,7 +83,6 @@ export default {
       return (
         databases.find((database) => database.value == queryDatabaseValue) ||
         databases.find((database) => database.value == storedDatabase.value) ||
-        databases[0] ||
         {}
       );
     },

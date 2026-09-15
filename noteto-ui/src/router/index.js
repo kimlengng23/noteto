@@ -3,7 +3,6 @@ import VueRouter from "vue-router";
 import CustomView from "../views/CustomView.vue";
 import ListView from "../views/ListView.vue";
 import EntryForm from "../views/EntryForm.vue";
-import DashboardView from "../views/DashboardView.vue";
 import DatabaseSetting from "../views/DatabaseSetting.vue";
 import NewDatabase from "../views/NewDatabase.vue";
 import LoginPage from "../views/LoginPage.vue";
@@ -20,10 +19,6 @@ import store from "../stores/index.js";
 import _ from "lodash";
 Vue.use(VueRouter);
 //const scrollSection = document.getElementById("SCROLL_SECTION_ID");
-const RemovedCustomView = {
-  name: "RemovedCustomView",
-  render: (h) => h("div"),
-};
 const routes = [
   {
     path: "/list",
@@ -40,11 +35,7 @@ const routes = [
     name: "DetailForm",
     component: EntryForm,
   },
-  {
-    path: "/dashboard",
-    name: "Dashboard",
-    component: DashboardView,
-  },
+ 
   {
     path: "/database/setting",
     name: "DatabaseSetting",
@@ -113,47 +104,7 @@ const routes = [
         path: "list",
         name: "CustomViewList",
         component: CustomViewList,
-      },
-      {
-        path: "jaekjaycargoreceipt/:id",
-        name: "JaekJayCargoReceipt",
-        component: RemovedCustomView,
-      },
-      {
-        path: "jaekjaycustomorderreceipt/:id",
-        name: "JaekJayCustomOrderReceipt",
-        component: RemovedCustomView,
-      },
-      {
-        path: "jaekjaycustomorder/:id",
-        name: "JaekJayCustomOrder",
-        component: RemovedCustomView,
-      },
-      {
-        path: "jaekjayestimatedvalue",
-        name: "JaekJayEstimatedValue",
-        component: RemovedCustomView,
-      },
-      {
-        path: "jaekjaywholesale",
-        name: "JaekJayWholesale",
-        component: RemovedCustomView,
-      },
-      {
-        path: "jaekJayMainWholesale",
-        name: "JaekJayMainWholesale",
-        component: RemovedCustomView,
-      },
-      {
-        path: "jaekJayCustomerDashboard",
-        name: "JaekJayCustomerDashboard",
-        component: RemovedCustomView,
-      },
-      {
-        path: "mtlWholesale",
-        name: "MtlWholesale",
-        component: RemovedCustomView,
-      },
+      }
     ],
   },
 ];
@@ -171,13 +122,6 @@ router.beforeEach((to, from, next) => {
   if (
     to.name == "CustomView" ||
     to.name == "CustomViewList" ||
-    to.name == "JaekJayCargoReceipt" ||
-    to.name == "JaekJayCustomOrderReceipt" ||
-    to.name == "JaekJayCustomOrder" ||
-    to.name == "JaekJayEstimatedValue" ||
-    to.name == "JaekJayWholesale" ||
-    to.name == "JaekJayMainWholesale" ||
-    to.name == "MtlWholesale" ||
     to.name == "Login" ||
     to.name == "UserRegister" ||
     to.name == "Home" ||
@@ -194,9 +138,7 @@ router.beforeEach((to, from, next) => {
       to.name == "Logout" ||
       to.name == "DatabaseAccess" ||
       to.name == "AssignedListView" ||
-      to.name == "Dashboard" ||
       to.name == "DetailForm" ||
-      to.name == "JaekJayCustomerDashboard" ||
       to.name == "DemoRequestList" ||
       to.name == "DatabaseRequest"
     ) {

@@ -687,7 +687,6 @@ export default {
         this.findDatabase(currentValue) ||
         this.findDatabase(storedDatabase.value) ||
         (currentValue ? this.currentDatabase : null) ||
-        this.databases[0] ||
         null
       );
     },

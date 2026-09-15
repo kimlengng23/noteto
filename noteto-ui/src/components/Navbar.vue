@@ -47,6 +47,7 @@
 				item-text="displayName"
 				item-value="value"
 				:value="activeDatabaseValue"
+				placeholder="Select database"
 				hide-details
 				@change="changeDatabase"></v-autocomplete>
 			<v-spacer v-if="!isMobile()"></v-spacer>
@@ -307,7 +308,7 @@ export default {
 			} catch (error) {
 				console.log(error);
 			}
-			return this.databases.length > 0 ? this.databases[0] : {};
+			return {};
 		},
 		getDatabaseQuery() {
 			return this.activeDatabaseValue
