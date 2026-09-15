@@ -1,5 +1,4 @@
 const helper = require("../js/helper.js");
-const mailService = require("./mail.js");
 let dbConn = null;
 function setDb(conn) {
   dbConn = conn;
@@ -23,15 +22,6 @@ function addAccount(userAccount) {
           console.log("UserService - addAccount", err);
           reject({ code: 500, message: err });
         } else {
-          let sessionInfo = {
-            email: userAccount["email"].toLowerCase().trim(),
-            first: userAccount["first"],
-            last: userAccount["last"],
-          };
-          helper.createVerifySession(sessionInfo).then((response) => {
-            sessionInfo["sessionId"] = response.data._id;
-            mailService.sendAccountVerifyEmail(sessionInfo);
-          });
           resolve({ code: 200 });
         }
       });
@@ -61,14 +51,15 @@ function login(account) {
             result.salt
           );
           if (inputSaltedPassword == result.password) {
+            let options = result["options"]
+              ? Object.assign({}, result["options"], { isVerified: true })
+              : getDefaultUserOptions();
             let sessionInfo = {
               last: result["last"],
               first: result["first"],
               userId: result["_id"].toString(),
               username: result["username"],
-              options: result["options"]
-                ? result["options"]
-                : getDefaultUserOptions(),
+              options: options,
             };
             helper.createSession(sessionInfo).then((response) => {
               sessionInfo["token"] = response.data.token;
@@ -130,7 +121,7 @@ function getAccountByUsername(username) {
 
 function getDefaultUserOptions() {
   let userOptions = {
-    isVerified: false,
+    isVerified: true,
     isAdmin: false,
   };
   return userOptions;

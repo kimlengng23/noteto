@@ -17,6 +17,7 @@
 							hide-details
 							:rules="emailRules"
 							label="Email"
+							prepend-inner-icon="mdi-email-outline"
 							v-model="email"
 							v-on:keyup.enter="login()"></v-text-field>
 						<v-text-field
@@ -26,6 +27,7 @@
 							:rules="pwRules"
 							type="password"
 							label="Password"
+							prepend-inner-icon="mdi-lock-outline"
 							v-model="password"
 							v-on:keyup.enter="login()"></v-text-field>
 					</v-form>
@@ -107,11 +109,14 @@ export default {
 					this.$store.dispatch("getDatabaseToLayoutMappings");
 					this.$store.dispatch("getDatabaseToChoices");
 					setTimeout(() => {
-						let nextRouteName = "Home";
+						let nextRouteName = "NewDatabase";
 						if (localStorage.getItem("nextRouteName")) {
 							nextRouteName =
 								localStorage.getItem("nextRouteName");
 							localStorage.removeItem("nextRouteName");
+						}
+						if (nextRouteName == "Home" || nextRouteName == "Login") {
+							nextRouteName = "NewDatabase";
 						}
 						this.$router.push({ name: nextRouteName });
 						this.isLoading = false;

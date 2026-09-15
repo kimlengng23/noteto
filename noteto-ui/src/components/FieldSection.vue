@@ -3,20 +3,6 @@
 		<v-card class="rounded-lg" elevation="0" outlined>
 			<v-card-text>
 				<v-form ref="fieldForm" lazy-validation>
-					<v-autocomplete
-						outlined
-						dense
-						:items="databases"
-						:item-text="
-							(item) => {
-								return `${item.displayName} - ${item.value}`;
-							}
-						"
-						item-value="value"
-						filled
-						label="Database"
-						v-model="selectedDatabase"
-						return-object></v-autocomplete>
 					<h2 class="mb-1">Field</h2>
 					<v-autocomplete
 						outlined
@@ -79,6 +65,50 @@
 										:rules="
 											choiceValueRules(choice)
 										"></v-text-field>
+								</div>
+								<div>
+									<v-menu offset-y>
+										<template v-slot:activator="{ on, attrs }">
+											<v-btn
+												block
+												outlined
+												depressed
+												v-bind="attrs"
+												v-on="on">
+												<span
+													class="choice-color-swatch"
+													:style="{
+														backgroundColor:
+															getChoiceColor(
+																choice,
+															),
+													}"></span>
+												Color
+											</v-btn>
+										</template>
+										<div class="choice-color-menu">
+											<button
+												v-for="color in choiceColors"
+												:key="color"
+												type="button"
+												class="choice-color-option"
+												:class="{
+													'choice-color-option-selected':
+														getChoiceColor(choice) ==
+														color,
+												}"
+												:style="{
+													backgroundColor: color,
+												}"
+												:aria-label="`Set color ${color}`"
+												@click="
+													setChoiceColor(
+														choice,
+														color,
+													)
+												"></button>
+										</div>
+									</v-menu>
 								</div>
 								<div class="choice-actions">
 									<v-btn
@@ -177,9 +207,9 @@
 					<template v-slot:default>
 						<thead>
 							<tr>
-								<th>Display Name</th>
-								<th>Name</th>
+								<th>Field</th>
 								<th>Type</th>
+								<th>Details</th>
 								<th class="text-right">Actions</th>
 							</tr>
 						</thead>
@@ -189,9 +219,16 @@
 								v-for="field in fields"
 								:key="field.value"
 								@click="getFieldToUpdate(field)">
-								<td>{{ field.displayName }}</td>
-								<td>{{ field.value }}</td>
-								<td>{{ field.type }}</td>
+								<td>
+									<div class="field-display-name">
+										{{ field.displayName }}
+									</div>
+									<div class="field-value-name">
+										{{ field.value }}
+									</div>
+								</td>
+								<td>{{ getFieldTypeDisplayName(field.type) }}</td>
+								<td>{{ getFieldDetails(field) }}</td>
 								<td class="text-right">
 									<v-btn
 										icon
@@ -263,7 +300,6 @@ export default {
 			types: [],
 			headerSets: [],
 			listFields: [],
-			selectedDatabase: {},
 			dollarOptions: {
 				locale: "en-US",
 				prefix: "$",
@@ -291,18 +327,29 @@ export default {
 			isDeleteLoading: false,
 			selectedField: null,
 			lastFieldDisplayName: "",
+			choiceColors: [
+				"#e0e0e0",
+				"#90a4ae",
+				"#42a5f5",
+				"#26a69a",
+				"#66bb6a",
+				"#d4e157",
+				"#ffca28",
+				"#ffa726",
+				"#ef5350",
+				"#ec407a",
+				"#ab47bc",
+				"#7e57c2",
+			],
 		};
 	},
 	mixins: [formMixin],
-	mounted: function () {
-		this.selectDefaultDatabase();
-	},
 	computed: {
 		activeChoices() {
 			return this.choices.filter((choice) => choice.isActive !== false);
 		},
-		databases() {
-			return this.$store.getters["allDatabases"] || [];
+		currentDatabase() {
+			return this.$store.getters["currentDatabase"] || {};
 		},
 		databaseToFields() {
 			return this.$store.getters["databaseToFields"] || {};
@@ -311,10 +358,7 @@ export default {
 			return this.$store.getters["databaseToChoices"] || {};
 		},
 		databaseValue() {
-			if (this.selectedDatabase && this.selectedDatabase.value) {
-				return this.selectedDatabase.value;
-			}
-			return null;
+			return this.currentDatabase.value || null;
 		},
 		fields() {
 			return this.databaseToFields[this.databaseValue] || [];
@@ -365,19 +409,12 @@ export default {
 		},
 	},
 	methods: {
-		selectDefaultDatabase() {
-			const currentDatabase = this.$store.getters["currentDatabase"];
-			if (currentDatabase && currentDatabase.value) {
-				this.selectedDatabase = currentDatabase;
-			} else if (this.databases.length > 0) {
-				this.selectedDatabase = this.databases[0];
-			}
-		},
 		addChoice() {
 			this.choices.push({
 				isActive: true,
 				field: this.fieldValue,
 				database: this.databaseValue,
+				color: "#e0e0e0",
 			});
 		},
 		activateChoice(idx) {
@@ -454,6 +491,46 @@ export default {
 			} else {
 				return obj.displayName;
 			}
+		},
+		getChoiceColor(choice) {
+			return this.normalizeChoiceColor(choice && choice.color);
+		},
+		setChoiceColor(choice, color) {
+			this.$set(choice, "color", this.normalizeChoiceColor(color));
+		},
+		normalizeChoiceColor(color) {
+			if (!color) return "#e0e0e0";
+			if (typeof color == "string") {
+				return color.trim() || "#e0e0e0";
+			}
+			if (typeof color == "object") {
+				return (
+					color.hexa ||
+					color.hex ||
+					color.value ||
+					"#e0e0e0"
+				);
+			}
+			return "#e0e0e0";
+		},
+		getFieldTypeDisplayName(fieldType) {
+			const type = this.fieldTypes.find((item) => item.value == fieldType);
+			return type ? type.displayName : fieldType;
+		},
+		getFieldDetails(field) {
+			if (!field) return "";
+			if (field.type == "singleSelect" || field.type == "multipleSelect") {
+				const choices = this.fieldToChoices[field.value] || [];
+				return `${choices.length} choices`;
+			}
+			if (field.type == "list") {
+				const listFields = field.listFields || [];
+				return `${listFields.length} within fields`;
+			}
+			if (field.options && field.options.precision !== undefined) {
+				return `Precision ${field.options.precision}`;
+			}
+			return "";
 		},
 		getFieldToUpdate(field) {
 			this.selectedField = field;
@@ -671,6 +748,7 @@ export default {
 				if (this.hasText(choice.displayName)) {
 					choice.displayName = choice.displayName.trim();
 				}
+				choice.color = this.normalizeChoiceColor(choice.color);
 				choice.field = this.fieldValue;
 				choice.database = this.databaseValue;
 				if (choice.isActive === undefined) choice.isActive = true;
@@ -843,7 +921,7 @@ export default {
 
 .choice-row {
 	display: grid;
-	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) max-content;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 120px max-content;
 	gap: 12px;
 	align-items: start;
 	margin-bottom: 10px;
@@ -853,6 +931,52 @@ export default {
 	display: flex;
 	justify-content: center;
 	padding-top: 2px;
+}
+
+.choice-color-swatch {
+	display: inline-block;
+	width: 14px;
+	height: 14px;
+	margin-right: 8px;
+	border: 1px solid rgba(0, 0, 0, 0.18);
+	border-radius: 50%;
+}
+
+.choice-color-menu {
+	display: grid;
+	grid-template-columns: repeat(4, 28px);
+	gap: 8px;
+	padding: 10px;
+	background: #ffffff;
+	border: 1px solid rgba(0, 0, 0, 0.12);
+	border-radius: 6px;
+	box-shadow: 0 8px 22px rgba(15, 23, 42, 0.14);
+}
+
+.choice-color-option {
+	width: 28px;
+	height: 28px;
+	padding: 0;
+	cursor: pointer;
+	border: 2px solid rgba(0, 0, 0, 0.16);
+	border-radius: 50%;
+	outline: none;
+}
+
+.choice-color-option:hover,
+.choice-color-option-selected {
+	border-color: #102a43;
+	box-shadow: 0 0 0 2px rgba(21, 101, 192, 0.18);
+}
+
+.field-display-name {
+	color: #1f2933;
+	font-weight: 700;
+}
+
+.field-value-name {
+	color: rgba(0, 0, 0, 0.52);
+	font-size: 0.78rem;
 }
 
 @media only screen and (max-width: 960px) {

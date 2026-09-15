@@ -33,6 +33,14 @@
   },
   {
     "dropdown": "fieldType",
+    "displayName": "Date Time",
+    "optionText": "Date Time",
+    "value": "dateTime",
+    "order": 45,
+    "isActive": true
+  },
+  {
+    "dropdown": "fieldType",
     "displayName": "Single Select",
     "optionText": "Single Select",
     "value": "singleSelect",
@@ -117,6 +125,14 @@
     "optionText": "Condition Set",
     "value": "conditionSet",
     "order": 10,
+    "isActive": true
+  },
+  {
+    "dropdown": "autoType",
+    "displayName": "Set",
+    "optionText": "Set",
+    "value": "set",
+    "order": 15,
     "isActive": true
   },
   {

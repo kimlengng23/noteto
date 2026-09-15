@@ -139,16 +139,30 @@ export default new Vuex.Store({
       }
     },
     addNewChoices(state, payload) {
-      let databaseToChoices = state.databaseToChoices;
+      if (!payload || payload.length == 0) return;
+      const databaseValue = payload[0].database;
+      const choices = state.databaseToChoices[databaseValue] || [];
       payload.forEach((choice) => {
-        if (!databaseToChoices[choice.database])
-          databaseToChoices[choice.database] = {};
-        if (!databaseToChoices[choice.database][choice.field])
-          databaseToChoices[choice.database][choice.field] = [];
-        databaseToChoices[choice.database][choice.field].push(choice);
+        choices.push(choice);
       });
+      Vue.set(state.databaseToChoices, databaseValue, choices);
+      if (state.currentDatabase.value == databaseValue) {
+        state.choices = choices;
+        let fieldToChoices = {};
+        for (let i = 0; i < choices.length; i++) {
+          let choice = choices[i];
+          if (!fieldToChoices[choice.field]) {
+            fieldToChoices[choice.field] = [];
+          }
+          fieldToChoices[choice.field].push(choice);
+        }
+        state.fieldToChoices = fieldToChoices;
+      }
     },
     addNewField(state, payload) {
+      if (!state.databaseToFields[payload.database]) {
+        Vue.set(state.databaseToFields, payload.database, []);
+      }
       state.databaseToFields[payload.database].push(payload);
     },
 
@@ -158,7 +172,7 @@ export default new Vuex.Store({
     addChoicesToDict(state, payload) {
       if (payload && payload.length > 0) {
         let databaseValue = payload[0].database;
-        state.databaseToChoices[databaseValue] = payload;
+        Vue.set(state.databaseToChoices, databaseValue, payload);
       }
     },
     addFieldsToDict(state, payload) {
@@ -242,13 +256,26 @@ export default new Vuex.Store({
       }
     },
     replaceChoicesInDatabaseToChoices(state, payload) {
+      if (!payload || payload.length == 0) return;
       let field = payload[0].field;
       let database = payload[0].database;
       let choices = state.databaseToChoices[database];
       if (!choices) choices = [];
       choices = choices.filter((choice) => choice.field != field);
       choices = choices.concat(payload);
-      state.databaseToChoices[database] = choices;
+      Vue.set(state.databaseToChoices, database, choices);
+      if (state.currentDatabase.value == database) {
+        state.choices = choices;
+        let fieldToChoices = {};
+        for (let i = 0; i < choices.length; i++) {
+          let choice = choices[i];
+          if (!fieldToChoices[choice.field]) {
+            fieldToChoices[choice.field] = [];
+          }
+          fieldToChoices[choice.field].push(choice);
+        }
+        state.fieldToChoices = fieldToChoices;
+      }
     },
 
     setAllDatabases(state, payload) {
@@ -491,22 +518,26 @@ export default new Vuex.Store({
         context.commit("setDropdowns", response.data);
       });
     },
-    getEmptyEntryByDatabase(context) {
-      backendService
-        .getEmptyEntryByDatabase(context.state.currentDatabase.value)
+    getEmptyEntryByDatabase(context, payload) {
+      const databaseValue = payload || context.state.currentDatabase.value;
+      if (!databaseValue) return Promise.resolve();
+      return backendService
+        .getEmptyEntryByDatabase(databaseValue)
         .then((response) => {
           context.commit("setEmptyEntry", response.data);
         });
     },
-    getEntriesByDatabase(context) {
+    getEntriesByDatabase(context, payload) {
+      const databaseValue = payload || context.state.currentDatabase.value;
+      if (!databaseValue) return Promise.resolve();
       let conditions = {};
       try {
         conditions = JSON.parse(context.getters.currentFilterSet.conditions);
       } catch (err) {
         conditions = {};
       }
-      backendService
-        .getEntriesByDatabase(context.state.currentDatabase.value, conditions)
+      return backendService
+        .getEntriesByDatabase(databaseValue, conditions)
         .then((response) => {
           context.commit("setEntries", response.data);
         });
@@ -545,6 +576,7 @@ export default new Vuex.Store({
             }
           } else {
             context.commit("setEmptyHeaderSets", databaseValue);
+            context.commit("setCurrentHeaderSet", {});
           }
         });
     },
@@ -564,6 +596,7 @@ export default new Vuex.Store({
             }
           } else {
             context.commit("setEmptyFilterSets", databaseValue);
+            context.commit("setCurrentFilterSet", {});
           }
         });
     },

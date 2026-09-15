@@ -9,6 +9,7 @@ import NewDatabase from "../views/NewDatabase.vue";
 import LoginPage from "../views/LoginPage.vue";
 import LogoutPage from "../views/LogoutPage.vue";
 import HomePage from "../views/HomePage.vue";
+import HelpPage from "../views/HelpPage.vue";
 import UserRegister from "../views/UserRegister.vue";
 import EmailVerify from "../views/EmailVerify.vue";
 import CustomViewList from "../views/CustomViewList.vue";
@@ -74,6 +75,11 @@ const routes = [
     path: "/",
     name: "Home",
     component: HomePage,
+  },
+  {
+    path: "/help",
+    name: "Help",
+    component: HelpPage,
   },
 
   {
@@ -161,6 +167,11 @@ const router = new VueRouter({
 });
 router.beforeEach((to, from, next) => {
   document.title = "នូតតូក - Noteto";
+  const hasSession = store.getters.isLoggedIn || localStorage.getItem("token");
+  if (to.name == "Home" && hasSession) {
+    next({ name: "NewDatabase" });
+    return;
+  }
   if (
     to.name == "CustomView" ||
     to.name == "CustomViewList" ||
@@ -174,10 +185,11 @@ router.beforeEach((to, from, next) => {
     to.name == "Login" ||
     to.name == "UserRegister" ||
     to.name == "Home" ||
+    to.name == "Help" ||
     to.name == "EmailVerify"
   ) {
     next();
-  } else if (store.getters.isLoggedIn || localStorage.getItem("token")) {
+  } else if (hasSession) {
     if (
       to.name == "Layout" ||
       to.name == "DatabaseSetting" ||

@@ -3,12 +3,18 @@
     <div class="settings-header">
       <div>
         <div class="overline primary--text">Workspace Settings</div>
-        <h1>Settings</h1>
+        <h1>
+          {{
+            settingsDatabase && settingsDatabase.displayName
+              ? settingsDatabase.displayName
+              : "Settings"
+          }}
+        </h1>
         <div
           v-if="settingsDatabase && settingsDatabase.displayName"
           class="settings-subtitle"
         >
-          {{ settingsDatabase.displayName }} · {{ settingsDatabase.value }}
+          {{ settingsDatabase.value }}
         </div>
       </div>
       <div class="settings-actions">
@@ -71,22 +77,23 @@
       <v-tab-item>
         <automation-section v-if="settingsReady" :key="settingsDatabaseValue"></automation-section>
       </v-tab-item>
-    </v-tabs-items>
-
-    <div v-if="settingsDatabaseValue" class="danger-zone">
-      <div>
-        <div class="danger-title">Danger Zone</div>
-        <div class="danger-copy">
-          Drop this database and permanently remove its records, fields, choices,
-          layout, list settings, filters, access, automations, comments, and
-          history.
+      <v-tab-item>
+        <div v-if="settingsReady && settingsDatabaseValue" class="danger-zone">
+          <div>
+            <div class="danger-title">Danger Zone</div>
+            <div class="danger-copy">
+              Drop this database and permanently remove its records, fields, choices,
+              layout, list settings, filters, access, automations, comments, and
+              history.
+            </div>
+          </div>
+          <v-btn color="error" outlined depressed @click="openDropDatabaseDialog">
+            <v-icon left>mdi-database-remove</v-icon>
+            Drop Database
+          </v-btn>
         </div>
-      </div>
-      <v-btn color="error" outlined depressed @click="openDropDatabaseDialog">
-        <v-icon left>mdi-database-remove</v-icon>
-        Drop Database
-      </v-btn>
-    </div>
+      </v-tab-item>
+    </v-tabs-items>
 
     <v-dialog v-model="dropDatabaseDialog" max-width="560">
       <v-card>
@@ -172,6 +179,11 @@ export default {
           title: "Automation",
           icon: "mdi-lightning-bolt",
         },
+        {
+          key: "danger",
+          title: "Danger Zone",
+          icon: "mdi-alert-octagon",
+        },
       ],
     };
   },
@@ -209,11 +221,6 @@ export default {
     },
     summaryItems() {
       return [
-        {
-          label: "Databases",
-          value: this.databases.length,
-          icon: "mdi-database",
-        },
         {
           label: "Fields",
           value: this.fieldCount,
@@ -392,7 +399,7 @@ export default {
 .settings-header h1 {
   margin: 0;
   color: #1f2933;
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: clamp(2.5rem, 5vw, 4.25rem);
   font-weight: 800;
   line-height: 1.1;
 }
@@ -410,7 +417,7 @@ export default {
 
 .settings-summary {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
   margin-bottom: 18px;
 }

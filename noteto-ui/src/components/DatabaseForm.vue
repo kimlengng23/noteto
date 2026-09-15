@@ -22,13 +22,6 @@
 						v-model="displayName"
 						:rules="strRules"
 						required></v-text-field>
-					<v-text-field
-						outlined
-						dense
-						label="Value"
-						v-model="value"
-						:rules="strRules"
-						required></v-text-field>
 					<v-textarea
 						outlined
 						dense
@@ -133,7 +126,6 @@ export default {
 		isEmpty() {
 			return (
 				this.displayName.length == 0 ||
-				this.value.length == 0 ||
 				this.description.length == 0
 			);
 		},
@@ -151,13 +143,14 @@ export default {
 			}
 			let database = {};
 			database.displayName = this.displayName;
-			database.value = this.value;
 			database.description = this.description;
 			this.isLoading = true;
 			backendService.addDatabase(database).then((response) => {
-				database._id = response.data.insertedId;
+				database = response.data.database || database;
+				database._id = response.data.insertedId || database._id;
+				this.value = database.value;
 				for (let i = 0; i < this.fields.length; i++) {
-					this.prepareField(this.fields[i], false);
+					this.prepareField(this.fields[i], false, database.value);
 				}
 				backendService.addFields(this.fields).then(() => {
 					this.$store.commit("addNewDatabaseToList", database);
@@ -185,8 +178,8 @@ export default {
 				this.requests = response.data;
 			});
 		},
-		prepareField(field, first = true) {
-			field.database = this.value;
+		prepareField(field, first = true, databaseValue = "") {
+			if (this.hasText(databaseValue)) field.database = databaseValue;
 			if (first) field.value = _.camelCase(field.displayName);
 			if (
 				field.type == "singleSelect" ||
@@ -196,13 +189,18 @@ export default {
 					let choice = field.choices[i];
 					if (first) choice.value = _.camelCase(choice.displayName);
 					choice.field = field.value;
-					choice.database = this.value;
+					if (this.hasText(databaseValue))
+						choice.database = databaseValue;
 					choice.isActive = true;
 				}
 			}
 			if (field.type == "list") {
 				for (let i = 0; i < field.listFields.length; i++) {
-					this.prepareField(field.listFields[i]);
+					this.prepareField(
+						field.listFields[i],
+						true,
+						databaseValue,
+					);
 				}
 			}
 		},
@@ -344,12 +342,6 @@ export default {
 		},
 	},
 	watch: {
-		displayName: function (newValue, oldValue) {
-			const previousValue = _.camelCase(oldValue || "");
-			if (!this.value || this.value == previousValue) {
-				this.value = _.camelCase(newValue);
-			}
-		},
 		selectedRequestIdx: function () {
 			if (
 				this.selectedRequestIdx == null ||
@@ -359,7 +351,6 @@ export default {
 			}
 			let selectedRequest = this.requests[this.selectedRequestIdx];
 			this.displayName = selectedRequest.displayName;
-			this.value = _.camelCase(selectedRequest.displayName);
 			this.description = selectedRequest.description;
 			this.fields = selectedRequest.fields;
 			this.fields.forEach((e) => {

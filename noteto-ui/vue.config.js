@@ -11,6 +11,7 @@ const httpsConfig =
 
 module.exports = defineConfig({
   transpileDependencies: ["vuetify"],
+  lintOnSave: false,
   devServer: {
     https: httpsConfig,
     port: 8080,

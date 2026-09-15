@@ -1,0 +1,31 @@
+services:
+  api:
+    build: .
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.development
+    environment:
+      CONN_STR: mongodb://noteto-database:27017
+      DB_NAME: Noteto
+      DEFAULT_DB_NAME: Noteto
+      SECURED_PORT: 3000
+    depends_on:
+      noteto-database:
+        condition: service_healthy
+
+  noteto-database:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - noteto-mongodb-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  noteto-mongodb-data:

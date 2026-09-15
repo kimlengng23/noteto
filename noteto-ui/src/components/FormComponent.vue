@@ -1,13 +1,14 @@
 <template>
-	<v-container class="pa-0">
+	<v-container fluid class="pa-0">
 		<v-form v-model="formValid[formValue]" :ref="`form-${formValue}`">
-			<v-container
+			<v-container fluid
 				class="d-flex pa-0 flex-wrap flex-lg-nowrap"
 				v-for="(row, idxI) in pRows"
 				:key="`row-${idxI}`">
-				<v-container
+				<v-container fluid
 					v-for="(col, idxJ) in row.cols"
-					:key="`col-${idxJ}`">
+					:key="`col-${idxJ}`"
+					class="form-field-cell">
 					<v-text-field
 						v-if="fieldToField[col.field]?.type === 'singleLine'"
 						outlined
@@ -86,7 +87,26 @@
 						v-model="entry[col.field]"
 						@change="automate(col.field)"
 						:readonly="readonly"
-						hide-details></v-autocomplete>
+						hide-details>
+						<template v-slot:item="{ item }">
+							<div class="choice-option">
+								<span
+									class="choice-dot"
+									:style="{
+										backgroundColor: getChoiceColor(item),
+									}"></span>
+								{{ item.displayName }}
+							</div>
+						</template>
+						<template v-slot:selection="{ item }">
+							<v-chip
+								small
+								:color="getChoiceColor(item)"
+								:text-color="getChoiceTextColor(item)">
+								{{ item.displayName }}
+							</v-chip>
+						</template>
+					</v-autocomplete>
 					<v-autocomplete
 						v-else-if="
 							fieldToField[col.field]?.type === 'multipleSelect'
@@ -103,7 +123,26 @@
 						deletable-chips
 						:readonly="readonly"
 						v-model="entry[col.field]"
-						hide-details></v-autocomplete>
+						hide-details>
+						<template v-slot:item="{ item }">
+							<div class="choice-option">
+								<span
+									class="choice-dot"
+									:style="{
+										backgroundColor: getChoiceColor(item),
+									}"></span>
+								{{ item.displayName }}
+							</div>
+						</template>
+						<template v-slot:selection="{ item }">
+							<v-chip
+								small
+								:color="getChoiceColor(item)"
+								:text-color="getChoiceTextColor(item)">
+								{{ item.displayName }}
+							</v-chip>
+						</template>
+					</v-autocomplete>
 					<v-autocomplete
 						v-else-if="
 							fieldToField[col.field]?.type === 'singleUser'
@@ -282,6 +321,24 @@ export default {
 		},
 	},
 	methods: {
+		getChoiceColor(choice) {
+			const color = choice && choice.color;
+			if (!color) return "#e0e0e0";
+			if (typeof color == "string") return color;
+			if (typeof color == "object") {
+				return color.hexa || color.hex || color.value || "#e0e0e0";
+			}
+			return "#e0e0e0";
+		},
+		getChoiceTextColor(choice) {
+			const color = String(this.getChoiceColor(choice)).replace("#", "");
+			if (color.length < 6) return "black";
+			const red = parseInt(color.substring(0, 2), 16);
+			const green = parseInt(color.substring(2, 4), 16);
+			const blue = parseInt(color.substring(4, 6), 16);
+			const brightness = (red * 299 + green * 587 + blue * 114) / 1000;
+			return brightness > 150 ? "black" : "white";
+		},
 		validateForm() {
 			this.$nextTick(() => {
 				const form = this.$refs[`form-${this.formValue}`];
@@ -328,4 +385,28 @@ export default {
 	},
 };
 </script>
-<style></style>
+<style scoped>
+.form-field-cell {
+	padding: 4px 8px;
+}
+
+.choice-option {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.choice-dot {
+	display: inline-block;
+	width: 12px;
+	height: 12px;
+	border: 1px solid rgba(0, 0, 0, 0.18);
+	border-radius: 50%;
+}
+
+@media only screen and (min-width: 960px) {
+	.form-field-cell {
+		padding: 4px 8px;
+	}
+}
+</style>

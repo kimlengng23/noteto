@@ -17,6 +17,7 @@
 							hide-details
 							:rules="nameRules"
 							v-model="first"
+							prepend-inner-icon="mdi-account-outline"
 							label="First Name"></v-text-field>
 						<v-text-field
 							class="mb-2"
@@ -25,6 +26,7 @@
 							hide-details
 							:rules="nameRules"
 							v-model="last"
+							prepend-inner-icon="mdi-account-outline"
 							label="Last Name"></v-text-field>
 
 						<v-text-field
@@ -34,6 +36,7 @@
 							hide-details
 							:rules="emailRules"
 							v-model="email"
+							prepend-inner-icon="mdi-email-outline"
 							label="Email"></v-text-field>
 						<v-text-field
 							class="mb-2"
@@ -43,6 +46,7 @@
 							:rules="pwRules"
 							type="password"
 							v-model="password"
+							prepend-inner-icon="mdi-lock-outline"
 							label="Password"></v-text-field>
 						<v-text-field
 							class="mb-2"
@@ -52,6 +56,7 @@
 							:rules="confRules"
 							type="password"
 							v-model="confPassword"
+							prepend-inner-icon="mdi-lock-check-outline"
 							label="Confirm Password"></v-text-field>
 					</v-form>
 				</v-card-text>

@@ -14,15 +14,6 @@
 				</v-btn>
 			</v-card-title>
 			<v-card-text>
-				<v-autocomplete
-					outlined
-					dense
-					label="Database"
-					:items="allDatabases"
-					v-model="selectedDatabase"
-					@change="reselectedUsers"
-					:item-text="getDatabaseNameText"
-					return-object></v-autocomplete>
 				<v-data-table
 					v-model="selectedUsers"
 					:headers="headers"
@@ -76,7 +67,6 @@ export default {
 					value: "dateCreated",
 				},
 			],
-			selectedDatabase: {},
 			selectedUsers: [],
 		};
 	},
@@ -88,21 +78,15 @@ export default {
 		isLoggedIn() {
 			return this.$store.getters["isLoggedIn"];
 		},
+		selectedDatabase() {
+			return this.$store.getters["currentDatabase"] || {};
+		},
 	},
 	methods: {
 		selectDefaultDatabase() {
-			const currentDatabase = this.$store.getters["currentDatabase"];
-			if (currentDatabase && currentDatabase.value) {
-				this.selectedDatabase = currentDatabase;
-			} else if ((this.allDatabases || []).length > 0) {
-				this.selectedDatabase = this.allDatabases[0];
-			}
 			if (this.selectedDatabase && this.selectedDatabase.value) {
 				this.reselectedUsers();
 			}
-		},
-		getDatabaseNameText(database) {
-			return `${database.displayName} - ${database.value}`;
 		},
 		reselectedUsers() {
 			backendService

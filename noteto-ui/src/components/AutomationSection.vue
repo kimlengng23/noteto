@@ -7,19 +7,6 @@
 						:rules="[(v) => !!v || 'Required']"
 						outlined
 						dense
-						:items="databases"
-						item-text="displayName"
-						item-value="value"
-						label="Database"
-						@change="getAttributes"
-						v-model="selectedDatabase"
-						return-object
-						required></v-autocomplete>
-
-					<v-autocomplete
-						:rules="[(v) => !!v || 'Required']"
-						outlined
-						dense
 						:items="automationTypes"
 						item-text="displayName"
 						item-value="value"
@@ -152,7 +139,7 @@
 								v-for="auto in automations"
 								:key="auto._id"
 								@click="getAutomationToUpdate(auto)">
-								<td>{{ auto.type }}</td>
+								<td>{{ getAutomationTypeDisplayName(auto.type) }}</td>
 								<td>{{ getConField(auto.conField) }}</td>
 								<td>
 									{{
@@ -197,13 +184,12 @@ export default {
 			formValid: false,
 			link: "",
 			users: [],
-			selectedDatabase: null,
 			isUpdating: false,
 		};
 	},
 	mixins: [formMixin],
 	mounted() {
-		this.selectDefaultDatabase();
+		if (this.databaseValue) this.getAttributes();
 	},
 	computed: {
 		actFields() {
@@ -257,8 +243,8 @@ export default {
 				return [];
 			}
 		},
-		databases() {
-			return this.$store.getters["allDatabases"];
+		currentDatabase() {
+			return this.$store.getters["currentDatabase"] || {};
 		},
 		databaseToFields() {
 			return this.$store.getters["databaseToFields"];
@@ -267,10 +253,7 @@ export default {
 			return this.$store.getters["databaseToChoices"];
 		},
 		databaseValue() {
-			if (this.selectedDatabase && this.selectedDatabase.value) {
-				return this.selectedDatabase.value;
-			}
-			return null;
+			return this.currentDatabase.value || null;
 		},
 		fieldToChoices() {
 			let fieldToChoices = {};
@@ -286,17 +269,6 @@ export default {
 		},
 	},
 	methods: {
-		selectDefaultDatabase() {
-			const currentDatabase = this.$store.getters["currentDatabase"];
-			if (currentDatabase && currentDatabase.value) {
-				this.selectedDatabase = currentDatabase;
-			} else if ((this.databases || []).length > 0) {
-				this.selectedDatabase = this.databases[0];
-			}
-			if (this.selectedDatabase && this.selectedDatabase.value) {
-				this.getAttributes();
-			}
-		},
 		addAutomation() {
 			if (
 				this.autoType != "link" &&
@@ -363,6 +335,12 @@ export default {
 			this.conValue = automation.conValue;
 			this.actField = automation.actField;
 			this.actValue = automation.actValue;
+		},
+		getAutomationTypeDisplayName(autoType) {
+			const type = (this.automationTypes || []).find((item) => {
+				return item.value == autoType;
+			});
+			return type ? type.displayName : autoType;
 		},
 		getConValue(conField, conValue) {
 			if (

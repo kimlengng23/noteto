@@ -7,7 +7,7 @@
     <v-main class="grey lighten-4">
       <router-view></router-view>
     </v-main>
-    <mongo-connection-dialog></mongo-connection-dialog>
+    <mongo-connection-dialog v-if="showMongoConnectionDialog"></mongo-connection-dialog>
     <general-dialog></general-dialog>
     <general-snackbar></general-snackbar>
   </v-app>
@@ -24,6 +24,11 @@ export default {
   name: "App",
   mounted: function () {
     if (this.$route.name != "Logout" && localStorage.getItem("token")) {
+      this.bootstrapSession();
+    }
+  },
+  methods: {
+    bootstrapSession() {
       backendService
         .verifyToken()
         .then((response) => {
@@ -41,7 +46,6 @@ export default {
           );
 
           this.$store.commit("setCurrentUser", response.data);
-          this.$store.dispatch("getDatabasesByUserId");
           this.$store.dispatch("getNavigationOptions");
           this.$store.dispatch("getDropdowns");
           this.$store.dispatch("getAllDatabases");
@@ -52,33 +56,47 @@ export default {
           this.$store.dispatch("getDatabaseToHeaderSets");
           this.$store.dispatch("getDatabaseToFilterSets");
           this.$store.dispatch("getDatabaseToLayoutMappings");
-          setTimeout(() => {
-            let query = this.$route.query;
-            let databaseValue = query.database ? query.database : null;
-            let database = this.$store.getters["availableDatabases"].find(
-              (e) => e.value == databaseValue
-            );
-            if (database) {
-              this.$store.commit("setCurrentDatabase", database);
-              this.$store.dispatch("getFieldsByDatabase");
-              this.$store.dispatch("getChoicesByDatabase");
-              this.$store.dispatch("getEmptyEntryByDatabase");
-              Promise.all([
-                this.$store.dispatch("getHeaderSetsByDatabase"),
-                this.$store.dispatch("getFilterSetsByDatabase"),
-              ]).then(() => {
-                this.$store.dispatch("getEntriesByDatabase");
-              });
-              this.$store.dispatch("getAutomationsByDatabase");
-              this.$store.dispatch("getUsersByDatabase");
-              this.$store.dispatch("getLayoutByDatabase");
-            }
-          }, 1000);
+
+          return this.$store.dispatch("getDatabasesByUserId");
+        })
+        .then(() => {
+          const database = this.resolveStartupDatabase();
+          if (!database || !database.value) return;
+          this.$store.commit("setCurrentDatabase", database);
+          return this.loadCurrentDatabaseData(database.value);
         })
         .catch(() => {
           localStorage.clear();
         });
-    }
+    },
+    getStoredDatabase() {
+      try {
+        return JSON.parse(localStorage.getItem("currentDatabase") || "{}");
+      } catch (error) {
+        return {};
+      }
+    },
+    resolveStartupDatabase() {
+      const queryDatabaseValue = this.$route.query.database;
+      const storedDatabase = this.getStoredDatabase();
+      const databases = this.$store.getters["availableDatabases"] || [];
+      return (
+        databases.find((database) => database.value == queryDatabaseValue) ||
+        databases.find((database) => database.value == storedDatabase.value) ||
+        databases[0] ||
+        {}
+      );
+    },
+    loadCurrentDatabaseData(databaseValue) {
+      return Promise.all([
+        this.$store.dispatch("getFieldsByDatabase", databaseValue),
+        this.$store.dispatch("getChoicesByDatabase", databaseValue),
+        this.$store.dispatch("getEmptyEntryByDatabase", databaseValue),
+        this.$store.dispatch("getAutomationsByDatabase", databaseValue),
+        this.$store.dispatch("getUsersByDatabase", databaseValue),
+        this.$store.dispatch("getLayoutByDatabase", databaseValue),
+      ]);
+    },
   },
   components: {
     GeneralDialog,
@@ -116,6 +134,9 @@ export default {
     },
     isLoggedIn() {
       return this.$store.getters["isLoggedIn"];
+    },
+    showMongoConnectionDialog() {
+      return !["Home", "Help"].includes(this.$route.name);
     },
   },
   data: () => ({

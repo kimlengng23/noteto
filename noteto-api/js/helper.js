@@ -150,6 +150,19 @@ function verifyAccess(req, res, next) {
           let userId = req.decoded.userId;
           if (result && result.assignedTo && result.assignedTo._id == userId) {
             next();
+          } else if (
+            result &&
+            result._data &&
+            result._data.createdBy &&
+            result._data.createdBy._id == userId
+          ) {
+            next();
+          } else if (
+            result &&
+            result.createdBy &&
+            result.createdBy._id == userId
+          ) {
+            next();
           } else if (result) {
             let databaseValue = result._data.database;
             dbConn.collection("DatabaseAccessCollection").findOne(

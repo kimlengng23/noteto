@@ -15,6 +15,23 @@ function normalizeText(value) {
 	return String(value || "").trim().toLowerCase();
 }
 
+function normalizeColor(color) {
+	if (!color) return "#e0e0e0";
+	if (typeof color == "string") {
+		const value = color.trim();
+		return value || "#e0e0e0";
+	}
+	if (typeof color == "object") {
+		return (
+			color.hexa ||
+			color.hex ||
+			color.value ||
+			"#e0e0e0"
+		);
+	}
+	return "#e0e0e0";
+}
+
 function validateChoices(choices) {
 	if (!Array.isArray(choices) || choices.length == 0) {
 		return "At least one choice is required";
@@ -34,6 +51,7 @@ function validateChoices(choices) {
 		choice.field = choice.field.trim();
 		choice.displayName = choice.displayName.trim();
 		choice.value = choice.value.trim();
+		choice.color = normalizeColor(choice.color);
 
 		const valueKey = `${choice.database}:${choice.field}:value:${normalizeText(
 			choice.value

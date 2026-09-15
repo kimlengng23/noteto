@@ -55,36 +55,17 @@
 				:value="activeDatabaseValue"
 				hide-details
 				@change="changeDatabase"></v-autocomplete>
-			<v-btn
-				v-if="isLoggedIn"
-				class="primary mr-1"
-				depressed
-				outlined
-				icon
-				:disabled="!activeDatabaseValue"
-				@click="goToNewEntry">
-				<v-icon>mdi-plus</v-icon>
-			</v-btn>
-			<v-btn
-				v-if="isLoggedIn"
-				class="primary mr-1"
-				depressed
-				outlined
-				icon
-				@click="goToRecords">
-				<v-icon>mdi-format-list-numbered</v-icon>
-			</v-btn>
-			<v-btn
-				v-if="isLoggedIn"
-				class="primary"
-				depressed
-				outlined
-				icon
-				@click="generateCsv">
-				<v-icon>mdi-file-download-outline</v-icon>
-			</v-btn>
 			<v-spacer v-if="!isMobile()"></v-spacer>
 
+			<v-btn
+				v-if="!isLoggedIn"
+				color="blue darken-1"
+				dark
+				text
+				@click="$router.push({ name: 'Help' }).catch(() => {})">
+				<v-icon left>mdi-help-circle-outline</v-icon>
+				Help
+			</v-btn>
 			<v-btn
 				v-if="!isLoggedIn"
 				color="blue darken-1"
@@ -229,11 +210,6 @@ export default {
 					routeName: "ListView",
 				},
 				{
-					title: "Dashboard",
-					icon: "mdi-view-dashboard",
-					routeName: "Dashboard",
-				},
-				{
 					title: "Settings",
 					icon: "mdi-cog",
 					routeName: "DatabaseSetting",
@@ -242,6 +218,12 @@ export default {
 			const savedOptions = this.$store.getters["navigationOptions"] || [];
 			const optionByTitle = {};
 			defaultOptions.concat(savedOptions).forEach((option) => {
+				if (
+					option.routeName == "Dashboard" ||
+					option.title == "Dashboard"
+				) {
+					return;
+				}
 				optionByTitle[option.title] = option;
 			});
 			return Object.values(optionByTitle);
@@ -289,15 +271,11 @@ export default {
 			this.$store.commit("setCurrentDatabase", database);
 			this.$store.dispatch("getFieldsByDatabase", database.value);
 			this.$store.dispatch("getChoicesByDatabase", database.value);
-			this.$store.dispatch("getEmptyEntryByDatabase");
-			Promise.all([
-				this.$store.dispatch("getHeaderSetsByDatabase"),
-				this.$store.dispatch("getFilterSetsByDatabase"),
-			]).then(() => {
-				this.$store.dispatch("getEntriesByDatabase");
-			});
-			this.$store.dispatch("getAutomationsByDatabase");
-			this.$store.dispatch("getUsersByDatabase");
+			this.$store.dispatch("getEmptyEntryByDatabase", database.value);
+			this.$store.dispatch("getHeaderSetsByDatabase");
+			this.$store.dispatch("getFilterSetsByDatabase");
+			this.$store.dispatch("getAutomationsByDatabase", database.value);
+			this.$store.dispatch("getUsersByDatabase", database.value);
 			this.$store.dispatch("getLayoutByDatabase", database.value);
 		},
 		changeDatabase(databaseValue) {
@@ -313,9 +291,6 @@ export default {
 		},
 		clearSearch() {
 			eventBus.$emit("clearSearch");
-		},
-		generateCsv() {
-			eventBus.$emit("generateCsv");
 		},
 		findDatabase(databaseValue) {
 			if (!databaseValue) return null;
@@ -395,17 +370,6 @@ export default {
 				.push({
 					name: "ListView",
 					query: this.getDatabaseQuery(),
-				})
-				.catch(() => {});
-		},
-		goToNewEntry() {
-			const database = this.getActiveDatabase();
-			if (!database || !database.value) return;
-			this.activateDatabase(database);
-			this.$router
-				.push({
-					name: "NewEntry",
-					query: { database: database.value },
 				})
 				.catch(() => {});
 		},

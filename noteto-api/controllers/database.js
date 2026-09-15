@@ -23,7 +23,34 @@ app.post("/add", helper.verifyAdminToken, (req, res) => {
   databaseService
     .addDatabase(database)
     .then((response) => {
-      res.sendStatus(response.code);
+      res.status(response.code).send(response.data);
+    })
+    .catch((response) => {
+      res.status(response.code).send(response.message);
+    });
+});
+app.get("/templates", helper.verifyAdminToken, (req, res) => {
+  databaseService
+    .getTemplates()
+    .then((response) => {
+      res.status(response.code).send(response.data);
+    })
+    .catch((response) => {
+      res.status(response.code).send(response.message);
+    });
+});
+app.post("/template/spawn", helper.verifyAdminToken, (req, res) => {
+  let request = req.body || {};
+  request.createdBy = {
+    _id: req.decoded.userId,
+    first: req.decoded.first,
+    last: req.decoded.last,
+    username: req.decoded.username,
+  };
+  databaseService
+    .spawnTemplate(request.templateKey, request)
+    .then((response) => {
+      res.status(response.code).send(response.data);
     })
     .catch((response) => {
       res.status(response.code).send(response.message);

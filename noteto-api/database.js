@@ -59,6 +59,14 @@ function getDbConfig(override = {}) {
   };
 }
 
+function getConfigSource() {
+  const localConfig = getLocalConfig();
+  if (localConfig.connectionString || localConfig.connUrl) return "runtime";
+  const environmentConfig = getEnvironmentConfig();
+  if (environmentConfig.connectionString) return "environment";
+  return "none";
+}
+
 function validateConfig(config) {
   if (!config.connectionString) {
     throw new Error("MongoDB connection string is required.");
@@ -77,6 +85,7 @@ function getStatus() {
     connected: Boolean(activeClient),
     connectionString: sanitizeConnectionString(config.connectionString),
     databaseName: config.databaseName || "",
+    source: getConfigSource(),
   };
 }
 

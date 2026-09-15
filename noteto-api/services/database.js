@@ -1,76 +1,273 @@
 const res = require("express/lib/response.js");
 const helper = require("../js/helper.js");
+const fieldService = require("./field.js");
+const templates = require("../data/database-templates.js");
 const { ObjectId } = require("mongodb");
 
 let dbConn = null;
 function setDb(conn) {
   dbConn = conn;
   helper.setDb(conn);
+  fieldService.setDb(conn);
+}
+function hasText(value) {
+  return Boolean(value && String(value).trim());
+}
+function getDatabaseValueBase(displayName) {
+  return `db_${String(displayName || "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s/g, "_")}`;
+}
+function getUniqueDatabaseValue(displayName) {
+  return new Promise((resolve, reject) => {
+    if (!hasText(displayName)) {
+      reject({ code: 400, message: "Database display name is required" });
+      return;
+    }
+    const baseValue = getDatabaseValueBase(displayName);
+    const escapedBaseValue = baseValue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    dbConn
+      .collection("DatabaseCollection")
+      .find({ value: { $regex: `^${escapedBaseValue}(_\\d+)?$` } })
+      .project({ value: 1 })
+      .toArray((err, databases) => {
+        if (err) {
+          reject({ code: 500, message: err });
+          return;
+        }
+        const existingValues = new Set(
+          databases.map((database) => database.value)
+        );
+        if (!existingValues.has(baseValue)) {
+          resolve(baseValue);
+          return;
+        }
+        let suffix = 1;
+        while (existingValues.has(`${baseValue}_${suffix}`)) {
+          suffix++;
+        }
+        resolve(`${baseValue}_${suffix}`);
+      });
+  });
 }
 function addDatabase(database) {
   let todayDate = new Date();
-  let systemFields = [
-    {
-      value: "assignedTo",
-      displayName: "Assigned To",
-      type: "singleUser",
-      database: database["value"],
-      dateCreated: todayDate,
-      isActive: true,
-    },
-  ];
-  database.dateCreated = new Date();
-  database.isActive = true;
-  database.groups = [];
   let promise = new Promise((resolve, reject) => {
-    dbConn
-      .collection("DatabaseCollection")
-      .insertOne(database, (err, result1) => {
-        if (err) {
-          console.log("DatabaseService - addDatabase", err);
-          reject({ code: 500, message: err });
-        } else {
-          dbConn.collection("SequenceCollection").insertOne(
-            {
-              seqName: "newEntry",
-              seqValue: 1,
-              database: database["value"],
-            },
-            (err, result2) => {
-              if (err) {
-                console.log("DatabaseService - addDatabase", err);
-                reject({ code: 500, message: err });
-              } else {
-                dbConn
-                  .collection("FieldCollection")
-                  .insertMany(
-                    systemFields,
-                    { ordered: false },
-                    (err, result3) => {
-                      if (err) {
-                        console.log("DatabaseService - addDatabase", err);
-                        reject({
-                          code: 500,
-                          message: err,
-                        });
-                      } else {
-                        resolve({
-                          code: 200,
-                          data: {
-                            insertedId: result1.ops[0]._id,
-                          },
-                        });
-                      }
-                    }
-                  );
-              }
+    if (!hasText(database.displayName)) {
+      reject({ code: 400, message: "Database display name is required" });
+      return;
+    }
+    database.displayName = String(database.displayName).trim();
+    if (hasText(database.description)) {
+      database.description = String(database.description).trim();
+    }
+    getUniqueDatabaseValue(database.displayName)
+      .then((databaseValue) => {
+        database.value = databaseValue;
+        let systemFields = [
+          {
+            value: "assignedTo",
+            displayName: "Assigned To",
+            type: "singleUser",
+            database: database.value,
+            dateCreated: todayDate,
+            isActive: true,
+          },
+        ];
+        database.dateCreated = todayDate;
+        database.isActive = true;
+        database.groups = [];
+        dbConn
+          .collection("DatabaseCollection")
+          .insertOne(database, (err, result1) => {
+            if (err) {
+              console.log("DatabaseService - addDatabase", err);
+              reject({ code: 500, message: err });
+            } else {
+              dbConn.collection("SequenceCollection").insertOne(
+                {
+                  seqName: "newEntry",
+                  seqValue: 1,
+                  database: database.value,
+                },
+                (err) => {
+                  if (err) {
+                    console.log("DatabaseService - addDatabase", err);
+                    reject({ code: 500, message: err });
+                  } else {
+                    dbConn
+                      .collection("FieldCollection")
+                      .insertMany(
+                        systemFields,
+                        { ordered: false },
+                        (err) => {
+                          if (err) {
+                            console.log("DatabaseService - addDatabase", err);
+                            reject({
+                              code: 500,
+                              message: err,
+                            });
+                          } else {
+                            addCreatorAccess(database, todayDate)
+                              .then(() => {
+                                resolve({
+                                  code: 200,
+                                  data: {
+                                    insertedId: result1.ops[0]._id,
+                                    database: database,
+                                  },
+                                });
+                              })
+                              .catch((err) => {
+                                console.log(
+                                  "DatabaseService - addDatabase",
+                                  err
+                                );
+                                reject({
+                                  code: 500,
+                                  message: err,
+                                });
+                              });
+                          }
+                        }
+                      );
+                  }
+                }
+              );
             }
-          );
+          });
+      })
+      .catch((response) => {
+        if (response && response.code) {
+          reject(response);
+          return;
         }
+        console.log("DatabaseService - addDatabase", response);
+        reject({ code: 500, message: response });
       });
   });
 
   return promise;
+}
+function addCreatorAccess(database, todayDate) {
+  if (!database.createdBy || !database.createdBy._id) {
+    return Promise.resolve();
+  }
+  return dbConn.collection("DatabaseAccessCollection").insertOne({
+    database: database,
+    user: database.createdBy,
+    createdBy: database.createdBy,
+    dateCreated: todayDate,
+  });
+}
+function clone(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+function getTemplates() {
+  return Promise.resolve({
+    code: 200,
+    data: templates.map((template) => {
+      return {
+        key: template.key,
+        title: template.title,
+        description: template.description,
+        fieldCount: template.fields.length,
+      };
+    }),
+  });
+}
+function getTemplateByKey(templateKey) {
+  return templates.find((template) => template.key == templateKey);
+}
+const choicePalette = [
+  "#1565c0",
+  "#2e7d32",
+  "#ef6c00",
+  "#6a1b9a",
+  "#00838f",
+  "#c62828",
+  "#5d4037",
+  "#455a64",
+];
+function prepareTemplateField(field, databaseValue, todayDate) {
+  field.database = databaseValue;
+  field.dateCreated = todayDate;
+  field.isActive = true;
+  if (field.choices) {
+    field.choices.forEach((choice, idx) => {
+      choice.database = databaseValue;
+      choice.field = field.value;
+      choice.dateCreated = todayDate;
+      choice.isActive = true;
+      if (!choice.color) choice.color = choicePalette[idx % choicePalette.length];
+    });
+  }
+  if (field.listFields) {
+    field.listFields.forEach((listField, idx) => {
+      listField.order = idx + 1;
+      prepareTemplateField(listField, databaseValue, todayDate);
+    });
+  }
+}
+function buildTemplateLayout(fields, databaseValue) {
+  let rows = [];
+  for (let i = 0; i < fields.length; i += 2) {
+    rows.push({
+      database: databaseValue,
+      order: rows.length + 1,
+      type: {
+        displayName: "Row",
+        value: "row",
+      },
+      cols: fields.slice(i, i + 2).map((field) => {
+        return {
+          field: field.value,
+          label: "",
+        };
+      }),
+    });
+  }
+  return rows;
+}
+function spawnTemplate(templateKey, overrides = {}) {
+  const template = getTemplateByKey(templateKey);
+  if (!template) {
+    return Promise.reject({ code: 404, message: "Template not found" });
+  }
+  const database = {
+    displayName: overrides.displayName || template.title,
+    description: overrides.description || template.description,
+    createdBy: overrides.createdBy,
+    templateKey: template.key,
+  };
+  return addDatabase(database).then((response) => {
+    const createdDatabase = response.data.database;
+    const databaseValue = createdDatabase.value;
+    const todayDate = new Date();
+    const fields = clone(template.fields);
+    fields.forEach((field) => {
+      prepareTemplateField(field, databaseValue, todayDate);
+    });
+    const layout = buildTemplateLayout(fields, databaseValue);
+    const tasks = [fieldService.addFields(fields)];
+    if (layout.length > 0) {
+      tasks.push(
+        dbConn.collection("LayoutCollection").insertMany(layout)
+      );
+    }
+    return Promise.all(tasks).then(() => {
+      return {
+        code: 200,
+        data: {
+          insertedId: response.data.insertedId,
+          database: createdDatabase,
+          fields: fields,
+          layout: layout,
+        },
+      };
+    });
+  });
 }
 function addRequest(request) {
   let promise = new Promise((resolve, reject) => {
@@ -363,6 +560,8 @@ module.exports = {
   setDb,
   addDatabase,
   addRequest,
+  getTemplates,
+  spawnTemplate,
   dropDatabase,
   getAccessesByDatabase,
   getAllDatabases,

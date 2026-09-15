@@ -2,7 +2,6 @@
 	<v-tabs v-model="tab" @change="reset" grow>
 		<v-tab>Create Group</v-tab>
 		<v-tab>Members</v-tab>
-		<v-tab>Database Groups</v-tab>
 
 		<v-tabs-items v-model="tab">
 			<v-tab-item>
@@ -80,42 +79,6 @@
 					</v-card>
 				</v-container>
 			</v-tab-item>
-			<v-tab-item>
-				<v-container fluid>
-					<v-card class="-lg" elevation="0" outlined>
-						<v-card-title class="d-flex justify-space-between">
-							<div>Database Groups</div>
-							<v-btn
-								color="primary ml-2"
-								depressed
-								:disabled="!isLoggedIn || !selectedDatabase"
-								@click="updateDatabaseGroups"
-								:loading="isLoading">
-								<v-icon left>mdi-content-save</v-icon>
-								Update
-							</v-btn>
-						</v-card-title>
-						<v-card-text>
-							<v-autocomplete
-								outlined
-								dense
-								label="Database"
-								:items="allDatabases"
-								v-model="selectedDatabase"
-								@change="reselectGroups"
-								:item-text="getDatabaseNameText"
-								return-object></v-autocomplete>
-							<v-data-table
-								v-model="selectedGroups"
-								:headers="groupHeaders"
-								:items="allGroups"
-								show-select
-								item-key="_id"
-								:options="{ itemsPerPage: 15 }"></v-data-table>
-						</v-card-text>
-					</v-card>
-				</v-container>
-			</v-tab-item>
 		</v-tabs-items>
 	</v-tabs>
 </template>
@@ -130,12 +93,10 @@ export default {
 	data() {
 		return {
 			tab: null,
-			selectedDatabase: null,
 			selectedGroup: null,
 			displayName: "",
 			value: "",
 			user: {},
-			selectedGroups: [],
 			selectedUsers: [],
 			userHeaders: [
 				{
@@ -159,44 +120,11 @@ export default {
 					align: "right",
 				},
 			],
-			groupHeaders: [
-				{
-					text: "Id",
-					value: "_id",
-					alight: "center",
-				},
-				{
-					text: "Display Name",
-					value: "displayName",
-					align: "center",
-				},
-				{
-					text: "Value",
-					value: "value",
-					align: "center",
-				},
-			],
 		};
 	},
 	components: {},
 	mixins: [mixin, formMixin],
-	mounted() {
-		this.selectDefaultDatabase();
-	},
-	computed: {},
 	methods: {
-		selectDefaultDatabase() {
-			const currentDatabase = this.$store.getters["currentDatabase"];
-			if (currentDatabase && currentDatabase.value) {
-				this.selectedDatabase = currentDatabase;
-			} else if ((this.allDatabases || []).length > 0) {
-				this.selectedDatabase = this.allDatabases[0];
-			}
-			this.selectedGroups =
-				this.selectedDatabase && this.selectedDatabase.groups
-					? this.selectedDatabase.groups
-					: [];
-		},
 		addGroup() {
 			let group = {};
 			group.displayName = this.displayName;
@@ -251,44 +179,17 @@ export default {
 				}, 1000);
 			});
 		},
-		updateDatabaseGroups() {
-			let database = {};
-			database.databaseId = this.selectedDatabase._id;
-			database.groups = this.selectedGroups;
-			this.isLoading = true;
-			backendService.updateDatabaseGroups(database).then(() => {
-				this.selectedDatabase.groups = this.selectedGroups;
-				this.$store.commit("setDatabase", this.selectedDatabase);
-				setTimeout(() => {
-					eventBus.$emit(
-						"setSnackbar",
-						"Successfully updated database's groups",
-						"success",
-					);
-					this.isLoading = false;
-				}, 1000);
-			});
-		},
 		getGroupNameText(group) {
 			return `${group.displayName} - ${group.value}`;
-		},
-		getDatabaseNameText(database) {
-			return `${database.displayName} - ${database.value}`;
 		},
 		reset() {
 			this.displayName = "";
 			this.value = "";
-			this.selectedDatabase = {};
-			this.selectedGroups = [];
 			this.selectedUsers = [];
 			this.selectedGroup = null;
-			this.selectDefaultDatabase();
 		},
 		reselectUsers(item) {
 			this.selectedUsers = item && item.users ? item.users : [];
-		},
-		reselectGroups(item) {
-			this.selectedGroups = item && item.groups ? item.groups : [];
 		},
 	},
 	watch: {

@@ -73,6 +73,16 @@ export default {
     let headers = getHeaders();
     return axios.post(url, database, { headers: headers });
   },
+  getDatabaseTemplates() {
+    let url = domain + "/database/templates";
+    let headers = getHeaders();
+    return axios.get(url, { headers: headers });
+  },
+  spawnDatabaseTemplate(template) {
+    let url = domain + "/database/template/spawn";
+    let headers = getHeaders();
+    return axios.post(url, template, { headers: headers });
+  },
   addDatabaseAccess(access) {
     let url = domain + "/add/database/access";
     return axios.post(url, access);

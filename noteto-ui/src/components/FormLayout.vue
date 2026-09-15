@@ -3,22 +3,6 @@
 		<v-card elevation="0" class="rounded-lg" outlined>
 			<v-card-title class="layout-header">
 				<div>Add Layout</div>
-				<div class="layout-database-select">
-					<v-autocomplete
-						outlined
-						dense
-						hide-details
-						label="Database"
-						@change="getLayoutByDatabase"
-						:items="databases"
-						:item-text="
-							(item) => {
-								return `${item.displayName} - ${item.value}`;
-							}
-						"
-						item-value="value"
-						v-model="databaseValue"></v-autocomplete>
-				</div>
 				<div class="layout-actions">
 					<v-btn
 						depressed
@@ -112,8 +96,11 @@ export default {
 				[]
 			);
 		},
-		databases() {
-			return this.$store.getters["allDatabases"] || [];
+		currentDatabase() {
+			return this.$store.getters["currentDatabase"] || {};
+		},
+		databaseValue() {
+			return this.currentDatabase.value || "";
 		},
 		databaseToLayoutMappings() {
 			return this.$store.getters["databaseToLayoutMappings"] || {};
@@ -127,22 +114,12 @@ export default {
 			],
 			rows: [],
 			selectedRowTypes: [],
-			databaseValue: "",
 		};
 	},
 	mounted: function () {
-		this.selectDefaultDatabase();
+		if (this.databaseValue) this.getLayoutByDatabase();
 	},
 	methods: {
-		selectDefaultDatabase() {
-			const currentDatabase = this.$store.getters["currentDatabase"];
-			if (currentDatabase && currentDatabase.value) {
-				this.databaseValue = currentDatabase.value;
-			} else if (this.databases.length > 0) {
-				this.databaseValue = this.databases[0].value;
-			}
-			if (this.databaseValue) this.getLayoutByDatabase();
-		},
 		addRow() {
 			this.rows.push([]);
 			this.selectedRowTypes.push(
@@ -211,13 +188,9 @@ export default {
 <style scoped>
 .layout-header {
 	display: grid;
-	grid-template-columns: max-content minmax(240px, 1fr) max-content;
+	grid-template-columns: max-content minmax(0, 1fr);
 	gap: 12px;
 	align-items: center;
-}
-
-.layout-database-select {
-	min-width: 0;
 }
 
 .layout-actions {
